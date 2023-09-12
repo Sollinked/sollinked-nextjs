@@ -27,6 +27,15 @@ body {
 }
 
 /* antd */
-.ant-table-placeholder {
-  height: 65vh;
+.ant-table-placeholder,
+.ant-table-tbody {
+  height: 55vh;
+}
+
+.ant-table-cell {
+  height: 60px;
+}
+.ant-table-row:last-child {
+  height: 100%;
+  vertical-align: baseline;
 }

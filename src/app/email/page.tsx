@@ -1,5 +1,5 @@
 'use client';
-import { Table, Button, Tag, Tabs, ConfigProvider } from 'antd';
+import { Table, Tag, Tabs, ConfigProvider } from 'antd';
 
 import { useContext, useMemo, useState, useCallback } from 'react';
 import { copyToClipboard, toLocaleDecimal } from '../../common/utils';
@@ -10,7 +10,6 @@ import { SortOrder } from 'antd/es/table/interface';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { useSollinked } from '@sollinked/sdk';
-import { table } from 'console';
 dayjs.extend(duration);
 
 const NO_PAYMENT_AFTER_DAYS = 2;
@@ -38,18 +37,29 @@ const Page = () => {
                 sortOrder: sortedInfo.columnKey === 'expiry_date' ? sortedInfo.order : null,
                 render: (data: string, row: Mail) => {
                     if(!data) {
-                        return "-";
+                        return (
+							<span className={`text-white text-xs`}>-</span>
+						);
                     }
 
                     if(row.is_claimed) {
-                        return '-';
+                        return (
+							<span className={`text-white text-xs`}>-</span>
+						);
                     }
 
                     let date = moment(data);
-                    return <div className="d-flex flex-column">
-                        <span>{date.fromNow()}</span>
-                        <span style={{fontSize: 10}}>{date.format('YYYY-MM-DD HH:mm:ss')}</span>
-                    </div>
+                    return (
+						<div 
+							className={`
+								flex flex-col
+								text-white text-xs
+							`}
+						>
+							<span>{date.fromNow()}</span>
+							<span style={{fontSize: 10}}>{date.format('YYYY-MM-DD HH:mm:ss')}</span>
+						</div>
+					)
                 },
             },
             {
@@ -58,18 +68,41 @@ const Page = () => {
                 key: 'from_email',
                 sorter: (a: Mail, b: Mail) => a.from_email > b.from_email? 1 : -1,
                 sortOrder: sortedInfo.columnKey === 'from_email' ? sortedInfo.order : null,
+				render: (data: string) => {
+					return (
+						<span
+							className={`
+								text-white text-xs
+							`}
+						>
+							{data}
+						</span>
+					)
+				}
             },
             {
-                title: 'BCC To',
+                title: 'Reply To',
                 dataIndex: 'bcc_to_email',
                 key: 'bcc_to_email',
                 sorter: false,
                 sortOrder: null,
-                render: (data: string) => {
-                    return <Button onClick={() => {
-                        copyToClipboard(data);
-                        toast.success('Copied');
-                    }}>Copy Email Address</Button>
+                render: (data: string, row: Mail) => {
+                    return (
+						<button 
+							className={`
+								border-[1px] border-white hover:border-indigo-300
+								text-white text-xs hover:text-indigo-300
+								px-2 py-1
+								rounded-lg
+							`}
+							onClick={() => {
+								copyToClipboard(`${row.from_email},${data}`);
+								toast.success('Copied');
+							}}
+						>
+							Copy
+						</button>
+					)
                 }
             },
             {
@@ -84,9 +117,16 @@ const Page = () => {
                     }
                     return (
                         <a href={`https://solana.fm/address/${data}?cluster=mainnet-qn1`} target='_blank'>
-                            <Button>
-                                Check on solana.fm
-                            </Button>
+							<button 
+								className={`
+									border-[1px] border-white hover:border-indigo-300
+									text-white text-xs hover:text-indigo-300
+									px-2 py-1
+									rounded-lg
+								`}
+							>
+								Explorer
+							</button>
                         </a>
                     )
                 },
@@ -95,9 +135,19 @@ const Page = () => {
                 title: 'Value (USDC)',
                 dataIndex: 'value_usd',
                 key: 'value_usd',
-                render: (data: string) => toLocaleDecimal(Number(data), 2, 2),
                 sorter: (a: Mail, b: Mail) => (a.value_usd ?? 0) - (b.value_usd ?? 0),
                 sortOrder: sortedInfo.columnKey === 'value_usd' ? sortedInfo.order : null,
+				render: (data: string) => {
+					return (
+						<span
+							className={`
+								text-white text-xs
+							`}
+						>
+							{toLocaleDecimal(Number(data), 2, 2)}
+						</span>
+					)
+				}
             },
             {
                 title: 'Action',
@@ -115,9 +165,16 @@ const Page = () => {
                     if(row.has_responded) {
                         return (
                             <a href={data} target='_blank'>
-                                <Button>
+								<button 
+									className={`
+										border-[1px] border-white hover:border-indigo-300
+										text-white text-xs hover:text-indigo-300
+										px-2 py-1
+										rounded-lg
+									`}
+								>
                                     Claim
-                                </Button>
+                                </button>
                             </a>
                         )
                     }
@@ -132,9 +189,16 @@ const Page = () => {
                     
                     return (
                         <a href={`mailto:${row.from_email}?bcc=${row.bcc_to_email ?? ""}`} target='_blank'>
-                            <Button>
-                                Reply
-                            </Button>
+							<button 
+								className={`
+									border-[1px] border-white hover:border-indigo-300
+									text-white text-xs hover:text-indigo-300
+									px-2 py-1
+									rounded-lg
+								`}
+							>
+								Reply
+							</button>
                         </a>
                     );
                 },
@@ -224,7 +288,7 @@ const Page = () => {
                 ) */
 				children: (
                     <Table
-						className='w-full'
+						className='w-full mt-3'
                         columns={columns}
                         dataSource={pendingResponse}
                         scroll={{
@@ -239,7 +303,7 @@ const Page = () => {
                 label: 'Claimable',
                 children: (
                     <Table
-						className='w-full'
+						className='w-full mt-3'
                         columns={columns}
                         dataSource={claimable}
                         scroll={{
@@ -254,7 +318,7 @@ const Page = () => {
                 label: 'Pending Deposit',
                 children: (
                     <Table
-						className='w-full'
+						className='w-full mt-3'
                         columns={columns}
                         dataSource={pendingDeposit}
                         scroll={{
@@ -269,7 +333,7 @@ const Page = () => {
                 label: 'Claimed',
                 children: (
                     <Table
-                        className='w-full'
+						className='w-full mt-3'
                         columns={columns}
                         dataSource={claimed}
                         scroll={{
@@ -292,6 +356,7 @@ const Page = () => {
 						itemColor: 'rgb(100,116,139)',
 					},
 					Table: {
+						fontSize: 12,
 						headerBg: 'rgb(51,65,85)',
 						headerColor: 'white',
 						headerSortActiveBg: 'rgb(30,41,59)',

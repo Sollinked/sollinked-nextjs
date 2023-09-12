@@ -2,6 +2,8 @@ import Layout from '@/components/Layout';
 import './globals.css'
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,6 +25,19 @@ export default function RootLayout({
       `}>
           <Layout>
             {children}
+
+            <ToastContainer
+              position="bottom-left"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover={false}
+              theme={'colored'}
+            />
           </Layout>
       </body>
     </html>

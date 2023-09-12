@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useSollinked } from '@sollinked/sdk';
 
 type LinkParams = {
     link: string;
@@ -31,6 +32,7 @@ const SideBarItem = ({ link, text, active, notification }: LinkParams) => {
   
 const SideBar = () => {
     const pathname = usePathname();
+    let { user } = useSollinked();
   
     return (
       <div className={`
@@ -43,14 +45,16 @@ const SideBar = () => {
           h-[60px]
         `}>
           <Image
-            src=""
+            src={"/logo.png"}
             alt="null"
+            width={30}
+            height={30}
             className={`
-               h-10 w-10 rounded-full bg-white
+               h-10 w-10 rounded-full
             `}
           />
           <strong className='ml-3'>
-            Name
+            { user.display_name? user.display_name : "User" }
           </strong>
         </div>
         <div className="mt-5"></div>
