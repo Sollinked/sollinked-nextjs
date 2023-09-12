@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 type LinkParams = {
     link: string;
@@ -11,7 +12,7 @@ type LinkParams = {
   
 const SideBarItem = ({ link, text, active, notification }: LinkParams) => {
     return (
-      <a href={link}>
+      <Link href={link}>
         <div className={`
           w-100 
           ${active? `border-l-[2px] border-indigo-500 text-white`: `border-l-[1px] border-zinc-700 text-slate-500`}
@@ -24,7 +25,7 @@ const SideBarItem = ({ link, text, active, notification }: LinkParams) => {
             <span className='ml-3 w-2 h-2 rounded-full bg-red-500'></span>
           }
         </div>
-      </a>
+      </Link>
     )
 }
   

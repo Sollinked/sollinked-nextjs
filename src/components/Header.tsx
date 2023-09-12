@@ -1,5 +1,11 @@
 'use client';
 import { MailOutlined, SearchOutlined } from '@ant-design/icons';
+import dynamic from 'next/dynamic';
+
+const WalletMultiButtonDynamic = dynamic(
+    async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+    { ssr: false }
+);
 
 const Header = () => {
     return (
@@ -43,6 +49,9 @@ const Header = () => {
                 />
             </span>
         </div> */}
+        <div>
+            <WalletMultiButtonDynamic />
+        </div>
       </div>
     )
 }

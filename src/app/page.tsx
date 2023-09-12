@@ -5,7 +5,7 @@ const Page = () => {
 		<main style={{
             height:'200vh'
         }}>
-			index
+			<h1>People You Want to Connect With</h1>
 		</main>
 	);
 };

@@ -25,3 +25,8 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+/* antd */
+.ant-table-placeholder {
+  height: 65vh;
+}
