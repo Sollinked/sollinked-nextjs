@@ -322,9 +322,6 @@ const Page = () => {
 						className='w-full flex flex-col items-center justify-center bg-transparent'
 						defaultActiveKey='1'
 						items={tabItems}
-						style={{
-							zIndex: -1
-						}}
 					/>
 				</div>
 			</div>

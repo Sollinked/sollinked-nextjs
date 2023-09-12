@@ -12,7 +12,8 @@ const Header = () => {
       <div className={`
         flex flex-row px-3 items-center justify-between
         h-[60px]
-        sticky top-0 left-0 right-0
+        sticky top-0 left-0 right-0 
+        z-10
       `}>
         <div
             className={`
