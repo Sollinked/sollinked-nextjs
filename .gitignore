@@ -3,4 +3,4 @@
 package-lock.json
 .next/
 .swc/
-.*.env
+.env*

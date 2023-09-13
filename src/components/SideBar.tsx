@@ -45,7 +45,7 @@ const SideBar = () => {
           h-[60px]
         `}>
           <Image
-            src={"/logo.png"}
+            src={user.profile_picture ?? "/logo.png"}
             alt="null"
             width={30}
             height={30}
@@ -90,9 +90,9 @@ const SideBar = () => {
           active={pathname === "/webhooks"}
         />
         <SideBarItem
-          link="/profile"
-          text="Profile"
-          active={pathname === "/profile"}
+          link="/settings"
+          text="Settings"
+          active={pathname === "/settings"}
         />
       </div>
     )

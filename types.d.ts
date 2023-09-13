@@ -7,6 +7,7 @@ export type ApiResult<T> = {
 }
 
 export type UserTier = {
+    id?: number;
     value_usd: number;
     respond_days: number;
 }

@@ -115,23 +115,23 @@ export const getUTCDate = () => {
 }
 
 export const getBaseUrl = () => {
-    return process.env.REACT_APP_BASE_URL!;
+    return process.env.NEXT_PUBLIC_BASE_URL!;
 }
 
 export const getDappDomain = () => {
-    return process.env.REACT_APP_DAPP_DOMAIN!;
+    return process.env.NEXT_PUBLIC_DAPP_DOMAIN!;
 }
 
 export const getWsUrl = () => {
-    return process.env.REACT_APP_WS_URL!;
+    return process.env.NEXT_PUBLIC_WS_URL!;
 }
 
 export const getEmailDomain = () => {
-    return process.env.REACT_APP_EMAIL_DOMAIN!;
+    return process.env.NEXT_PUBLIC_EMAIL_DOMAIN!;
 }
 
 export const getRPCEndpoint = (): string => {
-    return process.env.REACT_APP_RPC_URL? process.env.REACT_APP_RPC_URL : clusterApiUrl("devnet");
+    return process.env.NEXT_PUBLIC_RPC_URL? process.env.NEXT_PUBLIC_RPC_URL : clusterApiUrl("devnet");
 }
 
 export const copyToClipboard = async (text: string) => {

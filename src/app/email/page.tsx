@@ -1,7 +1,7 @@
 'use client';
 import { Table, Tag, Tabs, ConfigProvider } from 'antd';
 
-import { useContext, useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { copyToClipboard, toLocaleDecimal } from '../../common/utils';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
@@ -27,7 +27,7 @@ const Page = () => {
         setSortedInfo(sorter);
     }, []);
 
-    let columns = useMemo(() => {
+    const columns = useMemo(() => {
         return [
             {
                 title: 'Expires In',

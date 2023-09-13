@@ -4,16 +4,26 @@ import { MailOutlined, SearchOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useSollinked } from '@sollinked/sdk';
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+
+type HeaderParams = {
+    hide?: boolean;
+}
 
 const WalletMultiButtonDynamic = dynamic(
     async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
     { ssr: false }
 );
 
-const Header = () => {
+const hideInPaths = [
+    '/settings',
+];
+
+const Header = ({hide}: HeaderParams) => {
     const wallet = useWallet();
     const { user, init } = useSollinked();
+    const pathname = usePathname();
 
     useEffect(() => {
         if(!wallet) {
@@ -39,7 +49,7 @@ const Header = () => {
             if(res) {
                 return;
             }
-            
+
             if(!wallet.signMessage) {
                 console.error('Verification error: no sign message function');
                 return;
@@ -62,13 +72,16 @@ const Header = () => {
 
     return (
       <div className={`
-        flex flex-row px-3 items-center justify-between
+        ${hide || (hideInPaths.includes(pathname) && user.id > 0)? 'hidden' : ''}
+        ${!hideInPaths.includes(pathname)? 'justify-between' : 'justify-end'}
+        flex flex-row px-3 items-center 
         h-[60px]
         sticky top-0 left-0 right-0 
         z-10
       `}>
         <div
             className={`
+                ${(hideInPaths.includes(pathname))? 'hidden' : ''}
                 flex flex-row items-center
                 rounded border-slate-500 border-[1px]
                 bg-slate-700
