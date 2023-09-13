@@ -69,7 +69,7 @@ const SideBar = () => {
           h-[60px]
         `}>
           <Image
-            src={user.profile_picture ?? "/logo.png"}
+            src={user.profile_picture? user.profile_picture : "/logo.png"}
             alt="null"
             width={30}
             height={30}
