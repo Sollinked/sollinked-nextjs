@@ -13,12 +13,12 @@ import { toLocaleDecimal } from '@/common/utils';
 
 type CalendarParams = {
 	onDateChange: (date: Moment) => void;
-	reservations?: UserReservation[];
+	// reservations?: UserReservation[];
 }
 
 const CustomCalendar = ({
 	onDateChange,
-	reservations
+	// reservations
 }: CalendarParams) => {
 	const [currentDate, setCurrentDate] = useState(moment());
 	const {offset, daysInMonth} = useMemo(() => {
@@ -207,6 +207,7 @@ const Page = () => {
     const [selectedHour, setSelectedHour] = useState(0);
     const [selectedStatus, setSelectedStatus] = useState(RESERVATION_STATUS_BLOCKED);
     const [reservationPrice, setReservationPrice] = useState(0);
+    const [currentStatus, setCurrentStatus] = useState(RESERVATION_STATUS_BLOCKED);
 
     const onSelect = (newValue: Moment) => {
         setDate(newValue);
@@ -259,8 +260,6 @@ const Page = () => {
             hours.push(date.hour());
             ret.push(x);
         });
-
-		console.log(user.reservations, hours);
 
         let day = moment(dateStr).day();
         let reservationSettingObj: { [hour: number]: number } = {};
@@ -358,6 +357,9 @@ const Page = () => {
 										`}
 										onClick={() => {
 											setIsModalOpen(true);
+											setCurrentStatus(d.status);
+											setSelectedStatus(d.status === RESERVATION_STATUS_AVAILABLE || d.status === RESERVATION_STATUS_BLOCKED? d.status : RESERVATION_STATUS_BLOCKED)
+											setReservationPrice(d.reservation_price ?? 0);
 											setSelectedHour(moment(d.date).hour());
 										}}
 									>
@@ -391,11 +393,13 @@ const Page = () => {
 								key="submit" 
 								onClick={handleOk}
 								className={`
-									px-3 py-2 rounded
+									px-3 py-2 rounded w-[100px]
 									bg-green-500 text-white
+									disabled:cursor-not-allowed disabled:bg-green-900 disabled:text-zinc-500
 								`}
+								disabled={currentStatus !== RESERVATION_STATUS_AVAILABLE && currentStatus !== RESERVATION_STATUS_BLOCKED}
 							>
-                              Submit
+                              {isSaving? 'Saving..' : 'Save'}
                             </button>,
                           ]}
                     >
@@ -465,6 +469,7 @@ const Page = () => {
 				{
 					unclaimedData.map((d, index) => (
 						<div 
+							key={`unclaimed-data-${index}`}
 							className={`
 								flex flex-row items-start
 							`}
