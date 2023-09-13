@@ -1,8 +1,10 @@
 'use client';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useSollinked } from '@sollinked/sdk';
+import { useMemo } from 'react';
+import moment from 'moment';
 
 type LinkParams = {
     link: string;
@@ -33,6 +35,28 @@ const SideBarItem = ({ link, text, active, notification }: LinkParams) => {
 const SideBar = () => {
     const pathname = usePathname();
     let { user } = useSollinked();
+
+    const hasUnrespondedMail = useMemo(() => {
+      if(!user) {
+        return false;
+      }
+
+      if(!user.mails) {
+        return false;
+      }
+
+      if(user.mails.length === 0) {
+        return false;
+      }
+
+      return user.mails.filter(x => (
+        x.is_processed &&
+        x.value_usd &&
+        !x.has_responded && 
+        !x.is_claimed && 
+        moment(x.expiry_date).isAfter(moment())
+      )).length > 0;
+    }, [ user ]);
   
     return (
       <div className={`
@@ -67,7 +91,7 @@ const SideBar = () => {
           link="/email"
           text="Email"
           active={pathname === "/email"}
-          notification
+          notification={hasUnrespondedMail}
         />
         <SideBarItem
           link="/calendar"
