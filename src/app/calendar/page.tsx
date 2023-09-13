@@ -439,7 +439,7 @@ const Page = () => {
             </div>
             <h2 className='mt-10'>Unclaimed Tiplinks</h2>
 			{
-				unclaimedData.length === 0 &&
+				unclaimedData.length === 0?
 				<ConfigProvider
 					theme={{
 						components: {
@@ -457,36 +457,36 @@ const Page = () => {
 					`}>
 						<Empty/>
 					</div>
-				</ConfigProvider>
-			}
-			<div
-				className={`
-				  grid grid-cols-5 gap-2
-				  bg-slate-700 rounded p-3 mt-3 mb-5
-				  min-h-[30vh]
-				`}
-			>
-				{
-					unclaimedData.map((d, index) => (
-						<div 
-							key={`unclaimed-data-${index}`}
-							className={`
-								flex flex-row items-start
-							`}
-						>
-							<div className={`
-								flex flex-col items-center
-								bg-slate-500 px-3 py-2 rounded
-								w-100
-							`}>
-								<Link href={d.tiplink_url!} target='_blank'>
-									Claim {d.value_usd?  toLocaleDecimal(d.value_usd ?? 0, 2, 2) : toLocaleDecimal(d.reservation_price ?? 0, 2, 2)} USDC
-								</Link>
+				</ConfigProvider> :
+				<div
+					className={`
+					grid grid-cols-5 gap-2
+					bg-slate-700 rounded p-3 mt-3 mb-5
+					min-h-[30vh]
+					`}
+				>
+					{
+						unclaimedData.map((d, index) => (
+							<div 
+								key={`unclaimed-data-${index}`}
+								className={`
+									flex flex-row items-start
+								`}
+							>
+								<div className={`
+									flex flex-col items-center
+									bg-slate-500 px-3 py-2 rounded
+									w-100
+								`}>
+									<Link href={d.tiplink_url!} target='_blank'>
+										Claim {d.value_usd?  toLocaleDecimal(d.value_usd ?? 0, 2, 2) : toLocaleDecimal(d.reservation_price ?? 0, 2, 2)} USDC
+									</Link>
+								</div>
 							</div>
-						</div>
-					))
-				}
-			</div>
+						))
+					}
+				</div>
+			}
         </div>
     );
 }
