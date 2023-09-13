@@ -2,9 +2,13 @@ import React from 'react';
 
 const Page = () => {
 	return (
-		<main>
-			chat
-		</main>
+		<div
+			className={`
+				flex items-center justify-center h-[80vh]
+			`}
+		>
+			<span className='text-xl'>Coming Soon!</span>
+		</div>
 	);
 };
 
