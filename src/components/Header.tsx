@@ -115,7 +115,7 @@ const Header = ({hide}: HeaderParams) => {
                 />
             </span>
         </div> */}
-        <div>
+        <div className='bg-slate-700 rounded border-slate-500 border-[1px] shadow'>
             <WalletMultiButtonDynamic />
         </div>
       </div>
