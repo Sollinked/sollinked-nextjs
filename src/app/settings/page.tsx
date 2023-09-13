@@ -538,42 +538,42 @@ const Page = () => {
 				<Input 
 					type="text" 
 					addonBefore="Twitter"
-					placeholder="Twitter" 
+					placeholder="https://twitter.com/username" 
 					value={userDetails.twitter ?? ""} 
 					onChange={(e) => onUserDetailsChanged(e.target.value, "twitter")}
 				/>
 				<Input 
 					type="text" 
 					addonBefore="Facebook"
-					placeholder="Facebook" 
+					placeholder="https://facebook.com/username" 
 					value={userDetails.facebook ?? ""} 
 					onChange={(e) => onUserDetailsChanged(e.target.value, "facebook")}
 				/>
 				<Input 
 					type="text" 
 					addonBefore="Twitch"
-					placeholder="Twitch" 
+					placeholder="https://twitch.tv/username" 
 					value={userDetails.twitch ?? ""} 
 					onChange={(e) => onUserDetailsChanged(e.target.value, "twitch")}
 				/>
 				<Input 
 					type="text" 
 					addonBefore="Instagram"
-					placeholder="Instagram" 
+					placeholder="https://instagram.com/username" 
 					value={userDetails.instagram ?? ""} 
 					onChange={(e) => onUserDetailsChanged(e.target.value, "instagram")}
 				/>
 				<Input 
 					type="text" 
 					addonBefore="Tiktok"
-					placeholder="Tiktok" 
+					placeholder="https://tiktok.com/username" 
 					value={userDetails.tiktok ?? ""} 
 					onChange={(e) => onUserDetailsChanged(e.target.value, "tiktok")}
 				/>
 				<Input 
 					type="text" 
 					addonBefore="Youtube"
-					placeholder="Youtube" 
+					placeholder="https://youtube.com/username" 
 					value={userDetails.youtube ?? ""} 
 					onChange={(e) => onUserDetailsChanged(e.target.value, "youtube")}
 				/>
