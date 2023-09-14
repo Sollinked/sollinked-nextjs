@@ -1,6 +1,6 @@
 'use client';
 import { VERIFY_MESSAGE } from '@/common/constants';
-import { SearchOutlined } from '@ant-design/icons';
+import { BarsOutlined, SearchOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useSollinked } from '@sollinked/sdk';
 import dynamic from 'next/dynamic';
@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 
 type HeaderParams = {
-    hide?: boolean;
+    onMenuClick: () => void;
 }
 
 const WalletMultiButtonDynamic = dynamic(
@@ -24,7 +24,7 @@ const hidePathPattern = [
     /\/github\/\d+/g,
 ];
 
-const Header = ({hide}: HeaderParams) => {
+const Header = ({onMenuClick}: HeaderParams) => {
     const wallet = useWallet();
     const { user, init } = useSollinked();
     const pathname = usePathname();
@@ -89,7 +89,7 @@ const Header = ({hide}: HeaderParams) => {
 
     return (
       <div className={`
-        ${hide || (shouldHide && user.id > 0)? 'hidden' : ''}
+        ${shouldHide && user.id > 0? 'hidden' : ''}
         ${!shouldHide? 'justify-between' : 'justify-end'}
         flex flex-row px-3 items-center 
         h-[60px]
@@ -98,8 +98,8 @@ const Header = ({hide}: HeaderParams) => {
       `}>
         <div
             className={`
-                ${shouldHide? 'hidden' : ''}
-                flex flex-row items-center
+                ${shouldHide? 'hidden' : 'md:flex hidden'}
+                flex-row items-center
                 rounded border-slate-500 border-[1px]
                 bg-slate-700
                 px-3 py-2
@@ -119,19 +119,23 @@ const Header = ({hide}: HeaderParams) => {
                 `}
             />
         </div>
-        {/* <div>
-            <span className='relative flex flex-row items-center mr-3'>
-                <span className="absolute top-[-4px] right-[-4px] flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
-                <MailOutlined 
-                    style={{
-                        fontSize: 20
-                    }}
-                />
-            </span>
-        </div> */}
+        {/** menu button */}
+        <button
+            className={`
+                flex md:hidden
+                flex-row items-center
+                rounded border-slate-500 border-[1px]
+                bg-slate-700
+                px-3 py-2
+            `}
+            onClick={onMenuClick}
+        >
+            <BarsOutlined 
+                style={{
+                    fontSize: 20
+                }}
+            />
+        </button>
         <div className='bg-slate-700 rounded border-slate-500 border-[1px] shadow'>
             <WalletMultiButtonDynamic />
         </div>

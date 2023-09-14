@@ -7,7 +7,7 @@ import { ConnectionProvider, WalletProvider, useWallet } from '@solana/wallet-ad
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSollinked, Provider as SollinkedProvider } from '@sollinked/sdk';
 import { VERIFY_MESSAGE } from '@/common/constants';
 
@@ -21,10 +21,15 @@ const Wrapped = ({
     children: React.ReactNode
   }) => {
     const wallet = useWallet();
+    const [isSidebarActive, setIsSidebarActive] = useState(false);
 
     const address = useMemo(() => {
         return wallet.publicKey?.toBase58() ?? "";
     }, [wallet]);
+
+    const onMenuClick = useCallback(() => {
+        setIsSidebarActive(!isSidebarActive);
+    }, [ isSidebarActive ]);
 
     return (
         <SollinkedProvider
@@ -33,12 +38,17 @@ const Wrapped = ({
                 message: VERIFY_MESSAGE,
             }}
         >
-            <SideBar />
+            <SideBar 
+                isActive={isSidebarActive}
+                onCloseClick={onMenuClick}
+            />
             <div className={`
-                w-3/4 max-h-screen overflow-auto
+                md:w-3/4 w-full max-h-screen overflow-auto
                 relative
             `}>
-                <Header />
+                <Header 
+                    onMenuClick={onMenuClick}
+                />
                 <div className={`
                     px-5 pb-5 pt-3
                     `}>

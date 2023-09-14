@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSollinked } from '@sollinked/sdk';
 import { useMemo } from 'react';
 import moment from 'moment';
+import { ellipsizeThis } from '@/common/utils';
+import { CloseOutlined } from '@ant-design/icons';
 
 type LinkParams = {
     link: string;
@@ -31,8 +33,13 @@ const SideBarItem = ({ link, text, active, notification }: LinkParams) => {
       </Link>
     )
 }
+
+type SidebarParams = {
+  isActive?: boolean;
+  onCloseClick: () => void;
+}
   
-const SideBar = () => {
+const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
     const pathname = usePathname();
     let { user } = useSollinked();
 
@@ -59,66 +66,85 @@ const SideBar = () => {
     }, [ user ]);
   
     return (
-      <div className={`
-        flex flex-col flex-1 w-1/4 h-screen
-        border-r-[0.5px] border-indigo-500
-      `}>
-        <div className={`
-          flex flex-row pl-3 items-center
-          bg-slate-700
-          h-[60px]
-        `}>
-          <Image
-            src={user.profile_picture? user.profile_picture : "/logo.png"}
-            alt="null"
-            width={30}
-            height={30}
-            className={`
-               h-10 w-10 rounded-full
-            `}
-          />
-          <strong className='ml-3'>
-            { user.display_name? user.display_name : "User" }
-          </strong>
+      <>
+        {/* Veil */}
+        <div
+          className={`md:hidden ${isActive? '' : 'hidden'} bg-gray-950/70 fixed h-screen w-screen z-40`}
+        >
+          <button className='h-full w-full' onClick={onCloseClick}>
+
+          </button>
         </div>
-        <div className="mt-5"></div>
-        <SideBarItem
-          link="/"
-          text="Home"
-          active={pathname === "/"}
-        />
-        <SideBarItem
-          link="/email"
-          text="Email"
-          active={pathname === "/email"}
-          notification={hasUnrespondedMail}
-        />
-        <SideBarItem
-          link="/calendar"
-          text="Calendar"
-          active={pathname === "/calendar"}
-        />
-        <SideBarItem
-          link="/github"
-          text="Github"
-          active={pathname === "/github" || pathname.search(/\/github/g) !== -1}
-        />
-        <SideBarItem
-          link="/chat"
-          text="Chat"
-          active={pathname === "/chat"}
-        />
-        <SideBarItem
-          link="/webhooks"
-          text="Webhooks"
-          active={pathname === "/webhooks"}
-        />
-        <SideBarItem
-          link="/settings"
-          text="Settings"
-          active={pathname === "/settings"}
-        />
-      </div>
+        <div className={`
+          md:relative fixed left-0
+          flex flex-col flex-1 md:w-1/4 w-3/4 h-screen
+          md:border-r-[0.5px] md:border-indigo-500
+          md:translate-x-0 ${isActive? 'translate-x-[0vw]' : 'translate-x-[-75vw]'} transition-all
+          z-50 bg-gray-950
+        `}>
+          <div className={`
+            flex flex-row pl-3 items-center
+            bg-slate-700
+            h-[60px]
+          `}>
+            <Image
+              src={user.profile_picture? user.profile_picture : "/logo.png"}
+              alt="null"
+              width={30}
+              height={30}
+              className={`
+                h-10 w-10 rounded-full
+              `}
+            />
+            <strong className='ml-3 w-full'>
+              { user.display_name? ellipsizeThis(user.display_name, 15, 0) : "User" }
+            </strong>
+            <button
+              className='md:hidden h-10 w-10 mr-4'
+              onClick={onCloseClick}
+            >
+              <CloseOutlined/>
+            </button>
+          </div>
+          <div className="mt-5"></div>
+          <SideBarItem
+            link="/"
+            text="Home"
+            active={pathname === "/"}
+          />
+          <SideBarItem
+            link="/email"
+            text="Email"
+            active={pathname === "/email"}
+            notification={hasUnrespondedMail}
+          />
+          <SideBarItem
+            link="/calendar"
+            text="Calendar"
+            active={pathname === "/calendar"}
+          />
+          <SideBarItem
+            link="/github"
+            text="Github"
+            active={pathname === "/github" || pathname.search(/\/github/g) !== -1}
+          />
+          <SideBarItem
+            link="/chat"
+            text="Chat"
+            active={pathname === "/chat"}
+          />
+          <SideBarItem
+            link="/webhooks"
+            text="Webhooks"
+            active={pathname === "/webhooks"}
+          />
+          <SideBarItem
+            link="/settings"
+            text="Settings"
+            active={pathname === "/settings"}
+          />
+        </div>
+      </>
     )
 }
 
