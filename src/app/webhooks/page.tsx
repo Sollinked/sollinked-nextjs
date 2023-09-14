@@ -111,6 +111,7 @@ const Page = () => {
 				flex flex-col p-3
 				bg-slate-700 rounded
 				text-slate-300
+				md:text-xs
 			`}
 		>
 			<span>By setting up integration, you will be notified of every payment that you receive.</span>
@@ -131,7 +132,7 @@ const Page = () => {
 				<li>Copy Webhook URL and paste it here</li>
 				<li>Save!</li>
 			</ul>
-			<strong className='mt-8'>Discord Webhook URL</strong>
+			<strong className='mt-8 mb-1'>Discord Webhook URL</strong>
 			<input 
 				className={`
 					bg-slate-800 rounded
@@ -142,7 +143,7 @@ const Page = () => {
 				onChange={(e) => onValueChanged(e, "discord")} 
 				value={webhooks?.discord.value ?? ""}
 			/>
-			<strong className='mt-8'>Custom Webhook URL</strong>
+			<strong className='mt-5 mb-1'>Custom Webhook URL</strong>
 			<input 
 				className={`
 					bg-slate-800 rounded
@@ -153,7 +154,7 @@ const Page = () => {
 				onChange={(e) => onValueChanged(e, "custom")} 
 				value={webhooks?.custom.value ?? ""}
 			/>
-			<strong className='mt-5'>Notification Template</strong>
+			<strong className='mt-5 mb-1'>Notification Template</strong>
 			<input 
 				className={`
 					bg-slate-800 rounded

@@ -397,14 +397,14 @@ const Page = () => {
 			</div>
 			<div 
 				className={`
-					flex flex-row items-center justify-center
-					my-auto ml-auto mr-[20px] mt-[30px]
+					flex xl:flex-row flex-col items-center justify-center
+					my-auto ml-auto mt-[30px]
 				`}
 			>
             	<input ref={inputRef} type="file" className='hidden' name="profile" onChange={onPfpValueChanged} accept='image/jpeg, image/png'></input>
                 <button 
 					onClick={onSetPfpClick}
-					className='relative'
+					className='relative mb-5 xl:mb-0'
 				>
 					<Image 
 						src={pfp? pfp : '/logo.png'} 
@@ -427,8 +427,8 @@ const Page = () => {
 
                 <div 
 					className={`
-						flex flex-col w-[30vw]
-						ml-[50px] space-y-1
+						flex flex-col w-[500px] xl:w-[28vw]
+						xl:ml-[50px] space-y-1
 					`}
 				>
 					<Input
@@ -465,7 +465,7 @@ const Page = () => {
 			
 			<h2 className='m-auto mt-10 text-center'>Social Accounts</h2>
 			<div className={`
-				w-[40vw] m-auto
+				w-[500px] xl:w-[40vw] m-auto
 				space-y-1 mt-3
 			`}>
 				<Input 
@@ -570,7 +570,7 @@ const Page = () => {
 						rounded-md
 					`}>
 						<Table
-							className='w-[40vw]'
+							className='xl:w-[40vw] w-[500px]'
 							columns={mailTierColumns}
 							dataSource={userDetails.tiers}
 							pagination={false}
@@ -606,7 +606,7 @@ const Page = () => {
 					mt-3 mb-3
 				`}>
 
-					<div className="w-[40vw] mb-2">
+					<div className="xl:w-[40vw] w-[500px] mb-2">
 						<Input
 							addonBefore='Max'
 							addonAfter='Days In Advance'
@@ -624,7 +624,7 @@ const Page = () => {
 						rounded-md
 					`}>
 						<Table
-							className='w-[40vw]'
+							className='xl:w-[40vw] w-[500px]'
 							columns={calendarTierColumn}
 							dataSource={userDetails.reservationSettings}
 							pagination={false}

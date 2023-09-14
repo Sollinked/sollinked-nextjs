@@ -145,15 +145,15 @@ const Page = () => {
             </div>
 
             <div className={`
-					mt-5 flex flex-col items-center space-y-3 p-3
-					bg-slate-700 rounded min-h-[70vh] min-w-[45vw]
+					mt-5 flex flex-col xl:items-center space-y-3 p-3
+					bg-slate-700 rounded min-h-[70vh] xl:min-w-[45vw] w-[500px]
 				`}
 			>
                 {
                     user?.githubSettings?.map((x, index) => (
                         <div 
 							className={`
-								flex flex-row justify-center
+								flex flex-row justify-center items-center
 								border-[1px] p-3 rounded
 								${x.last_synced_at? 'bg-green-800/80 border-green-700' : 'bg-red-800/80 border-red-700'}
 							`}
@@ -162,7 +162,7 @@ const Page = () => {
                             <Link 
                                 href={`/github/${x.id}`}
 								className={`
-									w-[500px] flex items-center
+									xl:w-[500px] w-full flex items-center
 								`}
                             >
                                 <button
@@ -172,11 +172,11 @@ const Page = () => {
                                 >
                                     <div 
 										className={`
-											flex flex-row justify-between items-center
+											flex xl:flex-row flex-col-reverse xl:justify-between justify-center xl:items-center items-start
 											w-full h-full
 										`}
 									>
-                                        <span>{x.repo_link}</span>
+                                        <span className='text-md'>{x.repo_link}</span>
                                         {
                                             x.last_synced_at?
                                             <span className={`text-[10px]`}>{moment(x.last_synced_at).format('YYYY-MM-DD HH:mm:ss')}</span> :

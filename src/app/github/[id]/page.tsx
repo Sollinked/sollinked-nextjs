@@ -394,7 +394,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     <select
                         className={`
                             bg-slate-500 rounded px-3 py-2
-                            text-center w-[40vw]
+                            text-center xl:w-[40vw] w-[500px]
                         `}
                         value={behavior}
                         onChange={({target: {value}}) => setBehavior(value as "mark" | "close")}
@@ -470,7 +470,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 						rounded-md
 					`}>
 						<Table
-							className='w-[40vw]'
+							className='xl:w-[40vw] w-[500px]'
 							columns={githubTierColumns}
 							dataSource={tiers}
 							pagination={false}
@@ -513,7 +513,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 						rounded-md
 					`}>
 						<Table
-							className='w-[40vw]'
+							className='xl:w-[40vw] w-[500px]'
 							columns={githubWhitelistColumns}
 							dataSource={whitelistObject}
 							pagination={false}

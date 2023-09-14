@@ -57,9 +57,6 @@ const SideBar = () => {
         moment(x.expiry_date).isAfter(moment())
       )).length > 0;
     }, [ user ]);
-    
-    console.log('sidebar', user);
-
   
     return (
       <div className={`

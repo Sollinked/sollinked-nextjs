@@ -75,6 +75,8 @@ const CustomCalendar = ({
 							className={`
 								w-[50px] h-[50px] rounded-full 
 								outline-none ${currentDate.date() === i + 1? 'bg-indigo-500' : "bg-slate-600"}
+								active:outline-none
+								focus:shadow-transparent focus:outline-none
 							`}
 						>
 							{i + 1}
@@ -133,7 +135,7 @@ const CustomCalendar = ({
 				className={`
 					mt-5 mb-5
 					text-sm w-full
-					border-spacing-y-3
+					border-spacing-y-1 xl:border-spacing-y-3
 					border-separate
 				`}
 			>
@@ -305,8 +307,8 @@ const Page = () => {
 			flex flex-col w-full
 		`}>
             <div className={`
-				flex flex-row w-full items-start
-				p-5
+				flex xl:flex-row flex-col w-full items-start
+				xl:p-5 p-3
 				bg-slate-700 rounded
 			`}>
 				<CustomCalendar
@@ -314,7 +316,7 @@ const Page = () => {
 				/>
                 <div className={`
 					flex flex-col
-					w-full ml-5
+					w-full xl:ml-5
 				`}>
 					<div
 						className={`
@@ -325,7 +327,7 @@ const Page = () => {
 					</div>
 					<div
 						className={`
-							grid grid-cols-4 flex-wrap justify-between
+							grid grid-cols-4
 							mt-5 gap-2
 						`}
 					>
@@ -347,13 +349,14 @@ const Page = () => {
 								<div
 									key={`reservation-${index}`}
 									className={`
-										rounded w-[100px] h-[45px]
+										rounded w-[100px] xl:h-[45px] h-[30px] text-xs
 										${bg}
 									`}
 								>
 									<button
 										className={`
 											w-full h-full
+											focus:shadow-none
 										`}
 										onClick={() => {
 											setIsModalOpen(true);
@@ -460,9 +463,9 @@ const Page = () => {
 				</ConfigProvider> :
 				<div
 					className={`
-					grid grid-cols-5 gap-2
-					bg-slate-700 rounded p-3 mt-3 mb-5
-					min-h-[30vh]
+						grid xl:grid-cols-5 grid-cols-4 xl:gap-2 gap-1
+						bg-slate-700 rounded p-3 mt-3 mb-5
+						min-h-[30vh]
 					`}
 				>
 					{
@@ -471,6 +474,7 @@ const Page = () => {
 								key={`unclaimed-data-${index}`}
 								className={`
 									flex flex-row items-start
+									xl:text-md text-xs
 								`}
 							>
 								<div className={`
