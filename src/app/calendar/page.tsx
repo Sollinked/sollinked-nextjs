@@ -467,7 +467,7 @@ const Page = () => {
 				</ConfigProvider> :
 				<div
 					className={`
-						grid xl:grid-cols-5 grid-cols-4 xl:gap-2 gap-1
+						grid xl:grid-cols-5 md:grid-cols-4 grid-cols-3 xl:gap-2 gap-1
 						dark:bg-slate-700 rounded p-3 mt-3 mb-5
 						min-h-[30vh]
 						shadow
@@ -478,19 +478,14 @@ const Page = () => {
 							<div 
 								key={`unclaimed-data-${index}`}
 								className={`
-									flex flex-row items-start
-									xl:text-md text-xs
+									flex flex-row items-center justify-center
+									xl:text-md text-xs shadow dark:bg-green-500
+									h-[30px]
 								`}
 							>
-								<div className={`
-									flex flex-col items-center
-									dark:bg-slate-500 px-3 py-2 rounded
-									w-100
-								`}>
-									<Link href={d.tiplink_url!} target='_blank'>
-										Claim {d.value_usd?  toLocaleDecimal(d.value_usd ?? 0, 2, 2) : toLocaleDecimal(d.reservation_price ?? 0, 2, 2)} USDC
-									</Link>
-								</div>
+								<Link href={d.tiplink_url!} target='_blank'>
+									{d.value_usd?  toLocaleDecimal(d.value_usd ?? 0, 2, 2) : toLocaleDecimal(d.reservation_price ?? 0, 2, 2)} USDC
+								</Link>
 							</div>
 						))
 					}

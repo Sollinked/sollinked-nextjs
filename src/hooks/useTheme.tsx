@@ -24,6 +24,7 @@ export const ThemeProvider = ({theme, children}: ProviderProps) => {
     const [ currentTheme, setCurrentTheme ] = useState<AvailableThemes>(theme ?? "dark");
     const setTheme = useCallback((theme: AvailableThemes) => {
         setCurrentTheme(theme);
+        localStorage.setItem('theme', theme);
     }, []);
 
     const toggleTheme = useCallback(() => {
@@ -34,6 +35,11 @@ export const ThemeProvider = ({theme, children}: ProviderProps) => {
 
         setTheme("dark");
     }, [currentTheme]);
+
+    useEffect(() => {
+        let storageTheme = (localStorage.getItem('theme') ?? "dark") as AvailableThemes;
+        setCurrentTheme(theme ?? storageTheme);
+    }, []);
 
     useEffect(() => {
         if(currentTheme !== "dark") {

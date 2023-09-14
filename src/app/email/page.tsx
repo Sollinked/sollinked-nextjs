@@ -342,13 +342,13 @@ const Page = () => {
 			}}
 		>
 			<div className={`
-				flex flex-col items-center justify-start
+				flex flex-col md:items-center items-start justify-start
 				h-full w-full
 			`}>
 				<div className={`
-					w-full h-[60vh]
+					md:w-full w-[200vw]
 					flex flex-col items-center justify-start
-					mt-[30px]
+					mt-[30px] md:px-0 px-2
 					shadow
 					rounded-md
 				`}>

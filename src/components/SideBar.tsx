@@ -21,7 +21,7 @@ const SideBarItem = ({ link, text, active, notification }: LinkParams) => {
       <Link href={link}>
         <div className={`
           w-100 
-          ${active? `border-l-[2px] border-indigo-500 dark:text-white text-black`: `border-l-[1px] border-zinc-700 text-slate-500`}
+          ${active? `border-l-[2px] border-indigo-500 dark:text-white text-black`: `border-l-[1px] dark:border-zinc-700 border-zinc:400 dark:text-slate-500 text-slate-400`}
           ml-5 pl-5 py-2 mt-2
           flex flex-row items-center
         `}>

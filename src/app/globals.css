@@ -35,6 +35,10 @@
   background-color: rgba(255,255,255,0.8);
 }
 
+html.dark .ant-pagination-item-link span {
+  color: white;
+}
+
 button, a {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;

@@ -48,7 +48,7 @@ const Wrapped = ({
     }, [ pathname ]);
 
     return (
-        <ThemeProvider theme='light'>
+        <ThemeProvider>
             <SollinkedProvider
                 auth={{
                     address,
@@ -67,7 +67,7 @@ const Wrapped = ({
                         onMenuClick={onSidebarToggle}
                     />
                     <div className={`
-                        px-5 pb-5 pt-3
+                        md:px-5 md:pb-5 pt-3 px-1 pb-1
                         `}>
                         {children}
                     </div>
