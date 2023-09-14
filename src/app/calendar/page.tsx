@@ -60,7 +60,7 @@ const CustomCalendar = ({
 					<tr 
 						key={`customer-calendar-tr-${rows.length}`}
 						className={`
-							h-[50px]
+							md:h-[50px] h-[5vh]
 						`}
 					>
 						{tds}
@@ -73,7 +73,7 @@ const CustomCalendar = ({
 						<button
 							onClick={() => onDateClick(i)}
 							className={`
-								w-[50px] h-[50px] rounded-full 
+								md:w-[50px] md:h-[50px] h-[5vh] w-[5vh] rounded-full 
 								outline-none ${currentDate.date() === i + 1? 'bg-indigo-500' : "bg-slate-600"}
 								active:outline-none
 								focus:shadow-transparent focus:outline-none
@@ -89,7 +89,7 @@ const CustomCalendar = ({
 			rows.push(<tr 
 							key={`customer-calendar-tr-${rows.length}`}
 							className={`
-								h-[50px]
+								md:h-[50px] h-[5vh]
 							`}
 					>
 						{tds}
@@ -103,7 +103,7 @@ const CustomCalendar = ({
 		<div
 			className={`
 				flex flex-col justify-center
-				min-w-[500px] text-center
+				md:min-w-[500px] w-full text-center
 			`}
 		>
 			<div 
@@ -143,49 +143,49 @@ const CustomCalendar = ({
 					<tr>
 						<th
 							className={`
-								font-normal
+								font-normal md:text-md text-xs
 							`}
 						>
 							SUN
 						</th>
 						<th
 							className={`
-								font-normal
+								font-normal md:text-md text-xs
 							`}
 						>
 							MON
 						</th>
 						<th
 							className={`
-								font-normal
+								font-normal md:text-md text-xs
 							`}
 						>
 							TUE
 						</th>
 						<th
 							className={`
-								font-normal
+								font-normal md:text-md text-xs
 							`}
 						>
 							WED
 						</th>
 						<th
 							className={`
-								font-normal
+								font-normal md:text-md text-xs
 							`}
 						>
 							THU
 						</th>
 						<th
 							className={`
-								font-normal
+								font-normal md:text-md text-xs
 							`}
 						>
 							FRI
 						</th>
 						<th
 							className={`
-								font-normal
+								font-normal md:text-md text-xs
 							`}
 						>
 							SAT
@@ -349,7 +349,7 @@ const Page = () => {
 								<div
 									key={`reservation-${index}`}
 									className={`
-										rounded w-[100px] xl:h-[45px] h-[30px] text-xs
+										rounded md:w-[100px] w-full xl:h-[45px] h-[30px] text-xs
 										${bg}
 									`}
 								>

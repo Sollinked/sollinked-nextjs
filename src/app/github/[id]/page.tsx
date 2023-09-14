@@ -4,16 +4,18 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { UserGithubSetting, UserGithubTier } from "../../../../types";
 import { cloneObj, toLocaleDecimal } from "@/common/utils";
 import { toast } from "react-toastify";
-import { CloseCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import { Input } from "@/components/Input";
-import { Button, ConfigProvider, Modal, Table } from "antd";
+import { ConfigProvider, Modal, Table } from "antd";
+import { useRouter } from 'next/navigation';
 
 const Page = ({params: { id }}: { params: { id: string }}) => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isWhitelistModalOpen, setIsWhitelistModalOpen] = useState(false);
     const { user, github } = useSollinked();
+    const router = useRouter();
 
     //inputs
     const [githubSetting, setGithubSetting] = useState<UserGithubSetting | undefined>(user?.githubSettings?.filter(x => x.id === Number(id))[0] ?? undefined);
@@ -328,13 +330,13 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 
     if(hasError) {
         return (
-            <div className="h-[80vh] w-full flex items-center justify-center">
+            <div className="h-[80vh] w-full flex flex-col items-center justify-center text-red-400">
                 <CloseCircleOutlined
                     style={{fontSize: 80}}
                     color='red'
                 />
 
-                <strong>Cant load setting!</strong>
+                <strong className="mt-5">Unable to load setting!</strong>
             </div>
         );
     }
@@ -344,24 +346,35 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
         <div 
             className={`
                 flex flex-col justify-center w-full
-                p-3 min-h-[70vh]
+                md:p-3 min-h-[70vh]
                 relative
             `}
         >
             <div className={`
                 ${user.id === 0? 'hidden' : ''}
-                flex flex-row px-3 items-center justify-end
-                h-[60px]
-                sticky top-0 left-0 right-0 
+                flex flex-row px-3 items-center justify-between
+                md:h-[60px] h-[70px]
+                md:sticky fixed top-0 left-0 right-0 md:backdrop-blur-none backdrop-blur-sm md:bg-transparent bg-slate-300/10
                 z-10
             `}>
+                <div>
+                    <button
+                        className={`
+                            flex items-center justify-start
+                            w-[60px] md:hidden
+                        `}
+                        onClick={() => router.back()}
+                    >
+                        <LeftOutlined/>
+                    </button>
+                </div>
                 <div className="space-x-2">
                     <button
                         className={`
                             rounded 
                             ${githubSetting?.is_active? "bg-red-600" : "bg-green-600"}
-                            w-[120px] py-2
-                            text-sm drop-shadow-lg
+                            md:w-[120px] w-[80px] py-2
+                            md:text-sm text-xs drop-shadow-lg
                         `}
                         onClick={onActivateToggle}
                         disabled={isSaving}
@@ -371,8 +384,8 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     <button
                         className={`
                             rounded bg-green-600
-                            w-[120px] py-2
-                            text-sm drop-shadow-lg
+                            md:w-[120px] w-[80px] py-2
+                            md:text-sm text-xs drop-shadow-lg
                         `}
                         onClick={onSaveClick}
                         disabled={isSaving}
@@ -381,7 +394,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     </button>
                 </div>
             </div>
-            <h1 className="text-center mt-8">{githubSetting?.repo_link}</h1>
+            <h1 className="text-center md:mt-8 mt-[80px]">{githubSetting?.repo_link}</h1>
 
             <div className="mt-5"></div>
             <div 
@@ -394,7 +407,8 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     <select
                         className={`
                             bg-slate-500 rounded px-3 py-2
-                            text-center xl:w-[40vw] w-[500px]
+                            outline-none
+                            text-center xl:w-[40vw] md:w-[500px] w-[90vw]
                         `}
                         value={behavior}
                         onChange={({target: {value}}) => setBehavior(value as "mark" | "close")}

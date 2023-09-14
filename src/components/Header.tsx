@@ -90,7 +90,7 @@ const Header = ({onMenuClick}: HeaderParams) => {
     return (
       <div className={`
         ${shouldHide && user.id > 0? 'hidden' : ''}
-        ${!shouldHide? 'justify-between' : 'justify-end'}
+        ${!shouldHide || user.id === 0? 'justify-between' : 'justify-end'}
         flex flex-row px-3 items-center 
         h-[60px]
         sticky top-0 left-0 right-0 

@@ -11,6 +11,8 @@ import { mdiCameraPlus } from '@mdi/js';
 import { toast } from 'react-toastify';
 import { ConfigProvider, Table, Modal } from 'antd';
 import { Input } from '@/components/Input';
+import { LeftOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
     const { user, account, calendar, mail } = useSollinked();
@@ -25,10 +27,11 @@ const Page = () => {
 	const [respondPrice, setRespondPrice] = useState("");
 	const [day, setDay] = useState(0);
 	const [hour, setHour] = useState(0);
-	const [reservationPrice, setReservationPrice] = useState(0);
+	const [reservationPrice, setReservationPrice] = useState<number>();
 
     let inputRef = useRef<any>(null);
     const domain = useMemo(() => getEmailDomain(), []);
+	const router = useRouter();
 
     /**
      * Input fields
@@ -329,6 +332,10 @@ const Page = () => {
 			cloned.reservationSettings = [];
 		}
 
+		if(!reservationPrice) {
+			return;
+		}
+
 		// replace the current setting
 		let hasDuplicate = false;
 		cloned.reservationSettings.forEach((r, index) => {
@@ -354,7 +361,7 @@ const Page = () => {
 		setIsCalendarModalOpen(false);
 		setDay(0);
 		setHour(0);
-		setReservationPrice(0);
+		setReservationPrice(undefined);
 	}, [ userDetails, day, hour, reservationPrice ]);
 
     // whenever user updates
@@ -378,27 +385,40 @@ const Page = () => {
 		>
 			<div className={`
 				${user.id === 0? 'hidden' : ''}
-				flex flex-row px-3 items-center justify-end
-				h-[60px]
-				sticky top-0 left-0 right-0 
+				flex flex-row px-3 items-center justify-between
+				md:h-[60px] h-[70px]
+				md:sticky fixed top-0 left-0 right-0 md:backdrop-blur-none backdrop-blur-sm md:bg-transparent bg-slate-300/10
 				z-10
 			`}>
-				<button
-					className={`
-						rounded bg-green-600
-						w-[120px] py-2
-						text-sm
-					`}
-					onClick={onSaveClick}
-					disabled={isSaving}
-				>
-					{ isSaving? 'Saving..' : 'Save' }
-				</button>
+				<div>
+					<button
+						className={`
+							flex items-center justify-start
+							w-[60px] md:hidden
+						`}
+						onClick={() => router.back()}
+					>
+						<LeftOutlined/>
+					</button>
+				</div>
+				<div className="space-x-2">
+					<button
+						className={`
+							rounded bg-green-600
+							md:w-[120px] w-[80px] py-2
+							md:text-sm text-xs drop-shadow-lg
+						`}
+						onClick={onSaveClick}
+						disabled={isSaving}
+					>
+						{ isSaving? 'Saving..' : 'Save' }
+					</button>
+				</div>
 			</div>
 			<div 
 				className={`
 					flex xl:flex-row flex-col items-center justify-center
-					my-auto ml-auto mt-[30px]
+					my-auto ml-auto md:mt-[30px] mt-[70px]
 				`}
 			>
             	<input ref={inputRef} type="file" className='hidden' name="profile" onChange={onPfpValueChanged} accept='image/jpeg, image/png'></input>
@@ -427,7 +447,7 @@ const Page = () => {
 
                 <div 
 					className={`
-						flex flex-col w-[500px] xl:w-[28vw]
+						flex flex-col md:w-[500px] xl:w-[28vw] w-[90vw]
 						xl:ml-[50px] space-y-1
 					`}
 				>
@@ -606,7 +626,7 @@ const Page = () => {
 					mt-3 mb-3
 				`}>
 
-					<div className="xl:w-[40vw] w-[500px] mb-2">
+					<div className="xl:w-[40vw] md:w-[500px] w-full mb-2">
 						<Input
 							addonBefore='Max'
 							addonAfter='Days In Advance'
@@ -753,7 +773,7 @@ const Page = () => {
 					<Input
 						type="number"
 						addonBefore="Price"
-						value={reservationPrice.toString()}
+						value={reservationPrice?.toString() ?? ""}
 						onChange={({ target: {value}}) => { setReservationPrice(Number(value))}}
 						placeholder='0'
 					/>

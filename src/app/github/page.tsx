@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import { copyToClipboard } from '../../common/utils';
+import { copyToClipboard, ellipsizeThis } from '../../common/utils';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { Button, ConfigProvider, Modal } from 'antd';
@@ -11,7 +11,7 @@ import { useSollinked } from '@sollinked/sdk';
 import { Input } from '@/components/Input';
 
 const Page = () => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [repoLink, setRepoLink] = useState("");
@@ -146,7 +146,7 @@ const Page = () => {
 
             <div className={`
 					mt-5 flex flex-col xl:items-center space-y-3 p-3
-					bg-slate-700 rounded min-h-[70vh] xl:min-w-[45vw] w-[500px]
+					bg-slate-700 rounded min-h-[70vh] xl:min-w-[45vw] md:w-[500px] w-full
 				`}
 			>
                 {
@@ -176,7 +176,7 @@ const Page = () => {
 											w-full h-full
 										`}
 									>
-                                        <span className='text-md'>{x.repo_link}</span>
+                                        <span className='md:text-lg text-xs'>{ellipsizeThis(x.repo_link, 12, 12)}</span>
                                         {
                                             x.last_synced_at?
                                             <span className={`text-[10px]`}>{moment(x.last_synced_at).format('YYYY-MM-DD HH:mm:ss')}</span> :
@@ -189,9 +189,9 @@ const Page = () => {
                                 x.last_synced_at?
                                 <button
                                     className={`
-										h-[30px] w-[30px] rounded
+										h-[30px] min-w-[30px] rounded
 										ml-2 flex items-center justify-center
-										${x.is_active? "border-green-500 bg-green-500" : "border-red-500 bg-red-500"} border-[1px]
+										${x.is_active? "border-red-500 bg-red-500" : "border-green-500 bg-green-500"} border-[1px]
 									`}
                                     onClick={() => {
                                         onActivateToggle(x.id);
@@ -200,14 +200,14 @@ const Page = () => {
                                     <PoweroffOutlined
 										className={`
 											text-[17px]
-											${x.is_active? "text-green-200" : "text-red-200"}
+											${x.is_active? "text-red-200" : "text-green-200"}
 										`}
                                     />
                                 </button>:
                                 <button
                                     className={`
 										flex items-center justify-center
-										text-white bg-slate-500 w-[30px] h-[30px] rounded
+										text-white bg-slate-500 min-w-[30px] h-[30px] rounded
 									`}
                                     onClick={() => {
                                         copyToClipboard(x.uuid);
@@ -224,7 +224,7 @@ const Page = () => {
                             <button
                                 className={`
 									ml-2 border-[1px] border-red-500 bg-red-500
-									text-white w-[30px] h-[30px] rounded
+									text-white min-w-[30px] h-[30px] rounded
 								`}
                                 onClick={() => {
                                     onDelete(x.id)

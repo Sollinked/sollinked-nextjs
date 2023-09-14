@@ -169,7 +169,7 @@ const Page = () => {
 			<div className={`mt-8`}>
 				<button 
 					className={`
-						w-[200px] py-2
+						md:w-[200px] w-[100px] md:text-md text-xs py-2
 						border-[1px] border-green-800
 						bg-green-500 rounded text-white
 					`} 
@@ -179,10 +179,10 @@ const Page = () => {
 				</button>
 				<button 
 					className={`
-						w-[200px] py-2
+						md:w-[200px] w-[100px] md:text-md text-xs py-2
 						border-[1px] border-yellow-800
 						bg-yellow-500 rounded text-white
-						ml-5
+						md:ml-5 ml-2
 					`} 
 					onClick={onTest}
 				>

@@ -24,18 +24,18 @@ export const Input = ({
 		<div
 			className={`
 				flex flex-row
-				w-full
+				w-full max-w-[90vw]
 			`}
 		>
 			{
 				addonBefore &&
 				<div className={`
 					flex justify-center items-center bg-slate-600
-					min-w-[120px] h-[30px]
-					text-white text-xs
+					min-w-[100px] h-[30px]
+					text-white text-xs 
 					border-slate-700 border-t-[1px] border-l-[1px] border-b-[1px] rounded-l
 				`}>
-					{addonBefore}
+					<span className="text-center">{addonBefore}</span>
 				</div>
 			}
 			<input

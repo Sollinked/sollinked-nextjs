@@ -7,9 +7,10 @@ import { ConnectionProvider, WalletProvider, useWallet } from '@solana/wallet-ad
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { useCallback, useMemo, useState } from 'react';
-import { useSollinked, Provider as SollinkedProvider } from '@sollinked/sdk';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Provider as SollinkedProvider } from '@sollinked/sdk';
 import { VERIFY_MESSAGE } from '@/common/constants';
+import { usePathname } from 'next/navigation';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -22,14 +23,28 @@ const Wrapped = ({
   }) => {
     const wallet = useWallet();
     const [isSidebarActive, setIsSidebarActive] = useState(false);
+    const pathname = usePathname();
 
     const address = useMemo(() => {
         return wallet.publicKey?.toBase58() ?? "";
     }, [wallet]);
 
-    const onMenuClick = useCallback(() => {
+    const onSidebarToggle = useCallback(() => {
         setIsSidebarActive(!isSidebarActive);
     }, [ isSidebarActive ]);
+
+    const closeSidebar = useCallback(() => {
+        if(!isSidebarActive) {
+            return;
+        }
+
+        setIsSidebarActive(false);
+    }, [ isSidebarActive ]);
+
+    useEffect(() => {
+        // close sidebar when the path changes
+        closeSidebar();
+    }, [ pathname ]);
 
     return (
         <SollinkedProvider
@@ -40,14 +55,14 @@ const Wrapped = ({
         >
             <SideBar 
                 isActive={isSidebarActive}
-                onCloseClick={onMenuClick}
+                onCloseClick={onSidebarToggle}
             />
             <div className={`
                 md:w-3/4 w-full max-h-screen overflow-auto
                 relative
             `}>
                 <Header 
-                    onMenuClick={onMenuClick}
+                    onMenuClick={onSidebarToggle}
                 />
                 <div className={`
                     px-5 pb-5 pt-3
