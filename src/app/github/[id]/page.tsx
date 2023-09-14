@@ -8,6 +8,7 @@ import { CloseCircleOutlined, LeftOutlined, LoadingOutlined } from "@ant-design/
 import { Input } from "@/components/Input";
 import { ConfigProvider, Modal, Table } from "antd";
 import { useRouter } from 'next/navigation';
+import { useTheme } from "@/hooks/useTheme";
 
 const Page = ({params: { id }}: { params: { id: string }}) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -27,8 +28,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
     const [color, setColor] = useState("#000000");
     const [whitelist, setWhitelist] = useState("");
 
-    const {address} = useMemo(() => { return { address: user?.address, id: user?.id} }, [ user ]);
-
+    const {theme} = useTheme();
     const hasError = useMemo(() => !githubSetting, [githubSetting]);
 
     const whitelistObject = useMemo(() => {
@@ -98,7 +98,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{toLocaleDecimal(data, 2, 2)}
@@ -115,7 +115,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{data}
@@ -150,7 +150,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     return (
 						<button 
 							className={`
-								text-white text-xs bg-red-500
+								dark:text-white text-black text-xs dark:bg-red-500 bg-red-200
 								px-2 py-1
 								rounded-lg
 							`}
@@ -197,7 +197,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{data}
@@ -213,7 +213,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     return (
 						<button 
 							className={`
-								text-white text-xs bg-red-500
+								dark:text-white text-black text-xs bg-red-500
 								px-2 py-1
 								rounded-lg
 							`}
@@ -354,7 +354,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                 ${user.id === 0? 'hidden' : ''}
                 flex flex-row px-3 items-center justify-between
                 md:h-[60px] h-[70px]
-                md:sticky fixed top-0 left-0 right-0 md:backdrop-blur-none backdrop-blur-sm md:bg-transparent bg-slate-300/10
+                md:sticky fixed top-0 left-0 right-0 md:backdrop-blur-none backdrop-blur-sm md:bg-transparent dark:bg-slate-300/10
                 z-10
             `}>
                 <div>
@@ -372,7 +372,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     <button
                         className={`
                             rounded 
-                            ${githubSetting?.is_active? "bg-red-600" : "bg-green-600"}
+                            ${githubSetting?.is_active? "dark:bg-red-600 bg-red-200" : "dark:bg-green-600 bg-green-200"}
                             md:w-[120px] w-[80px] py-2
                             md:text-sm text-xs drop-shadow-lg
                         `}
@@ -383,7 +383,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     </button>
                     <button
                         className={`
-                            rounded bg-green-600
+                            rounded dark:bg-green-600 bg-green-200
                             md:w-[120px] w-[80px] py-2
                             md:text-sm text-xs drop-shadow-lg
                         `}
@@ -406,7 +406,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                 <div className="relative">
                     <select
                         className={`
-                            bg-slate-500 rounded px-3 py-2
+                            dark:bg-slate-500 dark:border-none border-[1px] border-slate-300 rounded px-3 py-2
                             outline-none
                             text-center xl:w-[40vw] md:w-[500px] w-[90vw]
                         `}
@@ -429,25 +429,25 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 			<ConfigProvider
 				theme={{
 					components: {
-						Tabs: {
-							inkBarColor: 'rgb(99,102,241)',
-							itemSelectedColor: 'rgb(255,255,255)',
-							itemColor: 'rgb(100,116,139)',
-						},
-						Table: {
-							fontSize: 12,
-							headerBg: 'rgb(51,65,85)',
-							headerColor: 'white',
-							headerSortActiveBg: 'rgb(30,41,59)',
-							headerSortHoverBg: 'rgb(30,41,59)',
-							colorBgContainer: 'rgb(71,85,105)',
-							headerSplitColor: 'rgb(100,116,139)',
-							borderColor: 'rgb(100,116,139)',
-						},
-						Empty: {
-							colorText: 'white',
-							colorTextDisabled: 'white',
-						}
+                        Tabs: {
+                            inkBarColor: theme === "light"? '#1677ff' : 'rgb(99,102,241)',
+                            itemSelectedColor: theme === "light"? "#1677ff" : 'rgb(255,255,255)',
+                            itemColor: theme === "light"? "	rgba(0, 0, 0, 0.88)" : 'rgb(100,116,139)',
+                        },
+                        Table: {
+                            fontSize: 10,
+                            headerBg: theme === "light"? "#fafafa" : 'rgb(51,65,85)',
+                            headerColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+                            headerSortActiveBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
+                            headerSortHoverBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
+                            colorBgContainer: theme === "light"? "#ffffff" : 'rgb(71,85,105)',
+                            headerSplitColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
+                            borderColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
+                        },
+                        Empty: {
+                            colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+                            colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
+                        }
 					}
 				}}
 			>
@@ -463,7 +463,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                             h-7 w-7 text-[20px]
                             rounded
                             flex items-center justify-center
-                            text-white bg-green-500
+                            dark:text-white text-white bg-green-500
                             border-none
                         `}
                         onClick={onAddTierClick}
@@ -478,7 +478,6 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 					mt-3 mb-3
 				`}>
 					<div className={`
-						w-full
 						flex flex-col items-center justify-start
 						shadow
 						rounded-md
@@ -506,7 +505,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                             h-7 w-7 text-[20px]
                             rounded
                             flex items-center justify-center
-                            text-white bg-green-500
+                            dark:text-white text-white bg-green-500
                             border-none
                         `}
                         onClick={onAddWhitelistClick}
@@ -521,7 +520,6 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 					mt-3 mb-3
 				`}>
 					<div className={`
-						w-full
 						flex flex-col items-center justify-start
 						shadow
 						rounded-md
@@ -541,12 +539,12 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 			<ConfigProvider
 				theme={{
 					components: {
-						Modal: {
-							contentBg: 'rgb(30,41,59)',
-							headerBg: 'rgb(30,41,59)',
-							titleColor: 'white',
-							colorIcon: 'white',
-						}
+                        Modal: {
+                            contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+                            headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+                            titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+                            colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
+                        }
 					}
 				}}
 			>
@@ -560,7 +558,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 							key="submit" 
 							onClick={onAddTier}
 							className={`
-								bg-green-500 text-white rounded
+								bg-green-500 dark:text-white text-black rounded
 								px-3 py-2
 							`}
 						>
@@ -604,7 +602,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
 							key="submit" 
 							onClick={onAddWhitelist}
 							className={`
-								bg-green-500 text-white rounded
+								bg-green-500 dark:text-white text-black rounded
 								px-3 py-2
 							`}
 						>

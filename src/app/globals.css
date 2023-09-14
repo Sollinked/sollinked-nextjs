@@ -16,16 +16,6 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
 /* antd */
 .ant-table-placeholder,
 .ant-table-tbody {
@@ -54,4 +44,8 @@ button, a {
   -ms-user-select: none;
   user-select: none;
   outline: none !important;
+}
+
+html:not(.dark) .wallet-adapter-button-trigger {
+  background-color: #512da8;
 }

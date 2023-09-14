@@ -100,8 +100,8 @@ const Header = ({onMenuClick}: HeaderParams) => {
             className={`
                 ${shouldHide? 'hidden' : 'md:flex hidden'}
                 flex-row items-center
-                rounded border-slate-500 border-[1px]
-                bg-slate-700
+                rounded dark:border-slate-500 border-slate-400 border-[1px]
+                dark:bg-slate-700 bg-white
                 px-3 py-2
             `}
         >
@@ -114,7 +114,7 @@ const Header = ({onMenuClick}: HeaderParams) => {
                 type="text" 
                 className={`
                     w-[200px] focus:w-[300px] ml-2
-                    bg-slate-700 outline-none
+                    dark:bg-slate-700 bg-white outline-none
                     transition-all duration-300
                 `}
             />
@@ -125,7 +125,7 @@ const Header = ({onMenuClick}: HeaderParams) => {
                 flex md:hidden
                 flex-row items-center
                 rounded border-slate-500 border-[1px]
-                bg-slate-700
+                dark:bg-slate-700 bg-white
                 px-3 py-2
             `}
             onClick={onMenuClick}
@@ -136,7 +136,7 @@ const Header = ({onMenuClick}: HeaderParams) => {
                 }}
             />
         </button>
-        <div className='bg-slate-700 rounded border-slate-500 border-[1px] shadow'>
+        <div className='dark:bg-slate-700 rounded border-slate-500 border-[1px] shadow'>
             <WalletMultiButtonDynamic />
         </div>
       </div>

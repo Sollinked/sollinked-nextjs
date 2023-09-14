@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useSollinked } from '@sollinked/sdk';
 import { Input } from '@/components/Input';
 import { toLocaleDecimal } from '@/common/utils';
+import { useTheme } from '@/hooks/useTheme';
 
 type CalendarParams = {
 	onDateChange: (date: Moment) => void;
@@ -74,7 +75,7 @@ const CustomCalendar = ({
 							onClick={() => onDateClick(i)}
 							className={`
 								md:w-[50px] md:h-[50px] h-[5vh] w-[5vh] rounded-full 
-								outline-none ${currentDate.date() === i + 1? 'bg-indigo-500' : "bg-slate-600"}
+								outline-none ${currentDate.date() === i + 1? 'dark:bg-indigo-500 bg-indigo-200' : "dark:bg-slate-600 bg-white"}
 								active:outline-none
 								focus:shadow-transparent focus:outline-none
 							`}
@@ -210,6 +211,7 @@ const Page = () => {
     const [selectedStatus, setSelectedStatus] = useState(RESERVATION_STATUS_BLOCKED);
     const [reservationPrice, setReservationPrice] = useState(0);
     const [currentStatus, setCurrentStatus] = useState(RESERVATION_STATUS_BLOCKED);
+	const { theme } = useTheme();
 
     const onSelect = (newValue: Moment) => {
         setDate(newValue);
@@ -309,7 +311,8 @@ const Page = () => {
             <div className={`
 				flex xl:flex-row flex-col w-full items-start
 				xl:p-5 p-3
-				bg-slate-700 rounded
+				dark:bg-slate-700 rounded
+				shadow
 			`}>
 				<CustomCalendar
 					onDateChange={onSelect}
@@ -333,16 +336,16 @@ const Page = () => {
 					>
 					{
 						data.map((d, index) => {
-							let bg = "bg-slate-500";
+							let bg = "dark:bg-slate-500";
 							switch(d.status) {
 								case RESERVATION_STATUS_PENDING:
-									bg = "bg-yellow-500";
+									bg = "dark:bg-yellow-500 bg-yellow-200";
 									break;
 								case RESERVATION_STATUS_BLOCKED:
-									bg = "bg-red-500";
+									bg = "dark:bg-red-500 bg-red-200";
 									break;
 								case RESERVATION_STATUS_PAID:
-									bg = "bg-green-500";
+									bg = "dark:bg-green-500 bg-green-200";
 									break;
 							}
 							return (
@@ -378,10 +381,10 @@ const Page = () => {
 					theme={{
 						components: {
 							Modal: {
-								contentBg: 'rgb(30,41,59)',
-								headerBg: 'rgb(30,41,59)',
-								titleColor: 'white',
-								colorIcon: 'white',
+								contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+								headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+								titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+								colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
 							}
 						}
 					}}
@@ -397,7 +400,7 @@ const Page = () => {
 								onClick={handleOk}
 								className={`
 									px-3 py-2 rounded w-[100px]
-									bg-green-500 text-white
+									bg-green-500 dark:text-white text-black
 									disabled:cursor-not-allowed disabled:bg-green-900 disabled:text-zinc-500
 								`}
 								disabled={currentStatus !== RESERVATION_STATUS_AVAILABLE && currentStatus !== RESERVATION_STATUS_BLOCKED}
@@ -409,7 +412,7 @@ const Page = () => {
                         <div className="flex flex-row relative">
                             <span className='
 							 	py-1 px-2 text-xs
-								text-white
+								dark:text-white text-black
 								absolute left-2 top-3.5 rounded'
 							>
 								Status
@@ -419,7 +422,7 @@ const Page = () => {
 								className={`
 									w-full border-[1px] rounded
 									px-3 py-1 mb-1 mt-3
-									bg-slate-700 text-white border-slate-600
+									dark:bg-slate-700 dark:text-white text-black border-slate-600
 									outline-none text-center
 								`}
                                 onChange={({target: {value}}) => setSelectedStatus(Number(value))}
@@ -447,16 +450,17 @@ const Page = () => {
 					theme={{
 						components: {
 							Empty: {
-								colorText: 'white',
-								colorTextDisabled: 'white',
+								colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+								colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
 							}
 						}
 					}}
 				>
 					<div className={`
 						flex items-center justify-center
-						bg-slate-700 rounded mt-5 mb-5
+						dark:bg-slate-700 rounded mt-5 mb-5
 						h-[30vh]
+						shadow
 					`}>
 						<Empty/>
 					</div>
@@ -464,8 +468,9 @@ const Page = () => {
 				<div
 					className={`
 						grid xl:grid-cols-5 grid-cols-4 xl:gap-2 gap-1
-						bg-slate-700 rounded p-3 mt-3 mb-5
+						dark:bg-slate-700 rounded p-3 mt-3 mb-5
 						min-h-[30vh]
+						shadow
 					`}
 				>
 					{
@@ -479,7 +484,7 @@ const Page = () => {
 							>
 								<div className={`
 									flex flex-col items-center
-									bg-slate-500 px-3 py-2 rounded
+									dark:bg-slate-500 px-3 py-2 rounded
 									w-100
 								`}>
 									<Link href={d.tiplink_url!} target='_blank'>

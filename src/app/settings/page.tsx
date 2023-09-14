@@ -13,6 +13,7 @@ import { ConfigProvider, Table, Modal } from 'antd';
 import { Input } from '@/components/Input';
 import { LeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
+import { useTheme } from '@/hooks/useTheme';
 
 const Page = () => {
     const { user, account, calendar, mail } = useSollinked();
@@ -32,6 +33,7 @@ const Page = () => {
     let inputRef = useRef<any>(null);
     const domain = useMemo(() => getEmailDomain(), []);
 	const router = useRouter();
+	const { theme } = useTheme();
 
     /**
      * Input fields
@@ -88,7 +90,7 @@ const Page = () => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{toLocaleDecimal(data, 2, 2)}
@@ -105,7 +107,7 @@ const Page = () => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{data}
@@ -121,7 +123,7 @@ const Page = () => {
                     return (
 						<button 
 							className={`
-								text-white text-xs bg-red-500
+								dark:text-white text-black text-xs dark:bg-red-500 bg-red-200
 								px-2 py-1
 								rounded-lg
 							`}
@@ -171,7 +173,7 @@ const Page = () => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{dayStr}
@@ -188,7 +190,7 @@ const Page = () => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{data.toString().padStart(2, '0')}:00
@@ -205,7 +207,7 @@ const Page = () => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{toLocaleDecimal(data, 2, 2)}
@@ -221,7 +223,7 @@ const Page = () => {
                     return (
 						<button 
 							className={`
-								text-white text-xs bg-red-500
+								dark:text-white text-black text-xs dark:bg-red-500 bg-red-200
 								px-2 py-1
 								rounded-lg
 							`}
@@ -387,7 +389,7 @@ const Page = () => {
 				${user.id === 0? 'hidden' : ''}
 				flex flex-row px-3 items-center justify-between
 				md:h-[60px] h-[70px]
-				md:sticky fixed top-0 left-0 right-0 md:backdrop-blur-none backdrop-blur-sm md:bg-transparent bg-slate-300/10
+				md:sticky fixed top-0 left-0 right-0 md:backdrop-blur-none backdrop-blur-sm md:bg-transparent dark:bg-slate-300/10
 				z-10
 			`}>
 				<div>
@@ -404,9 +406,10 @@ const Page = () => {
 				<div className="space-x-2">
 					<button
 						className={`
-							rounded bg-green-600
+							rounded dark:bg-green-600 bg-green-300
 							md:w-[120px] w-[80px] py-2
 							md:text-sm text-xs drop-shadow-lg
+							dark:text-white text-black
 						`}
 						onClick={onSaveClick}
 						disabled={isSaving}
@@ -437,7 +440,7 @@ const Page = () => {
 						className={`
 							absolute inset-0
 							rounded-full bg-gray-950/30
-							text-[10px]
+							text-[10px] text-white
 							flex items-center justify-center
 						`}
 					>
@@ -536,23 +539,23 @@ const Page = () => {
 				theme={{
 					components: {
 						Tabs: {
-							inkBarColor: 'rgb(99,102,241)',
-							itemSelectedColor: 'rgb(255,255,255)',
-							itemColor: 'rgb(100,116,139)',
+							inkBarColor: theme === "light"? '#1677ff' : 'rgb(99,102,241)',
+							itemSelectedColor: theme === "light"? "#1677ff" : 'rgb(255,255,255)',
+							itemColor: theme === "light"? "	rgba(0, 0, 0, 0.88)" : 'rgb(100,116,139)',
 						},
 						Table: {
-							fontSize: 12,
-							headerBg: 'rgb(51,65,85)',
-							headerColor: 'white',
-							headerSortActiveBg: 'rgb(30,41,59)',
-							headerSortHoverBg: 'rgb(30,41,59)',
-							colorBgContainer: 'rgb(71,85,105)',
-							headerSplitColor: 'rgb(100,116,139)',
-							borderColor: 'rgb(100,116,139)',
+							fontSize: 10,
+							headerBg: theme === "light"? "#fafafa" : 'rgb(51,65,85)',
+							headerColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+							headerSortActiveBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
+							headerSortHoverBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
+							colorBgContainer: theme === "light"? "#ffffff" : 'rgb(71,85,105)',
+							headerSplitColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
+							borderColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
 						},
 						Empty: {
-							colorText: 'white',
-							colorTextDisabled: 'white',
+							colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+							colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
 						}
 					}
 				}}
@@ -570,7 +573,7 @@ const Page = () => {
 						h-7 w-7 text-[20px]
 						rounded
 						flex items-center justify-center
-						text-white bg-green-500
+						dark:text-white text-white bg-green-500
 						border-none
 					`}
 					onClick={() => { setIsModalOpen(true) }}
@@ -584,7 +587,6 @@ const Page = () => {
 					mt-3 mb-3
 				`}>
 					<div className={`
-						w-full
 						flex flex-col items-center justify-start
 						shadow
 						rounded-md
@@ -611,7 +613,7 @@ const Page = () => {
 							h-7 w-7 text-[20px]
 							rounded
 							flex items-center justify-center
-							text-white bg-green-500
+							dark:text-white text-white bg-green-500
 							border-none
 						`}
 						onClick={() => { setIsCalendarModalOpen(true) }}
@@ -638,7 +640,6 @@ const Page = () => {
 					</div>
 
 					<div className={`
-						w-full
 						flex flex-col items-center justify-start
 						shadow
 						rounded-md
@@ -658,10 +659,10 @@ const Page = () => {
 				theme={{
 					components: {
 						Modal: {
-							contentBg: 'rgb(30,41,59)',
-							headerBg: 'rgb(30,41,59)',
-							titleColor: 'white',
-							colorIcon: 'white',
+							contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+							headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+							titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+							colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
 						}
 					}
 				}}
@@ -676,7 +677,7 @@ const Page = () => {
 							key="submit" 
 							onClick={onNewMailTier}
 							className={`
-								bg-green-500 text-white rounded
+								bg-green-500 dark:text-white text-black rounded
 								px-3 py-2
 							`}
 						>
@@ -712,7 +713,7 @@ const Page = () => {
 							key="submit" 
 							onClick={onNewCalendarPreset}
 							className={`
-								bg-green-500 text-white rounded
+								bg-green-500 dark:text-white text-black rounded
 								px-3 py-2
 							`}
 						>
@@ -724,7 +725,7 @@ const Page = () => {
 						className={`
 							w-full border-[1px] rounded
 							px-3 py-1 mb-1 mt-3
-							bg-slate-700 text-white border-slate-600
+							dark:bg-slate-700 dark:text-white text-black border-slate-600
 						`}
 						onChange={({target: {value}}) => { setDay(Number(value)) }}
 					>
@@ -741,7 +742,7 @@ const Page = () => {
 							w-full border-[1px] rounded
 							px-3 py-1 mb-1
 							outline-none 
-							bg-slate-700 text-white border-slate-600
+							dark:bg-slate-700 dark:text-white text-black border-slate-600
 						`}
 						onChange={({target: {value}}) => { setHour(Number(value)) }}
 					>

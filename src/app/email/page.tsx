@@ -1,7 +1,7 @@
 'use client';
 import { Table, Tag, Tabs, ConfigProvider } from 'antd';
 
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { copyToClipboard, toLocaleDecimal } from '../../common/utils';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
@@ -10,11 +10,14 @@ import { SortOrder } from 'antd/es/table/interface';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { useSollinked } from '@sollinked/sdk';
+import { useTheme } from '@/hooks/useTheme';
 dayjs.extend(duration);
 
 const NO_PAYMENT_AFTER_DAYS = 2;
 const Page = () => {
     const {user} = useSollinked();
+    const { theme } = useTheme();
+
     const [sortedInfo, setSortedInfo] = useState<{
         columnKey: string;
         order: SortOrder;
@@ -38,13 +41,13 @@ const Page = () => {
                 render: (data: string, row: Mail) => {
                     if(!data) {
                         return (
-							<span className={`text-white text-xs`}>-</span>
+							<span className={`dark:text-white text-black text-xs`}>-</span>
 						);
                     }
 
                     if(row.is_claimed) {
                         return (
-							<span className={`text-white text-xs`}>-</span>
+							<span className={`dark:text-white text-black text-xs`}>-</span>
 						);
                     }
 
@@ -53,7 +56,7 @@ const Page = () => {
 						<div 
 							className={`
 								flex flex-col
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							<span>{date.fromNow()}</span>
@@ -72,7 +75,7 @@ const Page = () => {
 					return (
 						<span
 							className={`
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{data}
@@ -91,7 +94,7 @@ const Page = () => {
 						<button 
 							className={`
 								border-[1px] border-white hover:border-indigo-300
-								text-white text-xs hover:text-indigo-300
+								dark:text-white text-black text-xs hover:text-indigo-300
 								px-2 py-1
 								rounded-lg
 							`}
@@ -120,7 +123,7 @@ const Page = () => {
 							<button 
 								className={`
 									border-[1px] border-white hover:border-indigo-300
-									text-white text-xs hover:text-indigo-300
+									dark:text-white text-black text-xs hover:text-indigo-300
 									px-2 py-1
 									rounded-lg
 								`}
@@ -141,7 +144,7 @@ const Page = () => {
 					return (
 						<span
 							className={`
-								text-white text-xs
+								dark:text-white text-black text-xs
 							`}
 						>
 							{toLocaleDecimal(Number(data), 2, 2)}
@@ -168,7 +171,7 @@ const Page = () => {
 								<button 
 									className={`
 										border-[1px] border-white hover:border-indigo-300
-										text-white text-xs hover:text-indigo-300
+										dark:text-white text-black text-xs hover:text-indigo-300
 										px-2 py-1
 										rounded-lg
 									`}
@@ -192,7 +195,7 @@ const Page = () => {
 							<button 
 								className={`
 									border-[1px] border-white hover:border-indigo-300
-									text-white text-xs hover:text-indigo-300
+									dark:text-white text-black text-xs hover:text-indigo-300
 									px-2 py-1
 									rounded-lg
 								`}
@@ -252,41 +255,7 @@ const Page = () => {
             {
                 key: '1',
                 label: 'Pending Response',
-                /* children: (
-                    <table
-						className={`
-							w-full bg-slate-700
-							text-white
-							table-fixed
-						`}
-					>
-						<thead>
-							<tr>
-								<th>Expires In</th>
-								<th>From</th>
-								<th>Trigger Email</th>
-								<th>Deposit Address</th>
-								<th>Value (USDC)</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							{
-								pendingResponse.map((r, index) => (
-									<tr key={`pending-response-${index}`}>
-										<td>{columns[0].render? columns[0].render(r.expiry_date ?? "", r) : r.expiry_date}</td>
-										<td>{columns[1].render? columns[1].render(r.from_email ?? "", r) : r.from_email}</td>
-										<td>{columns[2].render? columns[2].render(r.bcc_to_email ?? "", r) : r.bcc_to_email}</td>
-										<td>{columns[3].render? columns[3].render(r.tiplink_public_key ?? "", r) : r.tiplink_public_key}</td>
-										<td>{columns[4].render? columns[4].render(r.value_usd?.toString() ?? "", r) : r.value_usd}</td>
-										<td>{columns[5].render? columns[5].render(r.tiplink_url ?? "", r) : r.tiplink_url}</td>
-									</tr>
-								))
-							}
-						</tbody>
-					</table>
-                ) */
-				children: (
+                children: (
                     <Table
 						className='w-full mt-3'
                         columns={columns}
@@ -351,23 +320,23 @@ const Page = () => {
 			theme={{
 				components: {
 					Tabs: {
-						inkBarColor: 'rgb(99,102,241)',
-						itemSelectedColor: 'rgb(255,255,255)',
-						itemColor: 'rgb(100,116,139)',
+						inkBarColor: theme === "light"? '#1677ff' : 'rgb(99,102,241)',
+						itemSelectedColor: theme === "light"? "#1677ff" : 'rgb(255,255,255)',
+						itemColor: theme === "light"? "	rgba(0, 0, 0, 0.88)" : 'rgb(100,116,139)',
 					},
 					Table: {
-						fontSize: 12,
-						headerBg: 'rgb(51,65,85)',
-						headerColor: 'white',
-						headerSortActiveBg: 'rgb(30,41,59)',
-						headerSortHoverBg: 'rgb(30,41,59)',
-						colorBgContainer: 'rgb(71,85,105)',
-						headerSplitColor: 'rgb(100,116,139)',
-						borderColor: 'rgb(100,116,139)',
+						fontSize: 10,
+						headerBg: theme === "light"? "#fafafa" : 'rgb(51,65,85)',
+						headerColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+						headerSortActiveBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
+						headerSortHoverBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
+						colorBgContainer: theme === "light"? "#ffffff" : 'rgb(71,85,105)',
+						headerSplitColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
+						borderColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
 					},
 					Empty: {
-						colorText: 'white',
-						colorTextDisabled: 'white',
+						colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+						colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
 					}
 				}
 			}}

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import moment from 'moment';
 import { useSollinked } from '@sollinked/sdk';
 import { Input } from '@/components/Input';
+import { useTheme } from '@/hooks/useTheme';
 
 const Page = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +17,7 @@ const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [repoLink, setRepoLink] = useState("");
     const {user, github } = useSollinked();
+	const {theme} = useTheme();
 
     useEffect(() => {
         setTimeout(() => {
@@ -146,7 +148,7 @@ const Page = () => {
 
             <div className={`
 					mt-5 flex flex-col xl:items-center space-y-3 p-3
-					bg-slate-700 rounded min-h-[70vh] xl:min-w-[45vw] md:w-[500px] w-full
+					dark:bg-slate-700 rounded min-h-[70vh] xl:min-w-[45vw] md:w-[500px] w-full
 				`}
 			>
                 {
@@ -155,7 +157,7 @@ const Page = () => {
 							className={`
 								flex flex-row justify-center items-center
 								border-[1px] p-3 rounded
-								${x.last_synced_at? 'bg-green-800/80 border-green-700' : 'bg-red-800/80 border-red-700'}
+								${x.last_synced_at? 'dark:bg-green-800/80 dark:border-green-700 bg-green-200/80 border-green-100' : 'dark:bg-red-800/80 dark:border-red-700 bg-red-300/80 border-red-200'}
 							`}
                             key={`github-link-${index}`} 
                         >
@@ -191,7 +193,7 @@ const Page = () => {
                                     className={`
 										h-[30px] min-w-[30px] rounded
 										ml-2 flex items-center justify-center
-										${x.is_active? "border-red-500 bg-red-500" : "border-green-500 bg-green-500"} border-[1px]
+										${x.is_active? "dark:border-red-500 dark:bg-red-500 border-red-100 bg-red-200" : "dark:border-green-500 dark:bg-green-500 border-green-100 bg-green-200"} border-[1px]
 									`}
                                     onClick={() => {
                                         onActivateToggle(x.id);
@@ -200,14 +202,14 @@ const Page = () => {
                                     <PoweroffOutlined
 										className={`
 											text-[17px]
-											${x.is_active? "text-red-200" : "text-green-200"}
+											${x.is_active? "dark:text-red-200 text-red-800" : "dark:text-green-200 text-green-800"}
 										`}
                                     />
                                 </button>:
                                 <button
                                     className={`
 										flex items-center justify-center
-										text-white bg-slate-500 min-w-[30px] h-[30px] rounded
+										dark:text-white text-black dark:bg-slate-500 min-w-[30px] h-[30px] rounded
 									`}
                                     onClick={() => {
                                         copyToClipboard(x.uuid);
@@ -223,8 +225,10 @@ const Page = () => {
                             }
                             <button
                                 className={`
-									ml-2 border-[1px] border-red-500 bg-red-500
-									text-white min-w-[30px] h-[30px] rounded
+									ml-2 border-[1px]
+									dark:border-red-500 dark:bg-red-500 border-red-100 bg-red-200
+									dark:text-red-200 text-red-800
+									dark:text-white text-black min-w-[30px] h-[30px] rounded
 								`}
                                 onClick={() => {
                                     onDelete(x.id)
@@ -248,10 +252,10 @@ const Page = () => {
 				theme={{
 					components: {
 						Modal: {
-							contentBg: 'rgb(30,41,59)',
-							headerBg: 'rgb(30,41,59)',
-							titleColor: 'white',
-							colorIcon: 'white',
+							contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+							headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
+							titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+							colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
 						}
 					}
 				}}
@@ -268,7 +272,7 @@ const Page = () => {
 							onClick={onSaveClick}
 							className={`
 								w-[100px] h-[30px] rounded
-								bg-green-500 text-white
+								bg-green-500 dark:text-white text-black
 							`}
 						>
 							{isSaving? 'Saving..' : 'Save'}

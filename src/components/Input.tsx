@@ -30,10 +30,10 @@ export const Input = ({
 			{
 				addonBefore &&
 				<div className={`
-					flex justify-center items-center bg-slate-600
+					flex justify-center items-center dark:bg-slate-600 bg-slate-200
 					min-w-[100px] h-[30px]
-					text-white text-xs 
-					border-slate-700 border-t-[1px] border-l-[1px] border-b-[1px] rounded-l
+					dark:text-white text-black text-xs 
+					dark:border-slate-700 border-slate-300 border-t-[1px] border-l-[1px] border-b-[1px] rounded-l
 				`}>
 					<span className="text-center">{addonBefore}</span>
 				</div>
@@ -45,7 +45,7 @@ export const Input = ({
 				onChange={onChange}
 				className={`
 					h-[30px] w-full ${!addonAfter? 'rounded-r' : ''}
-					text-xs text-white bg-slate-700
+					text-xs dark:text-white text-black dark:bg-slate-700 dark:border-none border-[1px] border-slate-200
 					pl-3
 					focus:outline-none
 				`}
@@ -55,10 +55,10 @@ export const Input = ({
 			{
 				addonAfter &&
 				<div className={`
-					flex justify-center items-center bg-slate-600
+					flex justify-center items-center dark:bg-slate-600 bg-slate-200
 					min-w-[120px] h-[30px]
-					text-white text-xs
-					border-slate-700 border-t-[1px] border-r-[1px] border-b-[1px] rounded-[1px] rounded-r
+					dark:text-white text-black text-xs
+					dark:border-slate-700 border-slate-300 border-t-[1px] border-r-[1px] border-b-[1px] rounded-[1px] rounded-r
 				`}>
 					{addonAfter}
 				</div>

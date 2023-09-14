@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Provider as SollinkedProvider } from '@sollinked/sdk';
 import { VERIFY_MESSAGE } from '@/common/constants';
 import { usePathname } from 'next/navigation';
+import { ThemeProvider } from '@/hooks/useTheme';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -47,30 +48,32 @@ const Wrapped = ({
     }, [ pathname ]);
 
     return (
-        <SollinkedProvider
-            auth={{
-                address,
-                message: VERIFY_MESSAGE,
-            }}
-        >
-            <SideBar 
-                isActive={isSidebarActive}
-                onCloseClick={onSidebarToggle}
-            />
-            <div className={`
-                md:w-3/4 w-full max-h-screen overflow-auto
-                relative
-            `}>
-                <Header 
-                    onMenuClick={onSidebarToggle}
+        <ThemeProvider theme='light'>
+            <SollinkedProvider
+                auth={{
+                    address,
+                    message: VERIFY_MESSAGE,
+                }}
+            >
+                <SideBar 
+                    isActive={isSidebarActive}
+                    onCloseClick={onSidebarToggle}
                 />
                 <div className={`
-                    px-5 pb-5 pt-3
-                    `}>
-                    {children}
+                    md:w-3/4 w-full max-h-screen overflow-auto
+                    relative
+                `}>
+                    <Header 
+                        onMenuClick={onSidebarToggle}
+                    />
+                    <div className={`
+                        px-5 pb-5 pt-3
+                        `}>
+                        {children}
+                    </div>
                 </div>
-            </div>
-        </SollinkedProvider>
+            </SollinkedProvider>
+        </ThemeProvider>
     )
 }
 

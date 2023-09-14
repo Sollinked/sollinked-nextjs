@@ -109,9 +109,10 @@ const Page = () => {
         <div 
 			className={`
 				flex flex-col p-3
-				bg-slate-700 rounded
-				text-slate-300
-				md:text-xs
+				dark:bg-slate-700 rounded
+				dark:text-slate-300 text-black
+				md:text-xs lg:text-md
+				shadow
 			`}
 		>
 			<span>By setting up integration, you will be notified of every payment that you receive.</span>
@@ -135,8 +136,9 @@ const Page = () => {
 			<strong className='mt-8 mb-1'>Discord Webhook URL</strong>
 			<input 
 				className={`
-					bg-slate-800 rounded
+					dark:bg-slate-800 rounded
 					px-3 py-2
+					dark:border-none border-[1px] border-slate-300
 				`} 
 				type="text" 
 				placeholder='https://discord.com/api/webhooks/...' 
@@ -146,8 +148,9 @@ const Page = () => {
 			<strong className='mt-5 mb-1'>Custom Webhook URL</strong>
 			<input 
 				className={`
-					bg-slate-800 rounded
+					dark:bg-slate-800 rounded
 					px-3 py-2
+					dark:border-none border-[1px] border-slate-300
 				`} 
 				type="text" 
 				placeholder='https://your.webhooks' 
@@ -157,8 +160,9 @@ const Page = () => {
 			<strong className='mt-5 mb-1'>Notification Template</strong>
 			<input 
 				className={`
-					bg-slate-800 rounded
+					dark:bg-slate-800 rounded
 					px-3 py-2
+					dark:border-none border-[1px] border-slate-300
 				`} 
 		 		type="text" 
 				placeholder='Received {{amount}} from {{payer}}' 
@@ -171,7 +175,7 @@ const Page = () => {
 					className={`
 						md:w-[200px] w-[100px] md:text-md text-xs py-2
 						border-[1px] border-green-800
-						bg-green-500 rounded text-white
+						bg-green-500 rounded dark:text-white text-black
 					`} 
 					onClick={onSave}
 				>
@@ -181,7 +185,7 @@ const Page = () => {
 					className={`
 						md:w-[200px] w-[100px] md:text-md text-xs py-2
 						border-[1px] border-yellow-800
-						bg-yellow-500 rounded text-white
+						bg-yellow-500 rounded dark:text-white text-black
 						md:ml-5 ml-2
 					`} 
 					onClick={onTest}
