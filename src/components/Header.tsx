@@ -1,11 +1,11 @@
 'use client';
 import { VERIFY_MESSAGE } from '@/common/constants';
-import { MailOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useSollinked } from '@sollinked/sdk';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 type HeaderParams = {
     hide?: boolean;
@@ -20,10 +20,27 @@ const hideInPaths = [
     '/settings',
 ];
 
+const hidePathPattern = [
+    /\/github\/\d+/g,
+];
+
 const Header = ({hide}: HeaderParams) => {
     const wallet = useWallet();
     const { user, init } = useSollinked();
     const pathname = usePathname();
+
+    const shouldHide = useMemo(() => {
+        if(hideInPaths.includes(pathname)) {
+            return true;
+        }
+
+        for(const [key, value] of hidePathPattern.entries()) {
+            if(pathname.search(value) !== -1) {
+                return true;
+            }
+        }
+        return false;
+    }, [ pathname ]);
 
     useEffect(() => {
         if(!wallet) {
@@ -72,8 +89,8 @@ const Header = ({hide}: HeaderParams) => {
 
     return (
       <div className={`
-        ${hide || (hideInPaths.includes(pathname) && user.id > 0)? 'hidden' : ''}
-        ${!hideInPaths.includes(pathname)? 'justify-between' : 'justify-end'}
+        ${hide || (shouldHide && user.id > 0)? 'hidden' : ''}
+        ${!shouldHide? 'justify-between' : 'justify-end'}
         flex flex-row px-3 items-center 
         h-[60px]
         sticky top-0 left-0 right-0 
@@ -81,7 +98,7 @@ const Header = ({hide}: HeaderParams) => {
       `}>
         <div
             className={`
-                ${(hideInPaths.includes(pathname))? 'hidden' : ''}
+                ${shouldHide? 'hidden' : ''}
                 flex flex-row items-center
                 rounded border-slate-500 border-[1px]
                 bg-slate-700

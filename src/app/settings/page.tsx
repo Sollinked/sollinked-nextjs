@@ -660,7 +660,7 @@ const Page = () => {
 								px-3 py-2
 							`}
 						>
-							Submit
+							Add
 						</button>,
 					]}
 				>
@@ -696,7 +696,7 @@ const Page = () => {
 								px-3 py-2
 							`}
 						>
-							Submit
+							Add
 						</button>,
 					]}
 				>

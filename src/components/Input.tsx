@@ -44,7 +44,7 @@ export const Input = ({
 				value={value} 
 				onChange={onChange}
 				className={`
-					w-full ${!addonAfter? 'rounded-r' : ''}
+					h-[30px] w-full ${!addonAfter? 'rounded-r' : ''}
 					text-xs text-white bg-slate-700
 					pl-3
 					focus:outline-none

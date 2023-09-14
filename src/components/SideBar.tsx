@@ -57,6 +57,9 @@ const SideBar = () => {
         moment(x.expiry_date).isAfter(moment())
       )).length > 0;
     }, [ user ]);
+    
+    console.log('sidebar', user);
+
   
     return (
       <div className={`
@@ -101,7 +104,7 @@ const SideBar = () => {
         <SideBarItem
           link="/github"
           text="Github"
-          active={pathname === "/github"}
+          active={pathname === "/github" || pathname.search(/\/github/g) !== -1}
         />
         <SideBarItem
           link="/chat"

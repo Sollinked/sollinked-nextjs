@@ -160,7 +160,7 @@ const Page = () => {
                             key={`github-link-${index}`} 
                         >
                             <Link 
-                                href={`/gitgud/${x.id}`}
+                                href={`/github/${x.id}`}
 								className={`
 									w-[500px] flex items-center
 								`}
