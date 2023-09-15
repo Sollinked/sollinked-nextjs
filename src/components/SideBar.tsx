@@ -21,7 +21,7 @@ const SideBarItem = ({ link, text, active, notification }: LinkParams) => {
       <Link href={link}>
         <div className={`
           w-100 
-          ${active? `border-l-[2px] border-indigo-500 dark:text-white text-black`: `border-l-[1px] dark:border-zinc-700 border-zinc:400 dark:text-slate-500 text-slate-400`}
+          ${active? `border-l-[2px] border-indigo-500 dark:text-white text-black`: `border-l-[1px] dark:border-zinc-700 border-zinc-400 dark:text-slate-500 text-slate-400`}
           ml-5 pl-5 py-2 mt-2
           flex flex-row items-center
         `}>
@@ -83,7 +83,7 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
           md:border-r-[0.5px] md:border-indigo-500
           md:translate-x-0 ${isActive? 'translate-x-[0vw]' : 'translate-x-[-75vw]'} transition-all
           z-50 
-          dark:bg-gray-950 bg-white dark:text-white text-black
+          dark:bg-gray-950 bg-zinc-50 dark:text-white text-black
         `}>
           <div className={`
             flex flex-row pl-3 items-center

@@ -90,13 +90,13 @@ const Header = ({onMenuClick}: HeaderParams) => {
     return (
       <div className={`
         ${shouldHide && user.id > 0? 'hidden' : ''}
-        ${!shouldHide || user.id === 0? 'justify-between' : 'justify-end'}
+        justify-between md:justify-end
         flex flex-row px-3 items-center 
         h-[60px]
         sticky top-0 left-0 right-0 
         z-10
       `}>
-        <div
+        {/* <div
             className={`
                 ${shouldHide? 'hidden' : 'md:flex hidden'}
                 flex-row items-center
@@ -118,14 +118,14 @@ const Header = ({onMenuClick}: HeaderParams) => {
                     transition-all duration-300
                 `}
             />
-        </div>
+        </div> */}
         {/** menu button */}
         <button
             className={`
                 flex md:hidden
                 flex-row items-center
                 rounded border-slate-500 border-[1px]
-                dark:bg-slate-700 bg-white
+                dark:bg-slate-700 bg-indigo-300
                 px-3 py-2
             `}
             onClick={onMenuClick}

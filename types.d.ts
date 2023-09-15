@@ -102,6 +102,7 @@ export type User = {
     reservationSettings?: UserReservationSetting[];
     webhooks?: Webhook[];
     githubSettings?: UserGithubSetting[];
+    is_verified: boolean;
 }
 
 export type PublicUser = {
@@ -116,6 +117,7 @@ export type PublicUser = {
     youtube: string;
     calendar_advance_days: number;
     tiers?: UserTier[];
+    is_verified: boolean;
 }
 
 export type ContextUser = {
