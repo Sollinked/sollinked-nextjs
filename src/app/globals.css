@@ -35,6 +35,18 @@
   background-color: rgba(255,255,255,0.8);
 }
 
+@media screen and (max-width: 768px) {
+  .ant-table-pagination {
+    position: sticky;
+    left: 0;
+    width: 100vw;
+    margin-left: 10px !important;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start !important;
+  }
+}
+
 html.dark .ant-pagination-item-link span {
   color: white;
 }
