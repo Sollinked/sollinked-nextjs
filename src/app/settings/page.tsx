@@ -480,7 +480,7 @@ const Page = () => {
 						addonBefore='Link'
 						type="text"
 						placeholder=""
-						value={`${getDappDomain()}/booking/${user.id}`}
+						value={`${getDappDomain()}/reserve/${user.username}`}
 						readOnly
 					/>
                 </div>

@@ -1,4 +1,7 @@
-import { clusterApiUrl } from '@solana/web3.js';
+import { SignerWalletAdapterProps, WalletNotConnectedError } from '@solana/wallet-adapter-base';
+import { WalletContextState } from '@solana/wallet-adapter-react';
+import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
+import { Connection, GetProgramAccountsFilter, PublicKey, Transaction, TransactionInstruction, clusterApiUrl } from '@solana/web3.js';
 import moment, { Moment } from 'moment';
 
 export function sleep(ms: number) {
@@ -175,4 +178,139 @@ export const convertToUtcDayAndHour = (day: number, hour: number) => {
     // 
     day = day < 0? 6 : day;
     return { day, hour };
+}
+
+// wallet utils
+//get associated token accounts that stores the SPL tokens
+const getTokenAccounts = async(connection: Connection, address: string) => {
+    try {
+        const filters: GetProgramAccountsFilter[] = [
+            {
+            dataSize: 165,    //size of account (bytes), this is a constant
+            },
+            {
+            memcmp: {
+                offset: 32,     //location of our query in the account (bytes)
+                bytes: address,  //our search criteria, a base58 encoded string
+            },            
+            }];
+
+        const accounts = await connection.getParsedProgramAccounts(
+            new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'), //Associated Tokens Program
+            {filters: filters}
+        );
+
+        return accounts;
+    }
+
+    catch {
+        return [];
+    }
+}
+export const getUserTokens = async(connection: Connection, userAccount: PublicKey) => {
+    let mintObject: {[mintAddress: string]: number} = {};
+    let userAccounts = await getTokenAccounts(connection, userAccount.toString());
+    for(let account of userAccounts) {
+      let anyAccount = account.account as any;
+      let mint: string = anyAccount.data["parsed"]["info"]["mint"];
+      let accountAmount: number = anyAccount.data["parsed"]["info"]["tokenAmount"]["uiAmount"];
+
+      mintObject[mint] = accountAmount;
+    }
+
+    return mintObject;
+}
+
+export const getAddressTokenBalance = async(connection: Connection, tokenPublicKey: string, publicKey: string) => {
+    const balances = await getUserTokens(connection, new PublicKey(publicKey));
+    return balances[tokenPublicKey] ?? 0;
+}
+
+export const configureAndSendCurrentTransaction = async (
+  transaction: Transaction,
+  connection: Connection,
+  feePayer: PublicKey,
+  signTransaction: SignerWalletAdapterProps['signTransaction']
+) => {
+  const blockHash = await connection.getLatestBlockhash();
+  transaction.feePayer = feePayer;
+  transaction.recentBlockhash = blockHash.blockhash;
+  const signed = await signTransaction(transaction);
+  const signature = await connection.sendRawTransaction(signed.serialize());
+  await connection.confirmTransaction({
+    blockhash: blockHash.blockhash,
+    lastValidBlockHeight: blockHash.lastValidBlockHeight,
+    signature
+  });
+  return signature;
+};
+
+export const sendTokensTo = async(wallet: WalletContextState, sendTo: string, token: string, tokenDecimals: number, amount: number) => {
+    let { publicKey, signTransaction } = wallet;
+    if (!publicKey || !signTransaction) {
+      throw new WalletNotConnectedError();
+    }
+
+    const connection = new Connection(getRPCEndpoint());
+
+    //check if user has bonks
+    let usdcAmount = await getAddressTokenBalance(connection, token, publicKey.toBase58())
+
+    if(usdcAmount < amount) {
+      // await swapUSDC();
+      throw new Error("Not enough USDC");
+    }
+
+    const mintToken = new PublicKey(token);
+    const recipientAddress = new PublicKey(sendTo);
+
+    const transactionInstructions: TransactionInstruction[] = [];
+
+    // get the sender's token account
+    const associatedTokenFrom = await getAssociatedTokenAddress(
+      mintToken,
+      publicKey
+    );
+
+    const fromAccount = await getAccount(connection, associatedTokenFrom);
+
+    // get the recipient's token account
+    const associatedTokenTo = await getAssociatedTokenAddress(
+      mintToken,
+      recipientAddress
+    );
+
+    // if recipient doesn't have token account
+    // create token account for recipient
+    if (!(await connection.getAccountInfo(associatedTokenTo))) {
+      transactionInstructions.push(
+        createAssociatedTokenAccountInstruction(
+          publicKey,
+          associatedTokenTo,
+          recipientAddress,
+          mintToken
+        )
+      );
+    }
+
+    // the actual instructions
+    transactionInstructions.push(
+      createTransferInstruction(
+        fromAccount.address, // source
+        associatedTokenTo, // dest
+        publicKey,
+        amount * tokenDecimals,
+      )
+    );
+
+    // send the transactions
+    const transaction = new Transaction().add(...transactionInstructions);
+    const signature = await configureAndSendCurrentTransaction(
+      transaction,
+      connection,
+      publicKey,
+      signTransaction
+    );
+
+    return signature;
 }

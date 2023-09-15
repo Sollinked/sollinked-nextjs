@@ -111,7 +111,7 @@ const Page = () => {
 				flex flex-col p-3
 				dark:bg-slate-700 rounded
 				dark:text-slate-300 text-black
-				md:text-xs lg:text-md
+				md:text-xs lg:text-base
 				shadow
 			`}
 		>
@@ -173,7 +173,7 @@ const Page = () => {
 			<div className={`mt-8`}>
 				<button 
 					className={`
-						md:w-[200px] w-[100px] md:text-md text-xs py-2
+						md:w-[200px] w-[100px] md:text-base text-xs py-2
 						border-[1px] border-green-800
 						bg-green-500 rounded dark:text-white text-black
 					`} 
@@ -183,7 +183,7 @@ const Page = () => {
 				</button>
 				<button 
 					className={`
-						md:w-[200px] w-[100px] md:text-md text-xs py-2
+						md:w-[200px] w-[100px] md:text-base text-xs py-2
 						border-[1px] border-yellow-800
 						bg-yellow-500 rounded dark:text-white text-black
 						md:ml-5 ml-2
