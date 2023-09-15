@@ -9,6 +9,7 @@ type CalendarParams = {
     disabledDates?: Moment[];
     selectedDate?: Moment;
 	onDateChange: (date: Moment) => void;
+    blueScheme?: boolean;
 }
 
 const CustomCalendar = ({
@@ -18,6 +19,7 @@ const CustomCalendar = ({
     disabledDates,
 	onDateChange,
 	selectedDate,
+    blueScheme,
 }: CalendarParams) => {
 	const [currentDate, setCurrentDate] = useState(selectedDate ?? moment());
 	const {offset, daysInMonth} = useMemo(() => {
@@ -66,6 +68,9 @@ const CustomCalendar = ({
 		let tds: JSX.Element[] = [];
         let rowDate = moment(currentDate).startOf('M');
 
+        let selectedClass = blueScheme? 'dark:bg-green-500 bg-green-300' : 'dark:bg-indigo-500 bg-indigo-200';
+        let unselectedClass = blueScheme? "dark:bg-blue-600 bg-blue-200" : "dark:bg-slate-600 bg-white";
+
 		// empty dates at the beginning
 		for(let i = 0; i < offset; i++) {
 			tds.push(<td key={`custom-calendar-${i}`} className='w-[14.28%]'></td>);
@@ -109,10 +114,10 @@ const CustomCalendar = ({
 							onClick={() => onDateClick(i)}
 							className={`
 								md:w-[50px] md:h-[50px] h-[5vh] w-[5vh] rounded-full 
-								outline-none ${currentDate.date() === i + 1? 'dark:bg-indigo-500 bg-indigo-200' : "dark:bg-slate-600 bg-white"}
+								outline-none ${currentDate.date() === i + 1? selectedClass : unselectedClass}
 								active:outline-none
 								focus:shadow-transparent focus:outline-none
-                                dark:disabled:bg-red-500 bg-red-200 disabled:cursor-not-allowed
+                                disabled:bg-transparent disabled:dark:bg-transparent disabled:cursor-not-allowed
 							`}
                             disabled={disabled}
 						>

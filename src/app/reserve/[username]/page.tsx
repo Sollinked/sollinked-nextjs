@@ -12,12 +12,13 @@ import { useSollinked } from '@sollinked/sdk';
 import CustomCalendar from '@/components/CustomCalendar';
 import { useTheme } from '@/hooks/useTheme';
 import { useWallet } from '@solana/wallet-adapter-react';
+import Link from 'next/link';
 
 const EXPIRE_IN_SECONDS = 900; // 900s
 const Page = ({params: { username }}: { params: { username: string }}) => {
     const socketRef = useRef<Socket>();
     const [isLoading, setIsLoading] = useState(true);
-    const [isPaying, setIsPaying] = useState(true);
+    const [isPaying, setIsPaying] = useState(false);
     const [isError, setIsError] = useState(false);
     const [reservationSettings, setReservationSettings] = useState<UserReservationSetting[]>([]);
     const [reservations, setReservations] = useState<UserReservation[]>([]);
@@ -112,6 +113,11 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                     socketRef.current!.on(uuid, ({status}: { status: number}) => {
                         // console.log(`received ${uuid}, status: ${status}`);
                         setReservationStatus(status);
+                        setIsPaying(false);
+
+                        if(status !== RESERVATION_STATUS_PAID) {
+                            toast.error("There was a problem while processing the payment.")
+                        }
                     });
                 }
             });
@@ -227,6 +233,11 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         reservations.forEach(r => {
             let date = moment(r.date);
             if(date.isBefore(minDate)) {
+                return;
+            }
+
+            // not available
+            if(r.status !== RESERVATION_STATUS_AVAILABLE) {
                 return;
             }
             
@@ -356,9 +367,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
       
             await sendTokensTo(wallet, publicKey, USDC_TOKEN_ADDRESS, USDC_DECIMALS, valueUsd);
   
-            toast.success("Scheduled");
-            setTitle("");
-            setIsPaying(false);
       
           } catch (error: any) {
             if(error.name === "WalletNotConnectedError") {
@@ -376,7 +384,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             toast.error('Unable to make payment');
             setIsPaying(false);
           }
-          setIsPaying(false);
   
     }, [ publicKey, valueUsd, wallet ]);  
 
@@ -473,7 +480,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
                 <button 
                     className={`
-                        mt-5 bg-blue-700 px-3 py-2 rounded
+                        mt-5 dark:bg-blue-700 bg-blue-200 px-3 py-2 rounded
                         text-sm w-[250px]
                     `}  
                     onClick={() => { 
@@ -486,10 +493,12 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
                 <button 
                     className={`
-                        mt-5 bg-indigo-400 px-3 py-2 rounded
+                        mt-5 dark:bg-indigo-400 bg-indigo-200 px-3 py-2 rounded
                         text-sm w-[250px]
+                        disabled:cursor-not-allowed
                     `}  
                     onClick={onPayClick}
+                    disabled={isPaying}
                 >
                     { !wallet? "Connect Wallet To Pay" : "Pay Now" }
                 </button>
@@ -520,7 +529,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
                 <button
                     className={`
-                        bg-indigo-500 px-3 py-2 rounded mt-5
+                        dark:bg-indigo-500 bg-indigo-200 px-3 py-2 rounded mt-5
                     `}
                     onClick={() => {
                         setReservationStatus(RESERVATION_STATUS_AVAILABLE);
@@ -530,6 +539,15 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 >
                     Schedule Another Meeting
                 </button>
+
+                <Link
+                    className={`
+                        px-3 py-2 rounded mt-5 text-sm
+                    `}
+                    href="/"
+                >
+                    Return Home
+                </Link>
 
                 <ToastContainer
                     position="bottom-left"
@@ -568,6 +586,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                     disabledDates={disabledDates}
 					onDateChange={onSelect}
                     selectedDate={date}
+                    blueScheme
 				/>
                 <div className={`
 					flex flex-col
@@ -588,7 +607,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 					>
 					{
 						timeslots.map((d, index) => {
-							let bg = d.value === selectedDate? 'bg-indigo-500' : "bg-slate-500";
+							let bg = d.value === selectedDate? 'dark:bg-indigo-500 dark:border-none bg-green-300 shadow border-[1px] border-slate-200' : "dark:bg-slate-500 dark:border-none shadow border-[1px] border-slate-200";
 							return (
 								<div
 									key={`reservation-${index}`}
@@ -622,7 +641,8 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                                     type="text"
                                     className={`
                                         w-full px-3 py-2 rounded
-                                        text-white bg-slate-500
+                                        dark:text-white dark:bg-slate-500 bg-white
+                                        dark:border-none border-[1px] border-slate-300
                                         outline-none
                                     `}
                                     placeholder='your@email.com'
@@ -633,7 +653,8 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                                     type="text"
                                     className={`
                                         w-full px-3 py-2 rounded
-                                        text-white bg-slate-500
+                                        dark:text-white dark:bg-slate-500 bg-white
+                                        dark:border-none border-[1px] border-slate-300
                                         outline-none
                                     `}
                                     placeholder='Meeting Agenda'
@@ -643,9 +664,11 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                             </div>
                             <button
                                 className={`
-                                    mt-8 border-[1px] border-green-700
-                                    px-3 py-2 rounded bg-green-600
-                                    disabled:cursor-not-allowed disabled:bg-slate-500 disabled:border-slate-600 disabled:text-slate-300
+                                    mt-8 border-[1px] dark:border-green-700 border-green-200
+                                    px-3 py-2 rounded dark:bg-green-600 bg-green-300
+                                    disabled:cursor-not-allowed 
+                                    dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
+                                    dark:disabled:text-slate-300 disabled:text-slate-500
                                 `}
                                 onClick={onScheduleButtonClick}
                                 disabled={isSaving || !title || !email || !selectedDate}
