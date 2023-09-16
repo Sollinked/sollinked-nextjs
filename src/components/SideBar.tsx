@@ -8,6 +8,7 @@ import moment from 'moment';
 import { ellipsizeThis } from '@/common/utils';
 import { CloseOutlined } from '@ant-design/icons';
 import { useTheme } from '@/hooks/useTheme';
+import { RESERVATION_STATUS_PAID } from '@/common/constants';
 
 type LinkParams = {
     link: string;
@@ -65,6 +66,22 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
         !x.is_claimed && 
         moment(x.expiry_date).isAfter(moment())
       )).length > 0;
+    }, [ user ]);
+
+    const hasUnclaimedReservation = useMemo(() => {
+      if(!user) {
+        return false;
+      }
+
+      if(!user.reservations) {
+        return false;
+      }
+
+      if(user.reservations.length === 0) {
+        return false;
+      }
+
+      return user.reservations.filter(x => x.status === RESERVATION_STATUS_PAID).length > 0;
     }, [ user ]);
   
     return (
@@ -125,6 +142,7 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
             link="/calendar"
             text="Calendar"
             active={pathname === "/calendar"}
+            notification={hasUnclaimedReservation}
           />
           <SideBarItem
             link="/github"
