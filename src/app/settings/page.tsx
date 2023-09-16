@@ -14,6 +14,7 @@ import { Input } from '@/components/Input';
 import { LeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/hooks/useTheme';
+import logo from '../../public/logo.png';
 
 const Page = () => {
     const { user, account, calendar, mail } = useSollinked();
@@ -430,7 +431,7 @@ const Page = () => {
 					className='relative mb-5 xl:mb-0'
 				>
 					<Image 
-						src={pfp? pfp : '/logo.png'} 
+						src={pfp? pfp : logo} 
 						alt="pfp"
 						width={120}
 						height={120}

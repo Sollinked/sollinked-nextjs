@@ -8,7 +8,7 @@ import Link from "next/link";
 import Image from 'next/image';
 import { sendTokensTo, toLocaleDecimal } from "@/common/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
-
+import logo from '../../public/logo.png';
 
 const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -182,7 +182,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 <div>
                 {
                     <Image 
-                        src={publicUser.profile_picture? publicUser.profile_picture : "/logo.png"} 
+                        src={publicUser.profile_picture? publicUser.profile_picture : logo} 
                         alt="pfp"
                         width={150}
                         height={150}

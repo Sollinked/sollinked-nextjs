@@ -5,8 +5,9 @@ import { HomepageUser } from './types';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CheckCircleFilled, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import { ellipsizeThis } from '@/common/utils';
+import logo from '../../public/logo.png';
 
 const Page = () => {
 	const [users, setUsers] = useState<HomepageUser[]>([]);
@@ -119,7 +120,7 @@ const Page = () => {
 						`}
 					>
 						<Image
-							src={user.profile_picture? user.profile_picture : "/logo.png"}
+							src={user.profile_picture? user.profile_picture : logo}
 							alt="null"
 							width={125}
 							height={125}

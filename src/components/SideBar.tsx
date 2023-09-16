@@ -9,6 +9,7 @@ import { ellipsizeThis } from '@/common/utils';
 import { CloseOutlined } from '@ant-design/icons';
 import { useTheme } from '@/hooks/useTheme';
 import { RESERVATION_STATUS_PAID } from '@/common/constants';
+import logo from '../../public/logo.png';
 
 type LinkParams = {
     link: string;
@@ -108,7 +109,7 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
             h-[60px]
           `}>
             <Image
-              src={user.profile_picture? user.profile_picture : "/logo.png"}
+              src={user.profile_picture? user.profile_picture : logo}
               alt="null"
               width={30}
               height={30}

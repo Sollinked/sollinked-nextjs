@@ -4,12 +4,22 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Sollinked',
-  description: 'Earn on Solana',
+  title: 'Sollinked - Earn on Solana',
+  description: 'Earning from contents have never been easier.',
+  keywords: "sollinked, solana, solana social media, social media, solana linkedin",
+  openGraph: {
+    title: "Sollinked",
+    description: "Earning from contents have never been easier.",
+    images: "https://sollinked.com/logo.png",
+    siteName: "Sollinked | Earn on Solana",
+    url: "https://app.sollinked.com",
+    type: "website",
+  },
 }
 
 export default function RootLayout({
@@ -19,6 +29,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className='dark'>
+      <Head>
+        <link
+          rel="canonical"
+          href="https://sollinked.com"
+          key="canonical"
+        />
+        <link rel="alternate" href="https://www.sollinked.com"/>
+        <link rel="alternate" href="https://app.sollinked.com"/>
+      </Head>
       <body className={`
         ${inter.className} 
         flex flex-row dark:bg-black dark:text-white
