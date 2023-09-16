@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import moment from 'moment';
 import { ellipsizeThis } from '@/common/utils';
 import { CloseOutlined } from '@ant-design/icons';
-import { useTheme, toggleTheme } from '@/hooks/useTheme';
+import { useTheme } from '@/hooks/useTheme';
 
 type LinkParams = {
     link: string;

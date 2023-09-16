@@ -405,19 +405,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     if(isLoading) {
         return (<div className='h-[80vh] w--full flex flex-col justify-center items-center'>
             <LoadingOutlined style={{ fontSize: 80 }}/>
-
-            <ToastContainer
-                position="bottom-left"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover={false}
-                theme={'colored'}
-            />
         </div>)
     }
 
@@ -434,19 +421,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 `}>
                     Payment Expired
                 </strong>
-
-                <ToastContainer
-                    position="bottom-left"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover={false}
-                    theme={'colored'}
-                />
             </div>
         );
     }
@@ -502,19 +476,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 >
                     { !wallet? "Connect Wallet To Pay" : "Pay Now" }
                 </button>
-
-                <ToastContainer
-                    position="bottom-left"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover={false}
-                    theme={'colored'}
-                />
             </div>
         );
     }
@@ -548,19 +509,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 >
                     Return Home
                 </Link>
-
-                <ToastContainer
-                    position="bottom-left"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover={false}
-                    theme={'colored'}
-                />
             </div>
         );
         
@@ -680,19 +628,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                     }
                 </div>
             </div>
-
-            <ToastContainer
-                position="bottom-left"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover={false}
-                theme={'colored'}
-            />
         </div>
     );
 }

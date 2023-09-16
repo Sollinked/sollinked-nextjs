@@ -171,19 +171,6 @@ const Page = ({ params: { repolink }}: { params: { repolink: string[] }}) => {
         return (
           <div className="h-[80vh] w-full flex items-center justify-center">
             <LoadingOutlined style={{ fontSize: 80 }}/>
-
-            <ToastContainer
-                position="bottom-left"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover={false}
-                theme={'colored'}
-            />
         </div>)
     }
 
