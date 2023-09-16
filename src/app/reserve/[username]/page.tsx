@@ -229,6 +229,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         let availableDateStr: string[] = [];
         let currentDate = moment(minDate).startOf('d');
         let disabledDates: Moment[] = [];
+        let now = moment();
 
         reservations.forEach(r => {
             let date = moment(r.date);
@@ -238,6 +239,10 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
             // not available
             if(r.status !== RESERVATION_STATUS_AVAILABLE) {
+                return;
+            }
+
+            if(date.isBefore(now)) {
                 return;
             }
             
@@ -274,7 +279,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             disabledDates.push(moment(currentDate));
             currentDate.add(1, 'd');
         }
-
+        
         return disabledDates;
     }, [reservationSettings, reservations, minDate, calendarAdvanceDays]);
 
