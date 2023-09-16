@@ -141,7 +141,7 @@ const Page = () => {
 					</div>
 					<div
 						className={`
-							grid grid-cols-4
+							grid 2xl:grid-cols-6 grid-cols-4
 							mt-5 gap-2
 						`}
 					>

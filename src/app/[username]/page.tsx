@@ -3,12 +3,13 @@ import { useSollinked } from "@sollinked/sdk";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PublicUser } from "../../../types";
 import { toast } from "react-toastify";
-import { CalendarFilled, CalendarOutlined, CloseCircleOutlined, LoadingOutlined, MailFilled, MailOutlined } from "@ant-design/icons";
+import { CalendarFilled, CalendarOutlined, CloseCircleOutlined, LeftOutlined, LoadingOutlined, MailFilled, MailOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from 'next/image';
 import { sendTokensTo, toLocaleDecimal } from "@/common/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import logo from '../../../public/logo.png';
+import { useRouter } from 'next/navigation';
 
 const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +20,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
     const [publicUser, setPublicUser] = useState<PublicUser | undefined>();
     const { account, mail } = useSollinked();
     const wallet = useWallet();
+	const router = useRouter();
 
     const tiers = useMemo(() => {
         return publicUser?.tiers?.reverse() ?? [];
@@ -176,6 +178,26 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             flex flex-col items-center justify-start
             min-h-[75vh]
         `}>
+            
+			<div className={`
+				flex flex-row px-3 items-center justify-between
+				md:h-[60px] h-[70px]
+				md:sticky fixed top-0 left-0 right-0 md:w-full w-[100vw]
+				dark:bg-black bg-white
+				z-10 animate-fade-in
+			`}>
+				<div>
+					<button
+						className={`
+							flex items-center justify-start
+							w-[60px] md:hidden
+						`}
+						onClick={() => router.back()}
+					>
+						<LeftOutlined/>
+					</button>
+				</div>
+			</div>
             <div className={`
                 flex flex-col items-center w-full
             `}>
@@ -191,8 +213,8 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 </div>
                 <div 
                     className={`
-                        flex flex-row w-full justify-between items-center
-                        w-[90%] lg:w-[75%] xl:w-[50%] mt-5
+                        flex flex-row justify-between items-center
+                        w-[90vw] lg:w-[75%] xl:w-[50%] mt-5
                     `}
                 >
                     <strong className="flex flex-row">

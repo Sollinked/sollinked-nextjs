@@ -83,7 +83,7 @@ const CustomCalendar = ({
 					<tr 
 						key={`customer-calendar-tr-${rows.length}`}
 						className={`
-							md:h-[50px] h-[5vh]
+							2xl:h-[70px] md:h-[50px] h-[5vh]
 						`}
 					>
 						{tds}
@@ -113,7 +113,7 @@ const CustomCalendar = ({
 						<button
 							onClick={() => onDateClick(i)}
 							className={`
-								md:w-[50px] md:h-[50px] h-[5vh] w-[5vh] rounded-full 
+								2xl:w-[70px] md:w-[50px] 2xl:h-[70px] md:h-[50px] h-[5vh] w-[5vh] rounded-full 
 								outline-none ${currentDate.date() === i + 1? selectedClass : unselectedClass}
 								active:outline-none
 								focus:shadow-transparent focus:outline-none

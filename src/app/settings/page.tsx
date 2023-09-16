@@ -390,8 +390,9 @@ const Page = () => {
 				${user.id === 0? 'hidden' : ''}
 				flex flex-row px-3 items-center justify-between
 				md:h-[60px] h-[70px]
-				md:sticky fixed top-0 left-0 right-0 md:backdrop-blur-none backdrop-blur-sm md:bg-transparent dark:bg-slate-300/10
-				z-10
+				md:sticky fixed top-0 left-0 right-0 md:w-full w-[100vw]
+				md:backdrop-blur-none backdrop-blur-sm md:bg-transparent dark:md:bg-transparent dark:bg-slate-300/10
+				z-10 animate-fade-in
 			`}>
 				<div>
 					<button
@@ -489,7 +490,7 @@ const Page = () => {
 			
 			<h2 className='m-auto mt-10 text-center'>Social Accounts</h2>
 			<div className={`
-				w-[500px] xl:w-[40vw] m-auto
+				xl:w-[40vw] md:w-[500px] w-[90vw] m-auto
 				space-y-1 mt-3
 			`}>
 				<Input 
@@ -593,7 +594,7 @@ const Page = () => {
 						rounded-md
 					`}>
 						<Table
-							className='xl:w-[40vw] w-[500px]'
+							className='xl:w-[40vw] md:w-[500px] w-[90vw]'
 							columns={mailTierColumns}
 							dataSource={userDetails.tiers}
 							pagination={false}
@@ -629,7 +630,7 @@ const Page = () => {
 					mt-3 mb-3
 				`}>
 
-					<div className="xl:w-[40vw] md:w-[500px] w-full mb-2">
+					<div className="xl:w-[40vw] md:w-[500px] w-[90vw] mb-2">
 						<Input
 							addonBefore='Max'
 							addonAfter='Days In Advance'
@@ -646,7 +647,7 @@ const Page = () => {
 						rounded-md
 					`}>
 						<Table
-							className='xl:w-[40vw] w-[500px]'
+							className='xl:w-[40vw] md:w-[500px] w-[90vw]'
 							columns={calendarTierColumn}
 							dataSource={userDetails.reservationSettings}
 							pagination={false}
