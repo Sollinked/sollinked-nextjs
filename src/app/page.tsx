@@ -109,7 +109,7 @@ const Page = () => {
 			{
 				displayUsers.map((user, index) => (
 					<Link 
-						href={`/user/${user.username}`}
+						href={`/${user.username}`}
 						key={`user-${index}`}
 						className={`
 							flex flex-col justify-center items-center
