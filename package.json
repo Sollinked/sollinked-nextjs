@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 10080",
+    "start": "next start -p 3030",
     "lint": "next lint"
   },
   "dependencies": {
@@ -32,7 +32,6 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "next": "13.4.19",
-    "next-seo": "^6.1.0",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-cookie": "^6.1.1",

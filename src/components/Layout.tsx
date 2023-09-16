@@ -13,7 +13,6 @@ import { VERIFY_MESSAGE } from '@/common/constants';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/hooks/useTheme';
 import Head from 'next/head';
-import {NextSeo} from 'next-seo';
 
 
 // Default styles that can be overridden by your app
@@ -117,35 +116,6 @@ const Layout = ({
               <WalletProvider wallets={wallets} autoConnect>
                   <WalletModalProvider>
                     <Wrapped>
-                        <NextSeo
-                            title="Sollinked | Earn on Solana"
-                            description="Earning from contents have never been easier."
-                            canonical="https://sollinked.com"
-                            openGraph={{
-                            url: 'https://sollinked.com',
-                            title: 'Sollinked - Earn on Solana',
-                            description: 'Earning from contents have never been easier.',
-                            images: [
-                                {
-                                url: 'https://sollinked.com/logo.jpg',
-                                width: 512,
-                                height: 512,
-                                alt: 'Og Image Alt',
-                                type: 'image/jpeg',
-                                },
-                            ],
-                            site_name: 'Sollinked | Earn on Solana',
-                            }}
-                            twitter={{
-                            handle: '@Sollinked_com',
-                            site: '@Sollinked_com',
-                            cardType: 'summary_large_image',
-                            }}
-                        />
-                        <Head>
-                            <link rel="alternate" href="https://www.sollinked.com"/>
-                            <link rel="alternate" href="https://app.sollinked.com"/>
-                        </Head>
                         {children}
                     </Wrapped>
                   </WalletModalProvider>
