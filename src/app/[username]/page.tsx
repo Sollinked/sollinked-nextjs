@@ -8,7 +8,7 @@ import Link from "next/link";
 import Image from 'next/image';
 import { sendTokensTo, toLocaleDecimal } from "@/common/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
-import logo from '../../public/logo.png';
+import logo from '../../../public/logo.png';
 
 const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isLoading, setIsLoading] = useState(true);

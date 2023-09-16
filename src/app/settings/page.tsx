@@ -14,7 +14,7 @@ import { Input } from '@/components/Input';
 import { LeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/hooks/useTheme';
-import logo from '../../public/logo.png';
+import logo from '../../../public/logo.png';
 
 const Page = () => {
     const { user, account, calendar, mail } = useSollinked();

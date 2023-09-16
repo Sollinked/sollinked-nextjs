@@ -5,22 +5,9 @@ import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Head from 'next/head';
+import {NextSeo} from 'next-seo';
 
 const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'Sollinked - Earn on Solana',
-  description: 'Earning from contents have never been easier.',
-  keywords: "sollinked, solana, solana social media, social media, solana linkedin",
-  openGraph: {
-    title: "Sollinked",
-    description: "Earning from contents have never been easier.",
-    images: "https://sollinked.com/logo.png",
-    siteName: "Sollinked | Earn on Solana",
-    url: "https://app.sollinked.com",
-    type: "website",
-  },
-}
 
 export default function RootLayout({
   children,
@@ -29,12 +16,32 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className='dark'>
+      <NextSeo
+        title="Sollinked | Earn on Solana"
+        description="Earning from contents have never been easier."
+        canonical="https://sollinked.com"
+        openGraph={{
+          url: 'https://sollinked.com',
+          title: 'Sollinked - Earn on Solana',
+          description: 'Earning from contents have never been easier.',
+          images: [
+            {
+              url: 'https://sollinked.com/logo.jpg',
+              width: 512,
+              height: 512,
+              alt: 'Og Image Alt',
+              type: 'image/jpeg',
+            },
+          ],
+          site_name: 'Sollinked | Earn on Solana',
+        }}
+        twitter={{
+          handle: '@Sollinked_com',
+          site: '@Sollinked_com',
+          cardType: 'summary_large_image',
+        }}
+      />
       <Head>
-        <link
-          rel="canonical"
-          href="https://sollinked.com"
-          key="canonical"
-        />
         <link rel="alternate" href="https://www.sollinked.com"/>
         <link rel="alternate" href="https://app.sollinked.com"/>
       </Head>
