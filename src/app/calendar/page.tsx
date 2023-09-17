@@ -111,6 +111,15 @@ const Page = () => {
         return ret;
     }, [ user, date ]);
 
+	const upcomingReservations = useMemo(() => {
+		let now = moment();
+        return user.reservations?.filter(
+			x => 
+				x.status === (RESERVATION_STATUS_PAID || x.status === RESERVATION_STATUS_CLAIMED) && 
+				moment(x.date).add(30, 'm').isAfter(now) // add 30 minute leeway
+			) ?? [];
+	}, [ user ]);
+
     const unclaimedData = useMemo(() => {
         return user.reservations?.filter(x => x.status === RESERVATION_STATUS_PAID) ?? [];
     }, [ user ]);
@@ -257,6 +266,54 @@ const Page = () => {
 				</ConfigProvider>
                 </div>
             </div>
+            <h2 className='mt-10'>Upcoming Reservations</h2>
+			{
+				unclaimedData.length === 0?
+				<ConfigProvider
+					theme={{
+						components: {
+							Empty: {
+								colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
+								colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
+							}
+						}
+					}}
+				>
+					<div className={`
+						flex items-center justify-center
+						dark:bg-slate-700 rounded mt-5 mb-5
+						h-[30vh]
+						shadow
+					`}>
+						<Empty/>
+					</div>
+				</ConfigProvider> :
+				<div
+					className={`
+						grid 2xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-2 gap-1
+						dark:bg-transparent bg-transparent rounded mt-3 mb-5
+						min-h-[30vh]
+						shadow
+					`}
+				>
+					{
+						upcomingReservations.map((d, index) => (
+							<div 
+								key={`unclaimed-data-${index}`}
+								className={`
+									flex flex-col items-start justify-start p-3
+									xl:text-base text-xs shadow dark:bg-slate-700
+									rounded
+								`}
+							>
+								<strong>{moment(d.date).format('ddd, YYYY-MM-DD h:mmA')}</strong>
+								<span className='mt-1'>{d.reserve_email}</span>
+								<span className='mt-5'>{d.reserve_title}</span>
+							</div>
+						))
+					}
+				</div>
+			}
             <h2 className='mt-10'>Unclaimed Tiplinks</h2>
 			{
 				unclaimedData.length === 0?
