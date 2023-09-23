@@ -514,6 +514,7 @@ const Page = () => {
 				id: 0, // 0 = new
 				user_id: user.id,
 				product_id: "",
+				wallet_id: "",
 				tiers: [],
 			}	
 		}
@@ -522,6 +523,7 @@ const Page = () => {
 			id: 0, // 0 = new
 			mailing_list_id: 0, // not used
 			price_id: "", // not used
+			paymentlink_id: "",
 			name: mailingPriceName,
 			description: "", // not used for now
 			amount: Number(mailingPriceAmount),
