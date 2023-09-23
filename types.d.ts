@@ -82,6 +82,26 @@ export type UserGithubIssueLog = {
     body: string;
 }
 
+export type MailingList = {
+    id: number;
+    user_id: number;
+    product_id: string;
+    tiers: MailingListPriceTier[];
+}
+
+export type MailingListPriceTier = {
+    id: number;
+    mailing_list_id: number;
+    price_id: string;
+    name: string;
+    description?: string;
+    amount: number;
+    currency: string;
+    charge_every: number;
+    prepay_month: number;
+    is_active: boolean;
+}
+
 export type User = {
     id: number;
     address: string;
@@ -98,6 +118,7 @@ export type User = {
     youtube: string;
     tiers?: UserTier[];
     mails?: Mail[];
+    mailingList?: MailingList;
     reservations?: UserReservation[];
     reservationSettings?: UserReservationSetting[];
     webhooks?: Webhook[];
