@@ -837,8 +837,8 @@ const Page = () => {
 									key={`mailing-price-tier-${index}`}
 								>
 									<strong>{x.name}</strong>
-									<span className='text-xs'>Charges {x.amount} USDC every {x.charge_every} Month</span>
-									<span className='text-xs'>User has to prepay {x.prepay_month} month(s) upon subscription</span>
+									<span className='text-xs'>Bills {x.amount} USDC every {x.charge_every} Month</span>
+									<span className='text-xs'>Subscriber has to pay {x.prepay_month} month(s) upfront</span>
 									<button 
 										className={`
 											absolute top-1 right-1 rounded w-[100px]
@@ -1070,7 +1070,7 @@ const Page = () => {
 					<div className="mb-1"></div>
 					<Input
 						type="number"
-						addonBefore="Charge Per"
+						addonBefore="Bill Per"
 						value={mailingPriceChargeEvery}
 						onChange={({ target: {value}}) => { setMailingPriceChargeEvery(value)}}
 						placeholder='1, 2, 3, 4, 5... Month'
@@ -1079,7 +1079,7 @@ const Page = () => {
 					<div className="mb-1"></div>
 					<Input
 						type="number"
-						addonBefore="Prepay"
+						addonBefore="Upfront"
 						value={mailingPricePrepayMonth}
 						onChange={({ target: {value}}) => { setMailingPricePrepayMonth(value)}}
 						placeholder='1, 2, 3, 4, 5... Month'

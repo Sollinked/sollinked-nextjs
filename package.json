@@ -32,6 +32,7 @@
     "moment": "^2.29.4",
     "next": "13.4.19",
     "postcss": "8.4.29",
+    "qs": "^6.11.2",
     "react": "18.2.0",
     "react-cookie": "^6.1.1",
     "react-dom": "18.2.0",
@@ -42,6 +43,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.198"
+    "@types/lodash": "^4.14.198",
+    "@types/qs": "^6.9.8"
   }
 }
