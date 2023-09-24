@@ -316,50 +316,24 @@ const Page = () => {
     }, [ user, handleChange, columns ]);
 
     return (
-		<ConfigProvider
-			theme={{
-				components: {
-					Tabs: {
-						inkBarColor: theme === "light"? '#1677ff' : 'rgb(99,102,241)',
-						itemSelectedColor: theme === "light"? "#1677ff" : 'rgb(255,255,255)',
-						itemColor: theme === "light"? "	rgba(0, 0, 0, 0.88)" : 'rgb(100,116,139)',
-					},
-					Table: {
-						fontSize: 10,
-						headerBg: theme === "light"? "#fafafa" : 'rgb(51,65,85)',
-						headerColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-						headerSortActiveBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
-						headerSortHoverBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
-						colorBgContainer: theme === "light"? "#ffffff" : 'rgb(71,85,105)',
-						headerSplitColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
-						borderColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
-					},
-					Empty: {
-						colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-						colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
-					}
-				}
-			}}
-		>
-			<div className={`
-				flex flex-col md:items-center items-start justify-start
-				h-full w-full
-			`}>
-				<div className={`
-					md:w-full w-[200vw]
-					flex flex-col items-center justify-start
-					mt-[30px] md:px-0 px-2
-					shadow
-					rounded-md
-				`}>
-					<Tabs
-						className='w-full flex flex-col items-center justify-center bg-transparent'
-						defaultActiveKey='1'
-						items={tabItems}
-					/>
-				</div>
-			</div>
-		</ConfigProvider>
+        <div className={`
+            flex flex-col md:items-center items-start justify-start
+            h-full w-full
+        `}>
+            <div className={`
+                md:w-full w-[200vw]
+                flex flex-col items-center justify-start
+                mt-[30px] md:px-0 px-2
+                shadow
+                rounded-md
+            `}>
+                <Tabs
+                    className='w-full flex flex-col items-center justify-center bg-transparent'
+                    defaultActiveKey='1'
+                    items={tabItems}
+                />
+            </div>
+        </div>
     );
 };
 

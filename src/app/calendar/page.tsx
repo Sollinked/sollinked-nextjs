@@ -200,18 +200,6 @@ const Page = () => {
 					}
 					</div>
 
-				<ConfigProvider
-					theme={{
-						components: {
-							Modal: {
-								contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-								headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-								titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-								colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
-							}
-						}
-					}}
-				>
                     <Modal 
                         title={`${dateStr} ${selectedHour.toString().padStart(2, '0')}:00`}
                         open={isModalOpen} 
@@ -263,31 +251,19 @@ const Page = () => {
                             onChange={({target: {value}}) => setReservationPrice(value)}
                         />
                     </Modal>
-				</ConfigProvider>
                 </div>
             </div>
             <h2 className='mt-10'>Upcoming Reservations</h2>
 			{
 				unclaimedData.length === 0?
-				<ConfigProvider
-					theme={{
-						components: {
-							Empty: {
-								colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-								colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
-							}
-						}
-					}}
-				>
-					<div className={`
-						flex items-center justify-center
-						dark:bg-slate-700 rounded mt-5 mb-5
-						h-[30vh]
-						shadow
-					`}>
-						<Empty/>
-					</div>
-				</ConfigProvider> :
+				<div className={`
+					flex items-center justify-center
+					dark:bg-slate-700 rounded mt-5 mb-5
+					h-[30vh]
+					shadow
+				`}>
+					<Empty/>
+				</div> :
 				<div
 					className={`
 						grid 2xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-2 gap-1
@@ -317,25 +293,14 @@ const Page = () => {
             <h2 className='mt-10'>Unclaimed Tiplinks</h2>
 			{
 				unclaimedData.length === 0?
-				<ConfigProvider
-					theme={{
-						components: {
-							Empty: {
-								colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-								colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
-							}
-						}
-					}}
-				>
-					<div className={`
-						flex items-center justify-center
-						dark:bg-slate-700 rounded mt-5 mb-5
-						h-[30vh]
-						shadow
-					`}>
-						<Empty/>
-					</div>
-				</ConfigProvider> :
+				<div className={`
+					flex items-center justify-center
+					dark:bg-slate-700 rounded mt-5 mb-5
+					h-[30vh]
+					shadow
+				`}>
+					<Empty/>
+				</div> :
 				<div
 					className={`
 						grid xl:grid-cols-5 md:grid-cols-4 grid-cols-3 xl:gap-2 gap-1

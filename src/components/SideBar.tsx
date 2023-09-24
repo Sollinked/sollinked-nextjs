@@ -140,6 +140,12 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
             notification={hasUnrespondedMail}
           />
           <SideBarItem
+            link="/broadcast"
+            text="Broadcast"
+            active={pathname.search(/\/broadcast/g) !== -1}
+            notification={hasUnrespondedMail}
+          />
+          <SideBarItem
             link="/calendar"
             text="Calendar"
             active={pathname === "/calendar"}
@@ -167,7 +173,7 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
           />
           <button
             className={`
-              absolute bottom-5 left-[45%]
+              absolute md:bottom-5 bottom-[65px] left-[45%]
               h-5 w-5
             `}
             onClick={toggleTheme}

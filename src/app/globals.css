@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  .no-tailwindcss-base, .no-tailwindcss-base * , .no-tailwindcss-base > * {
+      font-size: revert;
+      font-weight: revert;
+      color: revert;
+      margin: revert;
+      display: revert;
+      vertical-align: revert;
+      max-width: revert;
+      height: revert;
+      border-width: revert;
+      border-style: revert;
+      border-color: revert;
+      outline: revert;
+      list-style: revert;
+      padding: revert;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

@@ -247,47 +247,33 @@ const Page = () => {
             </div>
 
             {/** Change to modal */}
-
-			<ConfigProvider
-				theme={{
-					components: {
-						Modal: {
-							contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-							headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-							titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-							colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
-						}
-					}
-				}}
-			>
-				<Modal
-					title="New Github Profile" 
-					className='github-profile-modal'
-					open={isModalOpen} 
-					onOk={onSaveClick} 
-					onCancel={handleCancel}
-					footer={[
-						<button 
-							key="submit"
-							onClick={onSaveClick}
-							className={`
-								w-[100px] h-[30px] rounded
-								bg-green-500 dark:text-white text-black
-							`}
-						>
-							{isSaving? 'Saving..' : 'Save'}
-						</button>,
-						]}
-				>
-					<Input
-						type="text"
-						addonBefore="Repo Link"
-						value={repoLink}
-						onChange={({ target: {value}}) => setRepoLink(value)}
-						placeholder='/{owner}/{repo}'
-					/>
-				</Modal>
-			</ConfigProvider>
+            <Modal
+                title="New Github Profile" 
+                className='github-profile-modal'
+                open={isModalOpen} 
+                onOk={onSaveClick} 
+                onCancel={handleCancel}
+                footer={[
+                    <button 
+                        key="submit"
+                        onClick={onSaveClick}
+                        className={`
+                            w-[100px] h-[30px] rounded
+                            bg-green-500 dark:text-white text-black
+                        `}
+                    >
+                        {isSaving? 'Saving..' : 'Save'}
+                    </button>,
+                    ]}
+            >
+                <Input
+                    type="text"
+                    addonBefore="Repo Link"
+                    value={repoLink}
+                    onChange={({ target: {value}}) => setRepoLink(value)}
+                    placeholder='/{owner}/{repo}'
+                />
+            </Modal>
         </div>
     );
 }

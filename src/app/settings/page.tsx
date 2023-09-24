@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Icon from '@mdi/react';
 import { mdiCameraPlus } from '@mdi/js';
 import { toast } from 'react-toastify';
-import { ConfigProvider, Table, Modal, Empty } from 'antd';
+import { Table, Modal } from 'antd';
 import { Input } from '@/components/Input';
 import { LeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
@@ -21,7 +21,6 @@ const Page = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
-    const [isMailingListPriceModalOpen, setIsMailingListPriceModalOpen] = useState(false);
 
     //inputs
     const [userDetails, setUserDetails] = useState<User>(user);
@@ -32,10 +31,6 @@ const Page = () => {
 	const [day, setDay] = useState(0);
 	const [hour, setHour] = useState(0);
 	const [reservationPrice, setReservationPrice] = useState<number>();
-	const [mailingPriceAmount, setMailingPriceAmount] = useState("");
-	const [mailingPriceName, setMailingPriceName] = useState("");
-	const [mailingPricePrepayMonth, setMailingPricePrepayMonth] = useState("");
-	const [mailingPriceChargeEvery, setMailingPriceChargeEvery] = useState("");
 
     let inputRef = useRef<any>(null);
     const domain = useMemo(() => getEmailDomain(), []);
@@ -83,16 +78,6 @@ const Page = () => {
 		}
 		
 		cloned.reservationSettings = cloned.reservationSettings.filter((x, i) => i !== index);
-		setUserDetails(cloned);
-	}, [userDetails]);
-
-	const onToggleMailingListPriceTierIndex = useCallback((index: number) => {
-		let cloned = cloneObj(userDetails);
-		if(!cloned || !cloned.mailingList || !cloned.mailingList.tiers) {
-			return;
-		}
-
-		cloned.mailingList.tiers[index].is_active = !cloned.mailingList.tiers[index].is_active;
 		setUserDetails(cloned);
 	}, [userDetails]);
 
@@ -255,100 +240,6 @@ const Page = () => {
         ]
     }, [ onDeleteMessageIndex ]);
 
-    const mailingListTierColumns = useMemo(() => {
-        return [
-            {
-                title: 'Value (USDC)',
-                dataIndex: 'amount',
-                key: 'amount',
-                render: (data: string, row: MailingListPriceTier) => {
-                    return (
-						<div 
-							className={`
-								flex flex-col
-								dark:text-white text-black text-xs
-							`}
-						>
-							{toLocaleDecimal(data, 2, 2)}
-						</div>
-					)
-                },
-            },
-            {
-                title: 'Name',
-                dataIndex: 'name',
-                key: 'name',
-                render: (data: string, row: MailingListPriceTier) => {
-                    return (
-						<div 
-							className={`
-								flex flex-col
-								dark:text-white text-black text-xs
-							`}
-						>
-							{data}
-						</div>
-					)
-                },
-            },
-            {
-                title: 'Charge Interval (Months)',
-                dataIndex: 'charge_every',
-                key: 'charge_every',
-                render: (data: string, row: MailingListPriceTier) => {
-                    return (
-						<div 
-							className={`
-								flex flex-col
-								dark:text-white text-black text-xs
-							`}
-						>
-							{data}
-						</div>
-					)
-                },
-            },
-            {
-                title: 'Prepay (Months)',
-                dataIndex: 'prepay_month',
-                key: 'prepay_month',
-                render: (data: string, row: MailingListPriceTier) => {
-                    return (
-						<div 
-							className={`
-								flex flex-col
-								dark:text-white text-black text-xs
-							`}
-						>
-							{data}
-						</div>
-					)
-                },
-            },
-            {
-                title: 'Action',
-                dataIndex: 'is_active',
-                key: 'is_active',
-                render: (data: string, row: MailingListPriceTier, index: number) => {
-                    return (
-						<button 
-							className={`
-								dark:text-white text-black text-xs
-								${!data? 'dark:bg-red-500 bg-red-200' : 'dark:bg-green-500 bg-green-200'}
-								px-2 py-1
-								rounded-lg
-							`}
-							onClick={() => onToggleMailingListPriceTierIndex(index)}
-						>
-							{ data? 'Active' : 'Inactive' }
-						</button>
-                    );
-                },
-                sorter: false,
-            },
-        ]
-    }, [ onToggleMailingListPriceTierIndex ]);
-
     // save button
     const onSaveClick = useCallback(async() => {
         if(!userDetails) {
@@ -368,22 +259,8 @@ const Page = () => {
             return;
         }
 
-		if(!mailingList) {
-			return;
-		}
-
         setIsSaving(true);
         try {
-            // update user tiers
-			if(userDetails.mailingList) {
-				let res4 = await mailingList.updateTiers(userDetails.mailingList.id, { prices: userDetails.mailingList.tiers ?? [] });
-				if(res4 && (typeof res4 === 'string' || typeof res4.data === 'string')) {
-					let errMessage = typeof res4 === 'string'? res4 : res4.data.data;
-					toast.error(errMessage ?? "Error saving data");
-					setIsSaving(false);
-					return;
-				}
-			}
 
             let res = await account.update({
                 ...userDetails,
@@ -491,56 +368,6 @@ const Page = () => {
 		setReservationPrice(undefined);
 	}, [ userDetails, day, hour, reservationPrice ]);
 
-	const onNewMailingListPriceTier = useCallback(() => {
-		let cloned = cloneObj(userDetails);
-		if(!mailingPriceAmount && mailingPriceAmount !== '0') {
-			toast.error('Please set the price');
-			return
-		}
-		if(!mailingPriceName) {
-			toast.error('Please set the name');
-			return
-		}
-		if(!mailingPriceChargeEvery) {
-			toast.error('Please set the charge interval');
-			return
-		}
-		if(!mailingPricePrepayMonth) {
-			toast.error('Please set the amount the subscriber has to prepay.');
-			return
-		}
-		if(!cloned.mailingList) {
-			cloned.mailingList = {
-				id: 0, // 0 = new
-				user_id: user.id,
-				product_id: "",
-				wallet_id: "",
-				tiers: [],
-			}	
-		}
-
-		cloned.mailingList.tiers.push({
-			id: 0, // 0 = new
-			mailing_list_id: 0, // not used
-			price_id: "", // not used
-			paymentlink_id: "",
-			name: mailingPriceName,
-			description: "", // not used for now
-			amount: Number(mailingPriceAmount),
-			currency: "", // not used for now, it's hardcoded to USDC in the backend
-			charge_every: parseInt(mailingPriceChargeEvery),
-			prepay_month: parseInt(mailingPricePrepayMonth),
-			is_active: true,
-		});
-
-		setUserDetails(cloned);
-		setIsMailingListPriceModalOpen(false);
-		setMailingPriceName("");
-		setMailingPriceAmount("");
-		setMailingPriceChargeEvery("");
-		setMailingPricePrepayMonth("");
-	}, [ userDetails, mailingPriceName, mailingPriceAmount, mailingPriceChargeEvery, mailingPricePrepayMonth ]);
-
     // whenever user updates
     useEffect(() => {
 		setPfp(user.profile_picture ?? "");
@@ -554,10 +381,6 @@ const Page = () => {
 
 	const handleCalendarCancel = useCallback(() => {
 		setIsCalendarModalOpen(false);
-	}, []);
-
-	const handleMailingListPriceCancel = useCallback(() => {
-		setIsMailingListPriceModalOpen(false);
 	}, []);
 
 
@@ -715,378 +538,210 @@ const Page = () => {
 				/>
 			</div>
 
-			<ConfigProvider
-				theme={{
-					components: {
-						Tabs: {
-							inkBarColor: theme === "light"? '#1677ff' : 'rgb(99,102,241)',
-							itemSelectedColor: theme === "light"? "#1677ff" : 'rgb(255,255,255)',
-							itemColor: theme === "light"? "	rgba(0, 0, 0, 0.88)" : 'rgb(100,116,139)',
-						},
-						Table: {
-							fontSize: 10,
-							headerBg: theme === "light"? "#fafafa" : 'rgb(51,65,85)',
-							headerColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-							headerSortActiveBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
-							headerSortHoverBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
-							colorBgContainer: theme === "light"? "#ffffff" : 'rgb(71,85,105)',
-							headerSplitColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
-							borderColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
-						},
-						Empty: {
-							colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-							colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
-						}
-					}
-				}}
+			<div className={`
+				m-auto mt-10 
+				text-center
+				flex flex-row justify-center align-center
+			`}>
+				<span>Mail Settings</span>
+				<button
+					className={`
+						ml-3 my-auto border-[1px]
+						h-7 w-7 text-[20px]
+						rounded
+						flex items-center justify-center
+						dark:text-white text-white bg-green-500
+						border-none
+					`}
+					onClick={() => { setIsModalOpen(true) }}
+				>
+					<span>+</span>
+				</button>
+			</div>
+			<div className={`
+				flex flex-col items-center justify-start
+				w-full
+				mt-3 mb-3
+			`}>
+				<div className={`
+					flex flex-col items-center justify-start
+					shadow
+					rounded-md
+				`}>
+					<Table
+						className='xl:w-[40vw] md:w-[500px] w-[90vw]'
+						columns={mailTierColumns}
+						dataSource={userDetails.tiers}
+						pagination={false}
+						rowKey={(r) => `mail-tier-${r.id}`}
+					/>
+				</div>
+			</div>
+
+			<div className={`
+				m-auto mt-10 
+				text-center
+				flex flex-row justify-center align-center
+			`}>
+				<span>Calendar Settings</span>
+				<button
+					className={`
+						ml-3 my-auto border-[1px]
+						h-7 w-7 text-[20px]
+						rounded
+						flex items-center justify-center
+						dark:text-white text-white bg-green-500
+						border-none
+					`}
+					onClick={() => { setIsCalendarModalOpen(true) }}
+				>
+					<span>+</span>
+				</button>
+			</div>
+
+			<div className={`
+				flex flex-col items-center justify-start
+				w-full
+				mt-3 mb-3
+			`}>
+
+				<div className="xl:w-[40vw] md:w-[500px] w-[90vw] mb-2">
+					<Input
+						addonBefore='Max'
+						addonAfter='Days In Advance'
+						type="number"
+						placeholder='100'
+						value={userDetails.calendar_advance_days.toString() ?? ""} 
+						onChange={(e) => onUserDetailsChanged(e.target.value, "calendar_advance_days")}
+					/>
+				</div>
+
+				<div className={`
+					flex flex-col items-center justify-start
+					shadow
+					rounded-md
+				`}>
+					<Table
+						className='xl:w-[40vw] md:w-[500px] w-[90vw]'
+						columns={calendarTierColumn}
+						dataSource={userDetails.reservationSettings}
+						pagination={false}
+						rowKey={(r) => `calendar-tier-${r.day}-${r.hour}`}
+					/>
+				</div>
+			</div>
+			<Modal
+				title="New Mail Tier" 
+				open={isModalOpen} 
+				onOk={onNewMailTier} 
+				onCancel={handleCancel}
+				footer={[
+					<button 
+						key="submit" 
+						onClick={onNewMailTier}
+						className={`
+							bg-green-500 dark:text-white text-black rounded
+							px-3 py-2
+						`}
+					>
+						Add
+					</button>,
+				]}
 			>
+				<Input
+					type="number"
+					addonBefore="Respond In Days"
+					value={respondDay.toString()}
+					onChange={({ target: {value}}) => { setRespondDay(value) }}
+					placeholder='0'
+				/>
+				<div className="mb-1"></div>
+				<Input
+					type="number"
+					addonBefore="Price"
+					value={respondPrice.toString()}
+					onChange={({ target: {value}}) => { setRespondPrice(value)}}
+					placeholder='0'
+					step="0.01"
+				/>
+			</Modal>
 
-				<div className={`
-					m-auto mt-10 
-					text-center
-					flex flex-row justify-center align-center
-				`}>
-					<span>Mail Settings</span>
-					<button
+			<Modal
+				title="New Calendar Preset" 
+				open={isCalendarModalOpen} 
+				onOk={onNewCalendarPreset} 
+				onCancel={handleCalendarCancel}
+				footer={[
+					<button 
+						key="submit" 
+						onClick={onNewCalendarPreset}
 						className={`
-							ml-3 my-auto border-[1px]
-							h-7 w-7 text-[20px]
-							rounded
-							flex items-center justify-center
-							dark:text-white text-white bg-green-500
-							border-none
+							bg-green-500 dark:text-white text-black rounded
+							px-3 py-2
 						`}
-						onClick={() => { setIsModalOpen(true) }}
 					>
-						<span>+</span>
-					</button>
-				</div>
-				<div className={`
-					flex flex-col items-center justify-start
-					w-full
-					mt-3 mb-3
-				`}>
-					<div className={`
-						flex flex-col items-center justify-start
-						shadow
-						rounded-md
-					`}>
-						<Table
-							className='xl:w-[40vw] md:w-[500px] w-[90vw]'
-							columns={mailTierColumns}
-							dataSource={userDetails.tiers}
-							pagination={false}
-							rowKey={(r) => `mail-tier-${r.id}`}
-						/>
-					</div>
-				</div>
-				<div className={`
-					m-auto mt-10 
-					text-center
-					flex flex-row justify-center align-center
-				`}>
-					<span>Mailing List Settings</span>
-					<button
-						className={`
-							ml-3 my-auto border-[1px]
-							h-7 w-7 text-[20px]
-							rounded
-							flex items-center justify-center
-							dark:text-white text-white bg-green-500
-							border-none
-						`}
-						onClick={() => { setIsMailingListPriceModalOpen(true) }}
-					>
-						<span>+</span>
-					</button>
-				</div>
-				<div className={`
-					flex flex-col items-center justify-start
-					w-full
-					mt-3 mb-3
-				`}>
-					<div className={`
-						flex flex-col items-center justify-start
-						shadow
-						rounded-md
-					`}>
-						{/* <Table
-							className='xl:w-[40vw] md:w-[500px] w-[90vw]'
-							columns={mailingListTierColumns}
-							dataSource={userDetails.mailingList?.tiers ?? []}
-							pagination={false}
-							rowKey={(r) => `mailing-list-price-tier-${r.id}`}
-						/> */}
-						{
-							!userDetails.mailingList &&
-							<div className={`
-								flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] min-h-[30vh] items-center justify-center
-								dark:bg-slate-600 bg-white
-								dark:border-none border-[1px] border-gray-950
-							`}>
-								<Empty/>
-							</div>
-						}
-						{
-							userDetails.mailingList?.tiers.map((x, index) => (
-								<div className={`
-									flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] mb-1 relative
-									dark:bg-slate-700 bg-white
-									dark:border-none border-[1px] border-gray-950
-								`}
-									key={`mailing-price-tier-${index}`}
-								>
-									<strong>{x.name}</strong>
-									<span className='text-xs'>Bills {x.amount} USDC every {x.charge_every} Month</span>
-									<span className='text-xs'>Subscriber has to pay {x.prepay_month} month(s) upfront</span>
-									<button 
-										className={`
-											absolute top-1 right-1 rounded w-[100px]
-											px-3 py-1 text-xs
-											${x.is_active? 'dark:bg-green-500 bg-green-200' : 'dark:bg-red-500 bg-red-200'}
-										`}
-										onClick={() => onToggleMailingListPriceTierIndex(index)}
-									>
-										{x.is_active? 'Active' : 'Inactive'}
-									</button>
-								</div>
-							))
-						}
-					</div>
-				</div>
-
-				<div className={`
-					m-auto mt-10 
-					text-center
-					flex flex-row justify-center align-center
-				`}>
-					<span>Calendar Settings</span>
-					<button
-						className={`
-							ml-3 my-auto border-[1px]
-							h-7 w-7 text-[20px]
-							rounded
-							flex items-center justify-center
-							dark:text-white text-white bg-green-500
-							border-none
-						`}
-						onClick={() => { setIsCalendarModalOpen(true) }}
-					>
-						<span>+</span>
-					</button>
-				</div>
-
-				<div className={`
-					flex flex-col items-center justify-start
-					w-full
-					mt-3 mb-3
-				`}>
-
-					<div className="xl:w-[40vw] md:w-[500px] w-[90vw] mb-2">
-						<Input
-							addonBefore='Max'
-							addonAfter='Days In Advance'
-							type="number"
-							placeholder='100'
-							value={userDetails.calendar_advance_days.toString() ?? ""} 
-							onChange={(e) => onUserDetailsChanged(e.target.value, "calendar_advance_days")}
-						/>
-					</div>
-
-					<div className={`
-						flex flex-col items-center justify-start
-						shadow
-						rounded-md
-					`}>
-						<Table
-							className='xl:w-[40vw] md:w-[500px] w-[90vw]'
-							columns={calendarTierColumn}
-							dataSource={userDetails.reservationSettings}
-							pagination={false}
-							rowKey={(r) => `calendar-tier-${r.day}-${r.hour}`}
-						/>
-					</div>
-				</div>
-			</ConfigProvider>
-
-			<ConfigProvider
-				theme={{
-					components: {
-						Modal: {
-							contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-							headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-							titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-							colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
-						}
-					}
-				}}
+						Add
+					</button>,
+				]}
 			>
-				<Modal
-					title="New Mail Tier" 
-					open={isModalOpen} 
-					onOk={onNewMailTier} 
-					onCancel={handleCancel}
-					footer={[
-						<button 
-							key="submit" 
-							onClick={onNewMailTier}
-							className={`
-								bg-green-500 dark:text-white text-black rounded
-								px-3 py-2
-							`}
-						>
-							Add
-						</button>,
-					]}
+				<select
+					className={`
+						w-full border-[1px] rounded
+						px-3 py-1 mb-1 mt-3
+						dark:bg-slate-700 dark:text-white text-black border-slate-600
+					`}
+					onChange={({target: {value}}) => { setDay(Number(value)) }}
 				>
-					<Input
-						type="number"
-						addonBefore="Respond In Days"
-						value={respondDay.toString()}
-						onChange={({ target: {value}}) => { setRespondDay(value) }}
-						placeholder='0'
-					/>
-					<div className="mb-1"></div>
-					<Input
-						type="number"
-						addonBefore="Price"
-						value={respondPrice.toString()}
-						onChange={({ target: {value}}) => { setRespondPrice(value)}}
-						placeholder='0'
-						step="0.01"
-					/>
-				</Modal>
-
-				<Modal
-					title="New Calendar Preset" 
-					open={isCalendarModalOpen} 
-					onOk={onNewCalendarPreset} 
-					onCancel={handleCalendarCancel}
-					footer={[
-						<button 
-							key="submit" 
-							onClick={onNewCalendarPreset}
-							className={`
-								bg-green-500 dark:text-white text-black rounded
-								px-3 py-2
-							`}
-						>
-							Add
-						</button>,
-					]}
+					<option value="0">Sunday</option>
+					<option value="1">Monday</option>
+					<option value="2">Tuesday</option>
+					<option value="3">Wednesday</option>
+					<option value="4">Thursday</option>
+					<option value="5">Friday</option>
+					<option value="6">Saturday</option>
+				</select>
+				<select
+					className={`
+						w-full border-[1px] rounded
+						px-3 py-1 mb-1
+						outline-none 
+						dark:bg-slate-700 dark:text-white text-black border-slate-600
+					`}
+					onChange={({target: {value}}) => { setHour(Number(value)) }}
 				>
-					<select
-						className={`
-							w-full border-[1px] rounded
-							px-3 py-1 mb-1 mt-3
-							dark:bg-slate-700 dark:text-white text-black border-slate-600
-						`}
-						onChange={({target: {value}}) => { setDay(Number(value)) }}
-					>
-						<option value="0">Sunday</option>
-						<option value="1">Monday</option>
-						<option value="2">Tuesday</option>
-						<option value="3">Wednesday</option>
-						<option value="4">Thursday</option>
-						<option value="5">Friday</option>
-						<option value="6">Saturday</option>
-					</select>
-					<select
-						className={`
-							w-full border-[1px] rounded
-							px-3 py-1 mb-1
-							outline-none 
-							dark:bg-slate-700 dark:text-white text-black border-slate-600
-						`}
-						onChange={({target: {value}}) => { setHour(Number(value)) }}
-					>
-						<option value="0">12 AM</option>
-						<option value="1">1 AM</option>
-						<option value="2">2 AM</option>
-						<option value="3">3 AM</option>
-						<option value="4">4 AM</option>
-						<option value="5">5 AM</option>
-						<option value="6">6 AM</option>
-						<option value="7">7 AM</option>
-						<option value="8">8 AM</option>
-						<option value="9">9 AM</option>
-						<option value="10">10 AM</option>
-						<option value="11">11 AM</option>
-						<option value="12">12 PM</option>
-						<option value="13">1 PM</option>
-						<option value="14">2 PM</option>
-						<option value="15">3 PM</option>
-						<option value="16">4 PM</option>
-						<option value="17">5 PM</option>
-						<option value="18">6 PM</option>
-						<option value="19">7 PM</option>
-						<option value="20">8 PM</option>
-						<option value="21">9 PM</option>
-						<option value="22">10 PM</option>
-						<option value="23">11 PM</option>
-					</select>
-					<Input
-						type="number"
-						addonBefore="Price"
-						value={reservationPrice?.toString() ?? ""}
-						onChange={({ target: {value}}) => { setReservationPrice(Number(value))}}
-						placeholder='0'
-					/>
-				</Modal>
-
-				<Modal
-					title="New Mailing List Tier" 
-					open={isMailingListPriceModalOpen} 
-					onOk={onNewMailingListPriceTier} 
-					onCancel={handleMailingListPriceCancel}
-					footer={[
-						<button 
-							key="submit" 
-							onClick={onNewMailingListPriceTier}
-							className={`
-								bg-green-500 dark:text-white text-black rounded
-								px-3 py-2
-							`}
-						>
-							Add
-						</button>,
-					]}
-				>
-					<Input
-						type="number"
-						addonBefore="Value (USDC)"
-						value={mailingPriceAmount}
-						onChange={({ target: {value}}) => { setMailingPriceAmount(value) }}
-						placeholder='1, 2, 3, 4, 5...'
-					/>
-					<div className="mb-1"></div>
-					<Input
-						type="text"
-						addonBefore="Name"
-						value={mailingPriceName}
-						onChange={({ target: {value}}) => { setMailingPriceName(value) }}
-						placeholder='Your Tier Name'
-					/>
-					<div className="mb-1"></div>
-					<Input
-						type="number"
-						addonBefore="Bill Per"
-						value={mailingPriceChargeEvery}
-						onChange={({ target: {value}}) => { setMailingPriceChargeEvery(value)}}
-						placeholder='1, 2, 3, 4, 5... Month'
-						step="1"
-					/>
-					<div className="mb-1"></div>
-					<Input
-						type="number"
-						addonBefore="Upfront"
-						value={mailingPricePrepayMonth}
-						onChange={({ target: {value}}) => { setMailingPricePrepayMonth(value)}}
-						placeholder='1, 2, 3, 4, 5... Month'
-						step="1"
-					/>
-				</Modal>
-			</ConfigProvider>
+					<option value="0">12 AM</option>
+					<option value="1">1 AM</option>
+					<option value="2">2 AM</option>
+					<option value="3">3 AM</option>
+					<option value="4">4 AM</option>
+					<option value="5">5 AM</option>
+					<option value="6">6 AM</option>
+					<option value="7">7 AM</option>
+					<option value="8">8 AM</option>
+					<option value="9">9 AM</option>
+					<option value="10">10 AM</option>
+					<option value="11">11 AM</option>
+					<option value="12">12 PM</option>
+					<option value="13">1 PM</option>
+					<option value="14">2 PM</option>
+					<option value="15">3 PM</option>
+					<option value="16">4 PM</option>
+					<option value="17">5 PM</option>
+					<option value="18">6 PM</option>
+					<option value="19">7 PM</option>
+					<option value="20">8 PM</option>
+					<option value="21">9 PM</option>
+					<option value="22">10 PM</option>
+					<option value="23">11 PM</option>
+				</select>
+				<Input
+					type="number"
+					addonBefore="Price"
+					value={reservationPrice?.toString() ?? ""}
+					onChange={({ target: {value}}) => { setReservationPrice(Number(value))}}
+					placeholder='0'
+				/>
+			</Modal>
 		</div>
 	);
 };

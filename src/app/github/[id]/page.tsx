@@ -425,200 +425,158 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                     </div>
                 </div>
             </div>
+            <div className={`
+                m-auto mt-10 
+                text-center
+                flex flex-row justify-center align-center
+            `}>
+                <span>Tiers</span>
+                <button
+                    className={`
+                        ml-3 my-auto border-[1px]
+                        h-7 w-7 text-[20px]
+                        rounded
+                        flex items-center justify-center
+                        dark:text-white text-white bg-green-500
+                        border-none
+                    `}
+                    onClick={onAddTierClick}
+                >
+                    <span>+</span>
+                </button>
+            </div>
 
-			<ConfigProvider
-				theme={{
-					components: {
-                        Tabs: {
-                            inkBarColor: theme === "light"? '#1677ff' : 'rgb(99,102,241)',
-                            itemSelectedColor: theme === "light"? "#1677ff" : 'rgb(255,255,255)',
-                            itemColor: theme === "light"? "	rgba(0, 0, 0, 0.88)" : 'rgb(100,116,139)',
-                        },
-                        Table: {
-                            fontSize: 10,
-                            headerBg: theme === "light"? "#fafafa" : 'rgb(51,65,85)',
-                            headerColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-                            headerSortActiveBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
-                            headerSortHoverBg: theme === "light"? "#f0f0f0" : 'rgb(30,41,59)',
-                            colorBgContainer: theme === "light"? "#ffffff" : 'rgb(71,85,105)',
-                            headerSplitColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
-                            borderColor: theme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
-                        },
-                        Empty: {
-                            colorText: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-                            colorTextDisabled: theme === "light"? "rgba(0, 0, 0, 0.25)" : 'white',
-                        }
-					}
-				}}
-			>
+            <div className={`
+                flex flex-col items-center justify-start
+                w-full
+                mt-3 mb-3
+            `}>
                 <div className={`
-                    m-auto mt-10 
-                    text-center
-                    flex flex-row justify-center align-center
+                    flex flex-col items-center justify-start
+                    shadow
+                    rounded-md
                 `}>
-                    <span>Tiers</span>
-                    <button
-                        className={`
-                            ml-3 my-auto border-[1px]
-                            h-7 w-7 text-[20px]
-                            rounded
-                            flex items-center justify-center
-                            dark:text-white text-white bg-green-500
-                            border-none
-                        `}
-                        onClick={onAddTierClick}
-                    >
-                        <span>+</span>
-                    </button>
+                    <Table
+                        className='xl:w-[40vw] w-[500px]'
+                        columns={githubTierColumns}
+                        dataSource={tiers}
+                        pagination={false}
+                        rowKey={(r) => `github-tier-${r.id}`}
+                    />
                 </div>
+            </div>
 
+
+            <div className={`
+                m-auto mt-10 
+                text-center
+                flex flex-row justify-center align-center
+            `}>
+                <span>Whitelists</span>
+                <button
+                    className={`
+                        ml-3 my-auto border-[1px]
+                        h-7 w-7 text-[20px]
+                        rounded
+                        flex items-center justify-center
+                        dark:text-white text-white bg-green-500
+                        border-none
+                    `}
+                    onClick={onAddWhitelistClick}
+                >
+                    <span>+</span>
+                </button>
+            </div>
+
+            <div className={`
+                flex flex-col items-center justify-start
+                w-full
+                mt-3 mb-3
+            `}>
                 <div className={`
-					flex flex-col items-center justify-start
-					w-full
-					mt-3 mb-3
-				`}>
-					<div className={`
-						flex flex-col items-center justify-start
-						shadow
-						rounded-md
-					`}>
-						<Table
-							className='xl:w-[40vw] w-[500px]'
-							columns={githubTierColumns}
-							dataSource={tiers}
-							pagination={false}
-							rowKey={(r) => `github-tier-${r.id}`}
-						/>
-					</div>
-				</div>
-
-
-                <div className={`
-                    m-auto mt-10 
-                    text-center
-                    flex flex-row justify-center align-center
+                    flex flex-col items-center justify-start
+                    shadow
+                    rounded-md
                 `}>
-                    <span>Whitelists</span>
-                    <button
-                        className={`
-                            ml-3 my-auto border-[1px]
-                            h-7 w-7 text-[20px]
-                            rounded
-                            flex items-center justify-center
-                            dark:text-white text-white bg-green-500
-                            border-none
-                        `}
-                        onClick={onAddWhitelistClick}
-                    >
-                        <span>+</span>
-                    </button>
+                    <Table
+                        className='xl:w-[40vw] w-[500px]'
+                        columns={githubWhitelistColumns}
+                        dataSource={whitelistObject}
+                        pagination={false}
+                        rowKey={(r) => `github-tier-${r.id}`}
+                    />
                 </div>
-
-                <div className={`
-					flex flex-col items-center justify-start
-					w-full
-					mt-3 mb-3
-				`}>
-					<div className={`
-						flex flex-col items-center justify-start
-						shadow
-						rounded-md
-					`}>
-						<Table
-							className='xl:w-[40vw] w-[500px]'
-							columns={githubWhitelistColumns}
-							dataSource={whitelistObject}
-							pagination={false}
-							rowKey={(r) => `github-tier-${r.id}`}
-						/>
-					</div>
-				</div>
-
-            </ConfigProvider>
-
-			<ConfigProvider
-				theme={{
-					components: {
-                        Modal: {
-                            contentBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-                            headerBg: theme === "light"? "#ffffff" : 'rgb(30,41,59)',
-                            titleColor: theme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-                            colorIcon: theme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
-                        }
-					}
-				}}
-			>
-				<Modal
-					title="New Issue Tier" 
-					open={isModalOpen} 
-					onOk={onAddTier} 
-					onCancel={handleCancel}
-					footer={[
-						<button 
-							key="submit" 
-							onClick={onAddTier}
-							className={`
-								bg-green-500 dark:text-white text-black rounded
-								px-3 py-2
-							`}
-						>
-							Add
-						</button>,
-					]}
-				>
-                    <Input
-                        type="text"
-                        addonBefore="Label"
-                        value={label.toString()}
-                        onChange={({ target: {value}}) => { setLabel(value)}}
-                        placeholder='your label'
-                    />
-                    <div className="mb-1"></div>
-					<Input
-						type="number"
-						addonBefore="Value (USDC)"
-						value={valueUsd.toString()}
-						onChange={({ target: {value}}) => { setValueUsd(Number(value)) }}
-						placeholder='0'
-						step="0.01"
-					/>
-                    <div className="mb-1"></div>
-					<Input
-						type="color"
-						addonBefore="Color"
-						value={color}
-						onChange={({ target: {value}}) => { setColor(value) }}
-						placeholder='0'
-						step="0.01"
-					/>
-				</Modal>
-				<Modal
-					title="New Whitelist" 
-					open={isWhitelistModalOpen} 
-					onOk={onAddWhitelist} 
-					onCancel={handleWhitelistCancel}
-					footer={[
-						<button 
-							key="submit" 
-							onClick={onAddWhitelist}
-							className={`
-								bg-green-500 dark:text-white text-black rounded
-								px-3 py-2
-							`}
-						>
-							Add
-						</button>,
-					]}
-				>
-                    <Input
-                        type="text"
-                        addonBefore="Whitelist"
-                        value={whitelist.toString()}
-                        onChange={({ target: {value}}) => { setWhitelist(value)}}
-                        placeholder='contributer_username or contributor@email.com'
-                    />
-				</Modal>
-			</ConfigProvider>
+            </div>
+            <Modal
+                title="New Issue Tier" 
+                open={isModalOpen} 
+                onOk={onAddTier} 
+                onCancel={handleCancel}
+                footer={[
+                    <button 
+                        key="submit" 
+                        onClick={onAddTier}
+                        className={`
+                            bg-green-500 dark:text-white text-black rounded
+                            px-3 py-2
+                        `}
+                    >
+                        Add
+                    </button>,
+                ]}
+            >
+                <Input
+                    type="text"
+                    addonBefore="Label"
+                    value={label.toString()}
+                    onChange={({ target: {value}}) => { setLabel(value)}}
+                    placeholder='your label'
+                />
+                <div className="mb-1"></div>
+                <Input
+                    type="number"
+                    addonBefore="Value (USDC)"
+                    value={valueUsd.toString()}
+                    onChange={({ target: {value}}) => { setValueUsd(Number(value)) }}
+                    placeholder='0'
+                    step="0.01"
+                />
+                <div className="mb-1"></div>
+                <Input
+                    type="color"
+                    addonBefore="Color"
+                    value={color}
+                    onChange={({ target: {value}}) => { setColor(value) }}
+                    placeholder='0'
+                    step="0.01"
+                />
+            </Modal>
+            <Modal
+                title="New Whitelist" 
+                open={isWhitelistModalOpen} 
+                onOk={onAddWhitelist} 
+                onCancel={handleWhitelistCancel}
+                footer={[
+                    <button 
+                        key="submit" 
+                        onClick={onAddWhitelist}
+                        className={`
+                            bg-green-500 dark:text-white text-black rounded
+                            px-3 py-2
+                        `}
+                    >
+                        Add
+                    </button>,
+                ]}
+            >
+                <Input
+                    type="text"
+                    addonBefore="Whitelist"
+                    value={whitelist.toString()}
+                    onChange={({ target: {value}}) => { setWhitelist(value)}}
+                    placeholder='contributer_username or contributor@email.com'
+                />
+            </Modal>
         </div>
     );
 }

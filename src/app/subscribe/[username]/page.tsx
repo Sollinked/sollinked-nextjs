@@ -228,7 +228,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                             onClick={() => { setSelectedIndex(index) }}
                         >
                             <strong className='text-center p-3 border-b-[0.5px] border-slate-500 w-full' style={{ fontSize: 22 }}>{x.name}</strong>
-                            <div className='text-xl mt-5' style={{ fontSize: 40 }}>{x.amount} USDC</div>
+                            <div className='text-xl mt-5' style={{ fontSize: 40 }}>{x.amount * 1.05} USDC</div>
                             <div className='text-xs mt-3' style={{ fontSize: 10 }}>Every {x.charge_every} Month</div>
                             <div className='text-xs mb-2' style={{ fontSize: 10 }}>{x.prepay_month} {x.prepay_month > 1? 'months' : 'month'} upfront</div>
                         </button>
