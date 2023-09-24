@@ -10,7 +10,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import axios from 'axios';
 import qs from 'qs';
 import { Connection, VersionedTransaction } from '@solana/web3.js';
-import { getRPCEndpoint } from '@/common/utils';
+import { getEmailDomain, getRPCEndpoint } from '@/common/utils';
 
 const Page = ({params: { username }}: { params: { username: string }}) => {
     const socketRef = useRef<Socket>();
@@ -21,11 +21,10 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     const [userMailingList, setUserMailingList] = useState<MailingList>();
     const [displayName, setDisplayName] = useState("");
     const [email, setEmail] = useState("");
+    const [isEmailValid, setIsEmailValid] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const { theme } = useTheme();
     const wallet = useWallet();
-
-    const [isSaving, setIsSaving] = useState(false);
     const isGettingData = useRef(false);
 
     const getData = useCallback(async() => {
@@ -83,7 +82,11 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         }
 
         setEmail(user.email_address ?? "");
-    }, [ user, ]);
+    }, [ user, email ]);
+
+    useEffect(() => {
+        setIsEmailValid(!email.includes(getEmailDomain()));
+    }, [email]);
 
     const onEmailChange = useCallback((value: string) => {
         setEmail(value);
@@ -120,6 +123,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                     quantity: +lineItem.quantity,
                 };
             });
+
             const payRes = await axios.post(
                 `https://api.spherepay.co/v1/public/paymentLink/pay/${priceItem.paymentlink_id}?${qs.stringify(
                     {
@@ -139,7 +143,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             );
             const txBuf = Buffer.from(payRes.data.transaction, "base64");
             const tx = VersionedTransaction.deserialize(txBuf);
-            console.log(tx);
             const connection = new Connection(getRPCEndpoint());
 
             const blockHash = await connection.getLatestBlockhash('confirmed');
@@ -207,7 +210,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 displayName &&
                 <strong>Subscribe to {displayName}</strong>
             }
-            <div className="grid md:grid-cols-3 grid-cols-1 gap-2 mt-3">
+            <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-2 mt-3">
                 {
                     userMailingList?.tiers.map((x, index) => (
                         <button className={`
@@ -235,21 +238,26 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             <div className={`
                 flex flex-col
                 w-full
+                max-w-[600px]
             `}>
                 <strong className='mt-10'>Your Info</strong>
-                <div className='flex flex-col justify-end items-center mt-2 h-full space-y-2'>
+                <div className='relative flex flex-col justify-end items-center mt-2 h-full space-y-2'>
                     <input
                         type="text"
                         className={`
                             w-full px-3 py-2 rounded
                             dark:text-white dark:bg-slate-700 bg-white
-                            dark:border-none border-[1px] border-slate-300
                             outline-none
+                            ${isEmailValid? 'dark:border-none border-[1px] border-slate-300' : 'border-[1px] dark:border-red-500 border-red-300' }
                         `}
                         placeholder='your@email.com'
                         onChange={(e) => onEmailChange(e.target.value)}
                         value={email}
                     />
+                    {
+                        !isEmailValid &&
+                        <span className='w-full text-start text-xs dark:text-red-500 text-red-300'>Please do not use a @{getEmailDomain()} address</span>
+                    }
                 </div>
                 <button
                     className={`
@@ -260,7 +268,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                         dark:disabled:text-slate-300 disabled:text-slate-500
                     `}
                     onClick={onPayClick}
-                    disabled={isPaying || !email }
+                    disabled={isPaying || !email || !isEmailValid}
                 >
                     {isPaying? 'Subscribing' : 'Subscribe Now'}
                 </button>
