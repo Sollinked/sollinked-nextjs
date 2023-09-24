@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { CalendarFilled, CalendarOutlined, CloseCircleOutlined, LeftOutlined, LoadingOutlined, MailFilled, MailOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from 'next/image';
-import { sendTokensTo, toLocaleDecimal } from "@/common/utils";
+import { getEmailDomain, sendTokensTo, toLocaleDecimal } from "@/common/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import logo from '../../../public/logo.png';
 import { useRouter } from 'next/navigation';
@@ -15,10 +15,11 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isPaying, setIsPaying] = useState(false);
     const [email, setEmail] = useState("");
+    const [isEmailValid, setIsEmailValid] = useState(false);
     const [subject, setSubject] = useState("");
     const [message, setMessage] = useState("");
     const [publicUser, setPublicUser] = useState<PublicUser | undefined>();
-    const { account, mail } = useSollinked();
+    const { user, account, mail } = useSollinked();
     const wallet = useWallet();
 	const router = useRouter();
 
@@ -44,6 +45,19 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
 
         getData();
     }, [ username, account ]);
+
+    useEffect(() => {
+        if(email) {
+            return;
+        }
+
+        setEmail(user.email_address ?? "");
+    }, [ user, email ]);
+
+    useEffect(() => {
+        setIsEmailValid(!email.includes(getEmailDomain()));
+    }, [email]);
+
 
   
     const onPayClick = useCallback(async(value_usd: number) => {
@@ -113,8 +127,6 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             setIsPaying(false);
             return;
         }
-
-
 
         const USDC_TOKEN_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
         const USDC_DECIMALS = 1000000;
@@ -262,14 +274,18 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                   className={`
                     dark:bg-slate-800 rounded
                     px-3 py-2
-                    dark:border-none border-[1px] border-slate-300
                     outline-none disabled:cursor-not-allowed
+                    ${isEmailValid? 'dark:border-none border-[1px] border-slate-300' : 'border-[1px] dark:border-red-500 border-red-300' }
                   `} 
                     placeholder='Your Email'
                     onChange={({target: {value}}) => { setEmail(value) }}
                     value={email}
                     disabled={isPaying}
                 />
+                {
+                    !isEmailValid &&
+                    <span className='w-full text-start text-xs dark:text-red-500 text-red-300'>Please do not use a @{getEmailDomain()} address</span>
+                }
                 <input 
                   className={`
                     dark:bg-slate-800 rounded
@@ -314,7 +330,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                         <button 
                             key={`book-button-${index}`}
                             onClick={() => { onPayClick(x.value_usd) }}
-                            disabled={isPaying}
+                            disabled={isPaying || !email || !isEmailValid}
                             className={`
                               dark:bg-indigo-800 rounded px-3 py-2 text-xs
                               dark:border-none shadow border-[1px] border-slate-300
