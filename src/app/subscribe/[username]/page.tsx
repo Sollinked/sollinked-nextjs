@@ -60,7 +60,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         }
 
         catch {
-            toast.error('Unable to get user details');
+            toast.error('Unable to get details');
             setIsError(true);
         }
 
@@ -143,12 +143,10 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             );
             const txBuf = Buffer.from(payRes.data.transaction, "base64");
             const tx = VersionedTransaction.deserialize(txBuf);
-            const connection = new Connection(getRPCEndpoint());
+            const connection = new Connection(getRPCEndpoint(), 'confirmed');
 
             const blockHash = await connection.getLatestBlockhash('confirmed');
-            const txId = await wallet.sendTransaction(tx, connection, {
-                skipPreflight: true,
-            });
+            const txId = await wallet.sendTransaction(tx, connection);
             const confirmation = await connection.confirmTransaction({
                 blockhash: blockHash.blockhash,
                 lastValidBlockHeight: blockHash.lastValidBlockHeight,
@@ -199,6 +197,12 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     if(isLoading) {
         return (<div className='h-[80vh] w--full flex flex-col justify-center items-center'>
             <LoadingOutlined style={{ fontSize: 80 }}/>
+        </div>)
+    }
+
+    if(!userMailingList || userMailingList.tiers.length === 0) {
+        return (<div className='h-[80vh] w--full flex flex-col justify-center items-center'>
+            User hasn't set up their subscription plans. Please try again later.
         </div>)
     }
 

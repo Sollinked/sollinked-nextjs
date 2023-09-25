@@ -3,18 +3,55 @@ import { LeftOutlined } from "@ant-design/icons"
 import { useSollinked } from "@sollinked/sdk";
 import { Select } from "antd";
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
-import { Title } from '@ckeditor/ckeditor5-heading';
+import { toast } from "react-toastify";
 
 const Page = () => {
     const router = useRouter();
-    const { user } = useSollinked();
+    const { user, mailingList } = useSollinked();
     const [content, setContent] = useState("");
-    const publish = useCallback(() => {
-      console.log(content);
-    }, [ content ]);
+    const [title, setTitle] = useState("");
+    const [tierIds, setTierIds] = useState<number[]>([]);
+    const [isBroadcasting, setIsBroadcasting] = useState(false);
+    const publish = useCallback(async() => {
+        if(!mailingList) {
+            toast.error("Sollinked is not initialized");
+            return;
+        }
+
+
+        setIsBroadcasting(true);
+        try {
+            let res = await mailingList.broadcast({
+                tier_ids: tierIds,
+                content,
+                title,
+            });
+
+            if(!res) {
+                toast.error('Unable to broadcast');
+                setIsBroadcasting(false);
+                return;
+            }
+
+            if(typeof res === "string") {
+                toast.error(res);
+                setIsBroadcasting(false);
+                return;
+            }
+
+            toast.success('Broadcast in progress');
+        }
+
+        catch(e: any){
+            toast.error('Unable to broadcast: Common error, message too large');
+        }
+
+        setIsBroadcasting(false);
+
+    }, [ content, title, tierIds ]);
 
     return (
         <div className={`
@@ -50,6 +87,7 @@ const Page = () => {
                         w-full mt-3
                     `}
                     mode="multiple"
+                    onChange={(value) => { setTierIds(value) }}
                 >
                     {
                         user.mailingList?.tiers.map(x => {
@@ -59,7 +97,19 @@ const Page = () => {
                         })
                     }
                 </Select>
+                <strong className="mt-10">Title</strong>
+                <input 
+                    type="text" 
+                    className={`
+                        dark:bg-slate-800 rounded
+                        px-3 py-2
+                        outline-none disabled:cursor-not-allowed
+                    `} 
+                    value={title} 
+                    onChange={({target: { value }}) => setTitle(value)}
+                />
                 <strong className="mt-10">Content</strong>
+                <span className="mt-3">* Note: Tables don't have borders in the actual email.</span>
                 <div className="no-tailwindcss-base text-black">
                     <CKEditor
                         editor={ Editor }
@@ -85,15 +135,14 @@ const Page = () => {
                                     "-",
                                     'link',
                                     'imageInsert',
+                                    '|',
                                     'outdent',
                                     'indent',
                                     'bulletedList',
                                     'numberedList',
-                                    '|',
-                                    'blockQuote',
                                     'insertTable',
-                                    'mediaEmbed',
-                                    'codeBlock',
+                                    '|',
+                                    // 'codeBlock',
                                     'findAndReplace',
                                     'selectAll',
                                 ],
@@ -106,18 +155,24 @@ const Page = () => {
                         } }
                         onChange={ ( event, editor: any ) => {
                             const data = editor.getData();
-                            console.log( { data } );
+                            setContent(data);
                         } }
                     />
                 </div>
                 <button 
                     className={`
                         mt-3
-                        w-[100px] h-[30px] rounded
+                        w-[200px] h-[30px] rounded
                         bg-green-500 dark:text-white text-black
+                        disabled:cursor-not-allowed 
+                        dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
+                        dark:disabled:text-slate-300 disabled:text-slate-500
                     `}
                     onClick={publish}
-                >Publish</button>
+                    disabled={isBroadcasting || !title || !content || tierIds.length === 0}
+                >
+                    {isBroadcasting? 'Broadcasting..' : 'Broadcast'}
+                </button>
             </div>
         </div>
     )

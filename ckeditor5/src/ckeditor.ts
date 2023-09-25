@@ -31,7 +31,8 @@ import {
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
-	ImageUpload
+	ImageUpload,
+	ImageInsertViaUrl
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { AutoLink, Link, LinkImage } from '@ckeditor/ckeditor5-link';
@@ -75,11 +76,12 @@ class Editor extends ClassicEditor {
 		Highlight,
 		Image,
 		ImageCaption,
-		ImageInsert,
+		//ImageInsert,
 		ImageResize,
 		ImageStyle,
 		ImageToolbar,
-		ImageUpload,
+		// ImageUpload,
+		ImageInsertViaUrl,
 		Indent,
 		IndentBlock,
 		Italic,
@@ -134,7 +136,6 @@ class Editor extends ClassicEditor {
 				'superscript',
 				'underline',
 				'-',
-				'imageUpload',
 				'imageInsert'
 			],
 			shouldNotGroupWhenFull: true

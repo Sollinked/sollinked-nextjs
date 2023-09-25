@@ -87,5 +87,5 @@ html:not(.dark) .wallet-adapter-button-trigger {
 
 /* ckeditor */
 .ck-editor__editable_inline {
-  min-height: 50vh;
+  min-height: 30vh;
 }

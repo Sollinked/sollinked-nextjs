@@ -105,6 +105,18 @@ export type MailingListPriceTier = {
     is_active: boolean;
 }
 
+export type MailingListBroadcast = {
+    id: number;
+    user_id: number;
+    title: string;
+    content: string;
+    created_at: string;
+    execute_at: string;
+    is_executing: boolean;
+    success_count: number;
+    total_count: number;
+}
+
 export type User = {
     id: number;
     address: string;
@@ -122,6 +134,7 @@ export type User = {
     tiers?: UserTier[];
     mails?: Mail[];
     mailingList?: MailingList;
+    broadcasts?: MailingListBroadcast[];
     reservations?: UserReservation[];
     reservationSettings?: UserReservationSetting[];
     webhooks?: Webhook[];

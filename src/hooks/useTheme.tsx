@@ -93,7 +93,7 @@ export const ThemeProvider = ({theme, children}: ProviderProps) => {
                             colorBorder: currentTheme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
                             multipleItemBg: currentTheme === "light"? "#f0f0f0" : 'rgb(100,116,139)',
                             colorText: currentTheme === "light"? "rgba(0, 0, 0, 0.88)" : 'white',
-                            selectorBg: currentTheme === "light"? "#ffffff" : 'rgb(71,85,105)',
+                            selectorBg: currentTheme === "light"? "#ffffff" : 'rgb(30,41,59)',
                             colorBgElevated: currentTheme === "light"? "#ffffff" : 'rgb(71,85,105)',
                             clearBg: currentTheme === 'light'? 'black' : 'white',
                             colorIcon: currentTheme === "light"? "rgba(0, 0, 0, 0.45)" : 'white',
