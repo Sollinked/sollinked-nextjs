@@ -109,7 +109,7 @@ const Page = () => {
         <div 
 			className={`
 				flex flex-col p-3
-				dark:bg-slate-700 rounded
+				dark:bg-slate-700 bg-white rounded
 				dark:text-slate-300 text-black
 				md:text-xs lg:text-base
 				shadow
@@ -136,7 +136,7 @@ const Page = () => {
 			<strong className='mt-8 mb-1'>Discord Webhook URL</strong>
 			<input 
 				className={`
-					dark:bg-slate-800 rounded
+					dark:bg-slate-800 bg-white rounded
 					px-3 py-2
 					dark:border-none border-[1px] border-slate-300
 				`} 
@@ -148,7 +148,7 @@ const Page = () => {
 			<strong className='mt-5 mb-1'>Custom Webhook URL</strong>
 			<input 
 				className={`
-					dark:bg-slate-800 rounded
+					dark:bg-slate-800 bg-white rounded
 					px-3 py-2
 					dark:border-none border-[1px] border-slate-300
 				`} 
@@ -160,7 +160,7 @@ const Page = () => {
 			<strong className='mt-5 mb-1'>Notification Template</strong>
 			<input 
 				className={`
-					dark:bg-slate-800 rounded
+					dark:bg-slate-800 bg-white rounded
 					px-3 py-2
 					dark:border-none border-[1px] border-slate-300
 				`} 

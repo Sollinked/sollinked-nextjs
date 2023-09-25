@@ -406,7 +406,7 @@ const Page = ({params: { id }}: { params: { id: string }}) => {
                 <div className="relative">
                     <select
                         className={`
-                            dark:bg-slate-500 dark:border-none border-[1px] border-slate-300 rounded px-3 py-2
+                            dark:bg-slate-500 bg-white dark:border-none border-[1px] border-slate-300 rounded px-3 py-2
                             outline-none
                             text-center xl:w-[40vw] md:w-[500px] w-[90vw]
                         `}

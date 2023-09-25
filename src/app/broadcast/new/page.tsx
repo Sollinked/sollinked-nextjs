@@ -101,7 +101,7 @@ const Page = () => {
                 <input 
                     type="text" 
                     className={`
-                        dark:bg-slate-800 rounded
+                        dark:bg-slate-800 bg-white rounded
                         px-3 py-2
                         outline-none disabled:cursor-not-allowed
                     `} 

@@ -64,7 +64,7 @@ export default function RootLayout({
       </Head>
       <body className={`
         ${inter.className} 
-        flex flex-row dark:bg-black dark:text-white
+        flex flex-row dark:bg-black dark:text-white bg-white text-black
       `}>
           <Layout>
             {children}

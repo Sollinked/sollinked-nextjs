@@ -212,6 +212,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         <div className={`
             flex flex-col
         `}>
+
             {
                 displayName &&
                 <strong className='mt-5'>Subscribe to {displayName}</strong>
@@ -223,7 +224,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                                 flex flex-col p-1 rounded w-full relative items-center
                                 
                                 ${ selectedIndex === index?
-                                    `dark:bg-slate-700 bg-white
+                                    `dark:bg-slate-700 bg-indigo-200
                                     dark:border-none border-[1px] border-gray-950` :
                                     `dark:bg-transparent bg-white 
                                     dark:text-slate-200 text-slate-200

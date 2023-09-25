@@ -30,7 +30,8 @@ const Page = () => {
                             flex flex-col items-center justify-center
                             h-[40px] xl:w-[40vw] md:w-[500px] w-[90vw]
                             mb-3 rounded
-                            bg-indigo-500
+                            dark:bg-indigo-500 bg-indigo-200
+                            dark:text-white text-black
                         `}
                     >
                         Manage Your Subscriptions in SpherePay

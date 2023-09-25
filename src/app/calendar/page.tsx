@@ -156,7 +156,7 @@ const Page = () => {
 					>
 					{
 						data.map((d, index) => {
-							let bg = "dark:bg-slate-500";
+							let bg = "dark:bg-slate-500 bg-slate-200";
 							switch(d.status) {
 								case RESERVATION_STATUS_PENDING:
 									bg = "dark:bg-yellow-500 bg-yellow-200";
@@ -295,7 +295,7 @@ const Page = () => {
 				unclaimedData.length === 0?
 				<div className={`
 					flex items-center justify-center
-					dark:bg-slate-700 rounded mt-5 mb-5
+					dark:bg-slate-700 bg-slate-500 rounded mt-5 mb-5
 					h-[30vh]
 					shadow
 				`}>
@@ -304,7 +304,7 @@ const Page = () => {
 				<div
 					className={`
 						grid xl:grid-cols-5 md:grid-cols-4 grid-cols-3 xl:gap-2 gap-1
-						dark:bg-slate-700 rounded p-3 mt-3 mb-5
+						dark:bg-slate-700 bg-slate-500 rounded p-3 mt-3 mb-5
 						min-h-[30vh]
 						shadow
 					`}
@@ -315,7 +315,7 @@ const Page = () => {
 								key={`unclaimed-data-${index}`}
 								className={`
 									flex flex-row items-center justify-center
-									xl:text-base text-xs shadow dark:bg-green-500
+									xl:text-base text-xs shadow dark:bg-green-500 bg-green-200
 									h-[30px] rounded
 								`}
 							>

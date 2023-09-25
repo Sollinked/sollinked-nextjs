@@ -96,29 +96,6 @@ const Header = ({onMenuClick}: HeaderParams) => {
         sticky top-0 left-0 right-0 
         z-10
       `}>
-        {/* <div
-            className={`
-                ${shouldHide? 'hidden' : 'md:flex hidden'}
-                flex-row items-center
-                rounded dark:border-slate-500 border-slate-400 border-[1px]
-                dark:bg-slate-700 bg-white
-                px-3 py-2
-            `}
-        >
-            <SearchOutlined 
-                style={{
-                    fontSize: 20
-                }}
-            />
-            <input 
-                type="text" 
-                className={`
-                    w-[200px] focus:w-[300px] ml-2
-                    dark:bg-slate-700 bg-white outline-none
-                    transition-all duration-300
-                `}
-            />
-        </div> */}
         {/** menu button */}
         <button
             className={`

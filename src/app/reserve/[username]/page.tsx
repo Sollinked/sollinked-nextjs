@@ -472,7 +472,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
                 <button 
                     className={`
-                        mt-5 dark:bg-indigo-400 bg-indigo-200 px-3 py-2 rounded
+                        mt-5 dark:bg-blue-700 bg-blue-200 px-3 py-2 rounded
                         text-sm w-[250px]
                         disabled:cursor-not-allowed
                     `}  

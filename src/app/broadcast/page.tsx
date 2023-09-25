@@ -161,7 +161,7 @@ const Page = () => {
                         h-7 w-7 text-[20px]
                         rounded
                         flex items-center justify-center
-                        dark:text-white text-white bg-green-500
+                        dark:text-white text-black bg-green-500
                         border-none
                     `}
                     onClick={() => { setIsMailingListPriceModalOpen(true) }}
@@ -177,7 +177,6 @@ const Page = () => {
             `}>
                 <div className={`
                     flex flex-col items-center justify-start
-                    shadow
                     rounded-md
                 `}>
                     {
@@ -232,7 +231,7 @@ const Page = () => {
                         h-7 w-7 text-[20px]
                         rounded
                         flex items-center justify-center
-                        dark:text-white text-white bg-green-500
+                        dark:text-white text-black bg-green-500
                         border-none
                     `}
                     href={"/broadcast/new"}
@@ -247,11 +246,10 @@ const Page = () => {
             `}>
                 <div className={`
                     flex flex-col items-center justify-start
-                    shadow
                     rounded-md
                 `}>
                     {
-                        !userDetails.broadcasts &&
+                        (!userDetails.broadcasts || userDetails.broadcasts.length === 0) &&
                         <div className={`
                             flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] min-h-[30vh] items-center justify-center
                             dark:bg-slate-600 bg-white

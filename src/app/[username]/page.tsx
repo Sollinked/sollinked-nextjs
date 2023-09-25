@@ -291,7 +291,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                         flex flex-col items-center justify-center
                         min-h-[90px] h-[15vh] w-[90%] lg:w-[75%] xl:w-[50%]
                         mt-10 rounded
-                        bg-indigo-500
+                        dark:bg-indigo-500 bg-indigo-200
                     `}
                 >
                     <span>
@@ -308,7 +308,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 `}>
                 <input 
                   className={`
-                    dark:bg-slate-800 rounded
+                    dark:bg-slate-800 bg-white rounded
                     px-3 py-2
                     outline-none disabled:cursor-not-allowed
                     ${isEmailValid? 'dark:border-none border-[1px] border-slate-300' : 'border-[1px] dark:border-red-500 border-red-300' }
@@ -324,7 +324,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 }
                 <input 
                   className={`
-                    dark:bg-slate-800 rounded
+                    dark:bg-slate-800 bg-white rounded
                     px-3 py-2
                     dark:border-none border-[1px] border-slate-300
                     outline-none disabled:cursor-not-allowed
@@ -336,7 +336,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 />
                 <textarea 
                   className={`
-                    dark:bg-slate-800 rounded min-h-[25vh]
+                    dark:bg-slate-800 bg-white rounded min-h-[25vh]
                     px-3 py-2
                     dark:border-none border-[1px] border-slate-300
                     outline-none disabled:cursor-not-allowed
@@ -359,7 +359,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 }
                 {
                     (tiers.length === 0) &&
-                    <strong className="dark:text-red-300 md:text-base text-sm">User has yet to set up Payment Tiers.</strong>
+                    <strong className="dark:text-red-300 text-red-500 md:text-base text-sm">User has yet to set up Payment Tiers.</strong>
                 }
                 {
                     tiers.map((x, index) => (
@@ -368,7 +368,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                             onClick={() => { onPayClick(x.value_usd) }}
                             disabled={isPaying || !email || !isEmailValid}
                             className={`
-                              dark:bg-indigo-800 rounded px-3 py-2 text-xs
+                              dark:bg-indigo-800 bg-indigo-200 rounded px-3 py-2 text-xs
                               dark:border-none shadow border-[1px] border-slate-300
                               disabled:cursor-not-allowed
                             `}

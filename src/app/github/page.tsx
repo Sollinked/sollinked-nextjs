@@ -148,7 +148,7 @@ const Page = () => {
 
             <div className={`
 					mt-5 flex flex-col xl:items-center space-y-3 p-3
-					dark:bg-slate-700 rounded min-h-[70vh] xl:min-w-[45vw] md:w-[500px] w-full
+					dark:bg-slate-700 bg-white rounded min-h-[70vh] xl:min-w-[45vw] md:w-[500px] w-full
 				`}
 			>
                 {
