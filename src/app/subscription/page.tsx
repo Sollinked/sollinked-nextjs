@@ -24,7 +24,7 @@ const Page = () => {
                     </div> :
                     <>
                     <Link
-                        href="https://spherepay.co/customer/"
+                        href="https://spherepay.co/customer/login"
                         target="_blank"
                         className={`
                             flex flex-col items-center justify-center
