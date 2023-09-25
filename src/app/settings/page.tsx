@@ -394,7 +394,6 @@ const Page = () => {
 				md:sticky fixed top-0 left-0 right-0 md:w-full w-[100vw]
 				md:backdrop-blur-none backdrop-blur-sm md:bg-transparent dark:md:bg-transparent dark:bg-slate-300/10
 				z-10 animate-fade-in
-				md:hidden
 			`}>
 				<div>
 					<button
