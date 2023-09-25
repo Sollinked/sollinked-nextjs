@@ -296,7 +296,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                     `}
                 >
                     <span>
-                        Subscribe @ only
+                        Subscribe from only
                     </span>
                     <strong style={{fontSize: 25}}>{lowestPricePerMonth} USDC / mo</strong>
                 </Link>
