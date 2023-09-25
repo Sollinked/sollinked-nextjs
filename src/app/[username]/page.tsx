@@ -27,6 +27,23 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
         return publicUser?.tiers?.reverse() ?? [];
     }, [ publicUser ]);
 
+    const lowestPricePerMonth = useMemo(() => {
+        if(!publicUser) {
+            return;
+        }
+
+        if(!publicUser.mailingList) {
+            return;
+        }
+        
+        if(publicUser.mailingList.tiers.length === 0) {
+            return;
+        }
+
+        let lowestRate = publicUser.mailingList.tiers.map(x => ((x.amount * 1.05) / x.charge_every)).reduce((a,b) => a > b? b : a);
+        return toLocaleDecimal(lowestRate, 2, 5);
+    }, [ publicUser ]);
+
     useEffect(() => {
         if(!account) {
             return;
@@ -226,7 +243,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 <div 
                     className={`
                         flex flex-row justify-between items-center
-                        w-[90vw] lg:w-[75%] xl:w-[50%] mt-5
+                        w-[90%] lg:w-[75%] xl:w-[50%] mt-5
                     `}
                 >
                     <strong className="flex flex-row">
@@ -264,6 +281,25 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                     </div>
                 </div>
             </div>
+
+            {
+                publicUser.mailingList &&
+                publicUser.mailingList.tiers.length > 0 &&
+                <Link
+                    href={`/subscribe/${publicUser.username}`}
+                    className={`
+                        flex flex-col items-center justify-center
+                        min-h-[90px] h-[15vh] w-[90%] lg:w-[75%] xl:w-[50%]
+                        mt-10 rounded
+                        bg-indigo-500
+                    `}
+                >
+                    <span>
+                        Subscribe @ only
+                    </span>
+                    <strong style={{fontSize: 25}}>{lowestPricePerMonth} USDC / mo</strong>
+                </Link>
+            }
 
             <strong className="mt-10 w-[90%] lg:w-[75%] xl:w-[50%]">Contact {publicUser.display_name ?? publicUser.username} Now</strong>
             <div className={`

@@ -143,7 +143,11 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
             link="/broadcast"
             text="Broadcast"
             active={pathname.search(/\/broadcast/g) !== -1}
-            notification={hasUnrespondedMail}
+          />
+          <SideBarItem
+            link="/subscription"
+            text="Your Subscriptions"
+            active={pathname.search(/\/subscription/g) !== -1}
           />
           <SideBarItem
             link="/calendar"

@@ -11,6 +11,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { Connection, VersionedTransaction } from '@solana/web3.js';
 import { getEmailDomain, getRPCEndpoint, toLocaleDecimal } from '@/common/utils';
+import { useRouter } from 'next/navigation';
 
 const Page = ({params: { username }}: { params: { username: string }}) => {
     const socketRef = useRef<Socket>();
@@ -26,6 +27,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     const { theme } = useTheme();
     const wallet = useWallet();
     const isGettingData = useRef(false);
+    const router = useRouter();
 
     const getData = useCallback(async() => {
         if(!mailingList) {
@@ -212,7 +214,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         `}>
             {
                 displayName &&
-                <strong>Subscribe to {displayName}</strong>
+                <strong className='mt-5'>Subscribe to {displayName}</strong>
             }
             <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-2 mt-3">
                 {
@@ -242,7 +244,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             <div className={`
                 flex flex-col
                 w-full
-                max-w-[600px]
+                md:max-w-[350px]
             `}>
                 <strong className='mt-10'>Your Info</strong>
                 <div className='relative flex flex-col justify-end items-center mt-2 h-full space-y-2'>
@@ -275,6 +277,15 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                     disabled={isPaying || !email || !isEmailValid}
                 >
                     {isPaying? 'Subscribing' : 'Subscribe Now'}
+                </button>
+                <button
+                    className={`
+                        mt-3 border-[1px] dark:border-yellow-700 border-yellow-200
+                        px-3 py-2 rounded dark:bg-yellow-600 bg-yellow-300
+                    `}
+                    onClick={() => { router.back(); }}
+                >
+                    Back
                 </button>
             </div>
         </div>

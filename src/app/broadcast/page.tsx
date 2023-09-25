@@ -2,12 +2,14 @@
 import { ChangeEvent, useCallback, useMemo, useEffect, useState } from 'react';
 import { MailingListPriceTier, User, UserReservationSetting, UserTier } from '../../../types';
 import { toast } from 'react-toastify';
-import { cloneObj } from '../../common/utils';
+import { cloneObj, toLocaleDecimal } from '../../common/utils';
 import { useSollinked } from '@sollinked/sdk';
 import { ConfigProvider, Empty, Modal } from 'antd';
 import { useTheme } from '@/hooks/useTheme';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
+import moment from 'moment';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const Page = () => {
     const { user, mailingList } = useSollinked();
@@ -85,6 +87,21 @@ const Page = () => {
 		setUserDetails(cloned);
         onSave(cloned);
 	}, [userDetails]);
+
+	const onRetry = useCallback(async(id: number) => {
+        if(!mailingList) {
+            return;
+        }
+
+        try {
+            await mailingList.retry(id);
+            toast.success('Retry request sent');
+        }
+
+        catch {
+            toast.error('Unable to retry');
+        }
+	}, [ mailingList ]);
 
 	const handleMailingListPriceCancel = useCallback(() => {
 		setIsMailingListPriceModalOpen(false);
@@ -176,14 +193,15 @@ const Page = () => {
                     {
                         userDetails.mailingList?.tiers.map((x, index) => (
                             <div className={`
-                                flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] mb-1 relative
+                                flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] mb-3 relative
                                 dark:bg-slate-700 bg-white
                                 dark:border-none border-[1px] border-gray-950
                             `}
                                 key={`mailing-price-tier-${index}`}
                             >
                                 <strong>{x.name}</strong>
-                                <span className='text-xs'>Bills {x.amount} USDC every {x.charge_every} Month</span>
+                                <span className='text-xs'>Bills {toLocaleDecimal(x.amount * 1.05, 2, 5)} USDC every {x.charge_every} Month</span>
+                                <span className='text-xs'>Billed Amount = {x.amount} * 1.05 (protocol fee)</span>
                                 <span className='text-xs'>Subscriber has to pay {x.prepay_month} month(s) upfront</span>
                                 <span className='text-xs mt-5'>Subscribers: {x.subscriber_count}</span>
                                 <button 
@@ -221,6 +239,61 @@ const Page = () => {
                 >
                     <span>+</span>
                 </Link>
+            </div>
+            <div className={`
+                flex flex-col
+                w-full
+                mt-3 mb-3
+            `}>
+                <div className={`
+                    flex flex-col items-center justify-start
+                    shadow
+                    rounded-md
+                `}>
+                    {
+                        !userDetails.broadcasts &&
+                        <div className={`
+                            flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] min-h-[30vh] items-center justify-center
+                            dark:bg-slate-600 bg-white
+                            dark:border-none border-[1px] border-gray-950
+                        `}>
+                            <Empty/>
+                        </div>
+                    }
+                    {
+                        userDetails.broadcasts?.map((x, index) => (
+                            <div className={`
+                                flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] mb-3 relative
+                                dark:bg-slate-700 bg-white
+                                dark:border-none border-[1px] border-gray-950
+                            `}
+                                key={`mailing-broadcast-${index}`}
+                            >
+                                <strong>{x.title} { x.is_executing && <LoadingOutlined className='ml-2'/> }</strong>
+                                <span className='text-xs mt-3'>Created At: {moment(x.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
+                                <span className='text-xs'>Last Executed At: {moment(x.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
+                                <span className='text-xs'>Subscribers Reached: {x.success_count} / {x.total_count}</span>
+                                {
+                                    x.total_count > x.success_count &&
+                                    <button 
+                                        className={`
+                                            absolute top-1 right-1 rounded w-[100px]
+                                            px-3 py-1 text-xs
+                                            dark:bg-green-500 bg-green-200
+                                            disabled:cursor-not-allowed 
+                                            dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
+                                            dark:disabled:text-slate-300 disabled:text-slate-500
+                                        `}
+                                        onClick={() => onRetry(x.id)}
+                                        disabled={x.is_executing}
+                                    >
+                                        Retry
+                                    </button>
+                                }
+                            </div>
+                        ))
+                    }
+                </div>
             </div>
 
             <Modal
@@ -274,6 +347,9 @@ const Page = () => {
                     placeholder='1, 2, 3, 4, 5... Month'
                     step="1"
                 />
+                <div className="mt-3 dark:text-white text-black">
+                    Subscribers will be paying an extra 5% protocol fee.
+                </div>
             </Modal>
         </div>
     );

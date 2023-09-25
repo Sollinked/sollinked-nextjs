@@ -103,6 +103,9 @@ export type MailingListPriceTier = {
     prepay_month: number;
     subscriber_count: number;
     is_active: boolean;
+
+    // generated
+    username?: string;
 }
 
 export type MailingListBroadcast = {
@@ -115,6 +118,19 @@ export type MailingListBroadcast = {
     is_executing: boolean;
     success_count: number;
     total_count: number;
+}
+
+export type MailingListSubscriber = {
+    id: number;
+    mailing_list_price_tier_id: number;
+    user_id: number;
+    price_id: string;
+    email_address: string;
+    expiry_date: string;
+    is_cancelled: boolean;
+
+    // generated
+    price_tier?: MailingListPriceTier;
 }
 
 export type User = {
@@ -135,6 +151,7 @@ export type User = {
     mails?: Mail[];
     mailingList?: MailingList;
     broadcasts?: MailingListBroadcast[];
+    subscriptions?: MailingListSubscriber[];
     reservations?: UserReservation[];
     reservationSettings?: UserReservationSetting[];
     webhooks?: Webhook[];
@@ -154,6 +171,7 @@ export type PublicUser = {
     youtube: string;
     calendar_advance_days: number;
     tiers?: UserTier[];
+    mailingList?: MailingList;
     is_verified: boolean;
 }
 
