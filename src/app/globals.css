@@ -84,3 +84,8 @@ button, a {
 html:not(.dark) .wallet-adapter-button-trigger {
   background-color: #512da8;
 }
+
+/* ckeditor */
+.ck-editor__editable_inline {
+  min-height: 50vh;
+}
