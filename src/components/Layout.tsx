@@ -7,13 +7,12 @@ import { ConnectionProvider, WalletProvider, useWallet } from '@solana/wallet-ad
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { PhantomWalletAdapter, SolflareWalletAdapter, LedgerWalletAdapter, KeystoneWalletAdapter, TrustWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Provider as SollinkedProvider } from '@sollinked/sdk';
 import { VERIFY_MESSAGE } from '@/common/constants';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/hooks/useTheme';
-import Head from 'next/head';
-
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -105,6 +104,11 @@ const Layout = ({
              * in the npm package `@solana/wallet-adapter-wallets`.
              */
             // new UnsafeBurnerWalletAdapter(),
+            new PhantomWalletAdapter(),
+            new SolflareWalletAdapter(),
+            new LedgerWalletAdapter(),
+            new KeystoneWalletAdapter(),
+            new TrustWalletAdapter(),
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [network]
