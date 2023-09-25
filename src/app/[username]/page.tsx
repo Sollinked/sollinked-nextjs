@@ -214,12 +214,13 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
 				md:sticky fixed top-0 left-0 right-0 md:w-full w-[100vw]
 				dark:bg-black bg-white
 				z-10 animate-fade-in
+                md:hidden
 			`}>
 				<div>
 					<button
 						className={`
 							flex items-center justify-start
-							w-[60px] md:hidden
+							w-[60px]
 						`}
 						onClick={() => router.back()}
 					>
