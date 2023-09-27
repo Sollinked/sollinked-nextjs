@@ -271,7 +271,19 @@ const Page = () => {
                     >
                         {isBroadcasting? 'Broadcasting..' : 'Broadcast'}
                     </button> :
-                    <span className="dark:text-white text-black text-xs">Executed At: {lastUpdated}</span>
+                    <button 
+                        className={`
+                            mt-3
+                            w-[200px] h-[30px] rounded
+                            bg-green-500 dark:text-white text-black
+                            disabled:cursor-not-allowed 
+                            dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
+                            dark:disabled:text-slate-300 disabled:text-slate-500
+                        `}
+                        disabled
+                    >
+                        <span className="dark:text-white text-black text-xs">Executed At: {lastUpdated}</span>
+                    </button>
                 }
                     <button 
                         className={`
