@@ -2,14 +2,14 @@
 import { LeftOutlined } from "@ant-design/icons"
 import { useSollinked } from "@sollinked/sdk";
 import { Select } from "antd";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import moment from 'moment';
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 
 const CustomEditor = dynamic(
-    async () => (await import('../../../components/CkEditor')),
+    async () => (await import('../../../../components/CkEditor')),
     { ssr: false }
 );
 
@@ -21,7 +21,11 @@ const Page = () => {
     const [title, setTitle] = useState("");
     const [tierIds, setTierIds] = useState<number[]>([]);
     const [isBroadcasting, setIsBroadcasting] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState("");
+    const [executedAt, setExecutedAt] = useState("");
+    const { id } = useParams();
+	const lastContent = useRef("");
+    const hasInitiated = useRef(false);
 
     const publish = useCallback(async() => {
         if(!mailingList) {
@@ -29,10 +33,13 @@ const Page = () => {
             return;
         }
 
+        if(!id) {
+            return;
+        }
 
         setIsBroadcasting(true);
         try {
-            let res = await mailingList.broadcast({
+            let res = await mailingList.broadcastDraft(Number(id), {
                 tier_ids: tierIds,
                 content,
                 title,
@@ -51,7 +58,6 @@ const Page = () => {
             }
 
             toast.success('Broadcast in progress');
-            router.push('/broadcast');
         }
 
         catch(e: any){
@@ -59,48 +65,86 @@ const Page = () => {
         }
 
         setIsBroadcasting(false);
+        router.push('/broadcast');
 
     }, [ content, title, tierIds ]);
 
-    const saveDraft = useCallback(async() => {
-        if(!mailingList) {
-            toast.error("Sollinked is not initialized");
+    useEffect(() => {
+
+        if(!user) {
             return;
         }
 
+        if(!mailingList) {
+            return;
+        }
 
-        setIsSaving(true);
-        try {
-            let res = await mailingList.saveDraft({
+        if(!user.id) {
+            return;
+        }
+
+        if(!id) {
+            return;
+        }
+
+        const getData = async() => {
+            if(hasInitiated.current) {
+                return;
+            }
+    
+            hasInitiated.current = true;
+            let res = await mailingList.getDraft(Number(id));
+            if(!res) {
+                toast.error("Unable to get draft");
+                return;
+            }
+
+            if(typeof res === 'string') {
+                toast.error(res);
+                return;
+            }
+
+            setTitle(res.data.data?.title ?? "");
+            setContent(res.data.data?.content ?? "");
+            setLastUpdated(res.data.data?.updated_at? moment(res.data.data.updated_at).format('YYYY-MM-DD HH:mm:ss') : "");
+            setExecutedAt(res.data.data?.execute_at? moment(res.data.data.execute_at).format('YYYY-MM-DD HH:mm:ss') : "");
+            setTierIds(res.data.data?.tier_ids ?? []);
+        };
+
+        getData();
+    }, [ user, mailingList ]);
+
+	useEffect(() => {
+		if(!mailingList) {
+			return;
+		}
+
+        // dont update when it's already been executed
+        if(executedAt) {
+            return;
+        }
+
+		lastContent.current = content;
+		
+		setTimeout(async() => {
+			if(content !== lastContent.current) {
+				return;
+			}
+
+			if(!mailingList.updateDraft) {
+				return
+			}
+
+            // autosave
+			await mailingList.updateDraft(Number(id), {
                 tier_ids: tierIds,
-                content,
                 title,
+                content
             });
 
-            if(!res) {
-                toast.error('Unable to save');
-                setIsSaving(false);
-                return;
-            }
-
-            if(typeof res === "string") {
-                toast.error(res);
-                setIsSaving(false);
-                return;
-            }
-
-            toast.success('Saved');
-            router.push(`/broadcast/edit/${res.data.data!}`)
-        }
-
-        catch(e: any){
-            console.log(e)
-            toast.error('Unable to save: Common error, message too large');
-        }
-
-        // setIsSaving(false);
-
-    }, [ content, title, tierIds ]);
+            setLastUpdated(moment().format('YYYY-MM-DD HH:mm:ss'));
+		}, 1000);
+	}, [content, title, tierIds]);
 
     return (
         <div className={`
@@ -138,6 +182,7 @@ const Page = () => {
                     `}
                     mode="multiple"
                     onChange={(value) => { setTierIds(value) }}
+                    value={tierIds}
                 >
                     {
                         user.mailingList?.tiers.map(x => {
@@ -160,44 +205,33 @@ const Page = () => {
                 />
                 <strong className="mt-10">Content</strong>
                 <span className="mt-3">* Note: Tables don't have borders in the actual email.</span>
-                <span>* Note: Drafts don't save "Targets".</span>
                 <CustomEditor
                     setContent={setContent}
+                    initialContent={content}
                 />
-                <div
-                    className={`
-                        flex md:flex-row flex-col
-                        mt-3
-                    `}
-                >
+                { 
+                    lastUpdated &&
+                    <span className="dark:text-white text-black text-xs mt-2">Last Update: {lastUpdated}</span>
+                }
+                {
+                    !executedAt?
                     <button 
                         className={`
-                            md:w-[200px] w-full h-[30px] rounded
+                            mt-3
+                            w-[200px] h-[30px] rounded
                             bg-green-500 dark:text-white text-black
                             disabled:cursor-not-allowed 
                             dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
                             dark:disabled:text-slate-300 disabled:text-slate-500
                         `}
                         onClick={publish}
-                        disabled={isBroadcasting || isSaving || !title || !content || tierIds.length === 0}
+                        disabled={isBroadcasting || !title || !content || tierIds.length === 0}
                     >
                         {isBroadcasting? 'Broadcasting..' : 'Broadcast'}
-                    </button>
-                    <button 
-                        className={`
-                            md:ml-2 md:mt-0 ml-0 mt-3
-                            md:w-[200px] w-full h-[30px] rounded
-                            bg-green-500 dark:text-white text-black
-                            disabled:cursor-not-allowed 
-                            dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
-                            dark:disabled:text-slate-300 disabled:text-slate-500
-                        `}
-                        onClick={saveDraft}
-                        disabled={isBroadcasting || isSaving || !title || !content}
-                    >
-                        {isBroadcasting? 'Saving..' : 'Save Draft'}
-                    </button>
-                </div>
+                    </button> :
+                    <span className="dark:text-white text-black text-xs">Executed At: {lastUpdated}</span>
+
+                }
             </div>
         </div>
     )

@@ -3,14 +3,16 @@ import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
 const CustomEditor = ({
     setContent,
+    initialContent
 }: {
     setContent: (value: string) => void;
+    initialContent?: string;
 }) => {
     return (
         <div className="no-tailwindcss-base text-black">
             <CKEditor
                 editor={ Editor }
-                data=""
+                data={initialContent ?? ""}
                 config={{
                     toolbar: {
                         items: [

@@ -116,6 +116,9 @@ export type MailingListBroadcast = {
     created_at: string;
     execute_at: string;
     is_executing: boolean;
+    is_draft: boolean;
+    updated_at: string;
+    tier_ids?: number[];
     success_count: number;
     total_count: number;
 }

@@ -260,17 +260,27 @@ const Page = () => {
                     }
                     {
                         userDetails.broadcasts?.map((x, index) => (
-                            <div className={`
-                                flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] mb-3 relative
-                                dark:bg-slate-700 bg-white
-                                dark:border-none border-[1px] border-gray-950
-                            `}
+                            <Link className={`
+                                    flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] mb-3 relative
+                                    dark:bg-slate-700 bg-white
+                                    dark:border-none border-[1px] border-gray-950
+                                `}
                                 key={`mailing-broadcast-${index}`}
+                                href={`/broadcast/edit/${x.id}`}
                             >
-                                <strong>{x.title} { x.is_executing && <LoadingOutlined className='ml-2'/> }</strong>
+                                <div className="flex flex-row">
+                                    <strong>{x.title} { x.is_executing && <LoadingOutlined className='ml-2'/> }</strong>
+                                    {
+                                        x.is_draft &&
+                                        <span className='px-3 py-1 ml-3 w-[70px] flex items-center justify-center text-xs rounded dark:bg-red-500 bg-red-200 dark:text-white text-black'>Draft</span>
+                                    }
+                                </div>
                                 <span className='text-xs mt-3'>Created At: {moment(x.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
                                 <span className='text-xs'>Last Executed At: {moment(x.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
-                                <span className='text-xs'>Subscribers Reached: {x.success_count} / {x.total_count}</span>
+                                {
+                                    !x.is_draft &&
+                                    <span className='text-xs'>Subscribers Reached: {x.success_count} / {x.total_count}</span>
+                                }
                                 {
                                     x.total_count > x.success_count &&
                                     <button 
@@ -288,7 +298,7 @@ const Page = () => {
                                         Retry
                                     </button>
                                 }
-                            </div>
+                            </Link>
                         ))
                     }
                 </div>
