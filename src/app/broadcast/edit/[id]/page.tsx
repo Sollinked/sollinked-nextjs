@@ -259,8 +259,7 @@ const Page = () => {
                     !executedAt?
                     <button 
                         className={`
-                            mt-3
-                            w-[200px] h-[30px] rounded
+                            md:w-[200px] w-full h-[30px] rounded
                             bg-green-500 dark:text-white text-black
                             disabled:cursor-not-allowed 
                             dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
@@ -273,8 +272,7 @@ const Page = () => {
                     </button> :
                     <button 
                         className={`
-                            mt-3
-                            w-[200px] h-[30px] rounded
+                            md:w-[250px] w-full h-[30px] rounded
                             bg-green-500 dark:text-white text-black
                             disabled:cursor-not-allowed 
                             dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
@@ -287,8 +285,8 @@ const Page = () => {
                 }
                     <button 
                         className={`
-                            mt-3 ml-3
-                            w-[200px] h-[30px] rounded
+                            md:ml-2 md:mt-0 ml-0 mt-3
+                            md:w-[200px] w-full h-[30px] rounded
                             bg-green-500 dark:text-white text-black
                             disabled:cursor-not-allowed 
                             dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
