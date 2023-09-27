@@ -21,6 +21,7 @@ const Page = () => {
     const [title, setTitle] = useState("");
     const [tierIds, setTierIds] = useState<number[]>([]);
     const [isBroadcasting, setIsBroadcasting] = useState(false);
+    const [isTesting, setIsTesting] = useState(false);
     const [lastUpdated, setLastUpdated] = useState("");
     const [executedAt, setExecutedAt] = useState("");
     const { id } = useParams();
@@ -67,6 +68,46 @@ const Page = () => {
         setIsBroadcasting(false);
         router.push('/broadcast');
 
+    }, [ content, title, tierIds ]);
+
+    const test = useCallback(async() => {
+        if(!mailingList) {
+            toast.error("Sollinked is not initialized");
+            return;
+        }
+
+        if(!id) {
+            return;
+        }
+
+        setIsTesting(true);
+        try {
+            let res = await mailingList.testDraft(Number(id), {
+                tier_ids: tierIds,
+                content,
+                title,
+            });
+
+            if(!res) {
+                toast.error('Unable to send');
+                setIsTesting(false);
+                return;
+            }
+
+            if(typeof res === "string") {
+                toast.error(res);
+                setIsTesting(false);
+                return;
+            }
+
+            toast.success('Sent');
+        }
+
+        catch(e: any){
+            toast.error('Unable to send: Common error, message too large');
+        }
+
+        setIsTesting(false);
     }, [ content, title, tierIds ]);
 
     useEffect(() => {
@@ -213,6 +254,7 @@ const Page = () => {
                     lastUpdated &&
                     <span className="dark:text-white text-black text-xs mt-2">Last Update: {lastUpdated}</span>
                 }
+                <div className="flex md:flex-row flex-col">
                 {
                     !executedAt?
                     <button 
@@ -225,13 +267,27 @@ const Page = () => {
                             dark:disabled:text-slate-300 disabled:text-slate-500
                         `}
                         onClick={publish}
-                        disabled={isBroadcasting || !title || !content || tierIds.length === 0}
+                        disabled={isBroadcasting || isTesting || !title || !content || tierIds.length === 0}
                     >
                         {isBroadcasting? 'Broadcasting..' : 'Broadcast'}
                     </button> :
                     <span className="dark:text-white text-black text-xs">Executed At: {lastUpdated}</span>
-
                 }
+                    <button 
+                        className={`
+                            mt-3 ml-3
+                            w-[200px] h-[30px] rounded
+                            bg-green-500 dark:text-white text-black
+                            disabled:cursor-not-allowed 
+                            dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
+                            dark:disabled:text-slate-300 disabled:text-slate-500
+                        `}
+                        onClick={test}
+                        disabled={isBroadcasting || isTesting || !title || !content || tierIds.length === 0}
+                    >
+                        {isTesting? 'Sending..' : 'Send Yourself A Copy'}
+                    </button>
+                </div>
             </div>
         </div>
     )
