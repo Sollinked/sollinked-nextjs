@@ -30,7 +30,7 @@ const Page = () => {
 	const [respondPrice, setRespondPrice] = useState("");
 	const [day, setDay] = useState(0);
 	const [hour, setHour] = useState(0);
-	const [reservationPrice, setReservationPrice] = useState<number>();
+	const [reservationPrice, setReservationPrice] = useState("");
 
     let inputRef = useRef<any>(null);
     const domain = useMemo(() => getEmailDomain(), []);
@@ -348,7 +348,7 @@ const Page = () => {
 			}
 
 			hasDuplicate = true;
-			cloned.reservationSettings![index].reservation_price = reservationPrice;
+			cloned.reservationSettings![index].reservation_price = Number(reservationPrice);
 		});
 
 		// if doesn't have the setting, add setting
@@ -357,7 +357,7 @@ const Page = () => {
 				user_id: userDetails.id,
 				day,
 				hour,
-				reservation_price: reservationPrice
+				reservation_price: Number(reservationPrice)
 			});
 		}
 
@@ -365,7 +365,7 @@ const Page = () => {
 		setIsCalendarModalOpen(false);
 		setDay(0);
 		setHour(0);
-		setReservationPrice(undefined);
+		setReservationPrice("");
 	}, [ userDetails, day, hour, reservationPrice ]);
 
     // whenever user updates
@@ -737,8 +737,8 @@ const Page = () => {
 				<Input
 					type="number"
 					addonBefore="Price"
-					value={reservationPrice?.toString() ?? ""}
-					onChange={({ target: {value}}) => { setReservationPrice(Number(value))}}
+					value={reservationPrice ?? ""}
+					onChange={({ target: {value}}) => { setReservationPrice(value)}}
 					placeholder='0'
 				/>
 			</Modal>

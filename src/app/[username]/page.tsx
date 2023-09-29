@@ -1,6 +1,6 @@
 'use client';
 import { useSollinked } from "@sollinked/sdk";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PublicUser } from "../../../types";
 import { toast } from "react-toastify";
 import { CloseCircleOutlined, LeftOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -10,27 +10,10 @@ import { getEmailDomain, sendTokensTo, swapAndSendTo, toLocaleDecimal } from "@/
 import { useWallet } from "@solana/wallet-adapter-react";
 import logo from '../../../public/logo.png';
 import { useRouter } from 'next/navigation';
-import { USDC_DECIMALS, USDC_TOKEN_ADDRESS } from "@/common/constants";
+import { USDC_DECIMALS, USDC_TOKEN_ADDRESS, supportedTokens } from "@/common/constants";
 import { Select } from "antd";
 import axios from 'axios';
-import moment from 'moment';
 import { PublicKey } from "@solana/web3.js";
-
-const supportedTokens: {
-    [key: string]: {
-        address: string;
-        decimals: number;
-    }
-} = {
-    USDC: {
-        address: USDC_TOKEN_ADDRESS,
-        decimals: USDC_DECIMALS,
-    },
-    SAMO: {
-        address: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-        decimals: 1_000_000_000,
-    }
-}
 
 const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +28,6 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isRateError, setIsRateError] = useState(false);
     const [publicUser, setPublicUser] = useState<PublicUser | undefined>();
     const { user, account, mail } = useSollinked();
-    const lastPriceObtained = useRef(moment());
     const wallet = useWallet();
 	const router = useRouter();
 
@@ -203,7 +185,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             return;
         }
 
-        const { address, decimals } = supportedTokens[payWith];
+        const { address } = supportedTokens[payWith];
         let rate = 1;
         let responseData = {};
         if(payWith !== "USDC") {

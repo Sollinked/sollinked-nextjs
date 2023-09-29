@@ -3,16 +3,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { UserReservation, UserReservationSetting } from '../../../../types';
 import { ToastContainer, toast } from 'react-toastify';
-import { copyToClipboard, getWsUrl, sendTokensTo, toLocaleDecimal } from '../../../common/utils';
-import { ConfigProvider, Progress } from 'antd';
+import { copyToClipboard, getWsUrl, sendTokensTo, swapAndSendTo, toLocaleDecimal } from '../../../common/utils';
+import { ConfigProvider, Progress, Select } from 'antd';
 import moment, { Moment } from 'moment';
 import { Socket, io } from 'socket.io-client';
-import { RESERVATION_STATUS_AVAILABLE, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_PAID, RESERVATION_STATUS_PENDING, USDC_DECIMALS, USDC_TOKEN_ADDRESS } from '../../../common/constants';
+import { RESERVATION_STATUS_AVAILABLE, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_PAID, RESERVATION_STATUS_PENDING, USDC_DECIMALS, USDC_TOKEN_ADDRESS, supportedTokens } from '../../../common/constants';
 import { useSollinked } from '@sollinked/sdk';
 import CustomCalendar from '@/components/CustomCalendar';
 import { useTheme } from '@/hooks/useTheme';
 import { useWallet } from '@solana/wallet-adapter-react';
 import Link from 'next/link';
+import axios from 'axios';
+import { PublicKey } from '@solana/web3.js';
 
 const EXPIRE_IN_SECONDS = 900; // 900s
 const Page = ({params: { username }}: { params: { username: string }}) => {
@@ -31,6 +33,10 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     }, [date]);
     const [email, setEmail] = useState("");
     const [title, setTitle] = useState("");
+    const [payWith, setPayWith] = useState("USDC");
+    const [rate, setRate] = useState(1);
+    const [isGettingRate, setIsGettingRate] = useState(false);
+    const [isRateError, setIsRateError] = useState(false);
     const { theme } = useTheme();
     const wallet = useWallet();
 
@@ -357,6 +363,40 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     const onTitleChange = useCallback((value: string) => {
         setTitle(value);
     }, []);
+
+    const getRate = useCallback(async() => {
+        setIsGettingRate(true);
+        setIsRateError(false);
+        let { address, decimals } = supportedTokens[payWith];
+        try {
+            let res = await axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${address}&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${USDC_DECIMALS}&swapMode=ExactOut&slippageBps=50`);
+
+            setRate(Math.round(Number(res.data.inAmount) * 1000 / decimals) / 1000);
+        }
+
+        catch {
+            toast.error('Unable to get rate');
+            setIsGettingRate(false);
+            setIsRateError(true);
+            return;
+        }
+
+        setIsGettingRate(false);
+    }, [payWith]);
+
+    useEffect(() => {
+        if(payWith === 'USDC') {
+            setRate(1);
+            return;
+        }
+
+        getRate();
+        let interval = setInterval(() => {
+            getRate();
+        }, 30000); // refresh every 30s
+
+        return () => clearInterval(interval);
+    }, [ payWith ]);
   
     const onPayClick = useCallback(async() => {
 
@@ -365,10 +405,31 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             return;
         }
 
+        setIsPaying(true);
+        const { address } = supportedTokens[payWith];
+        let responseData = {};
+        if(payWith !== "USDC") {
+            try {
+                let res = await axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${address}&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${Math.round(valueUsd * USDC_DECIMALS)}&swapMode=ExactOut&slippageBps=50`);
+                responseData = res.data;
+            }
+    
+            catch {
+                toast.error('Unable to get rate');
+                setIsPaying(false);
+                return;
+            }
+        }
+
         try {
             
-            setIsPaying(true);
-            await sendTokensTo(wallet, publicKey, USDC_TOKEN_ADDRESS, USDC_DECIMALS, valueUsd);
+            if(payWith === "USDC") {
+                await sendTokensTo(wallet, publicKey, USDC_TOKEN_ADDRESS, USDC_DECIMALS, valueUsd);
+            }
+
+            else {
+                await swapAndSendTo(wallet, new PublicKey(USDC_TOKEN_ADDRESS), new PublicKey(publicKey), responseData);
+            }
 
         } catch (error: any) {
             if(error.name === "WalletNotConnectedError") {
@@ -387,7 +448,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             setIsPaying(false);
         }
   
-    }, [ publicKey, valueUsd, wallet ]);  
+    }, [ publicKey, valueUsd, wallet, payWith ]);  
 
     if(isError) {
         return (
@@ -574,7 +635,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                                         onClick={() => { setSelectedDate(d.value)}}
 									>
                                         <span className='md:text-base text-xs'>{d.time}</span>
-                                        <span className='text-xs'>{toLocaleDecimal(d.value_usd, 2, 2)} USDC</span>
+                                        <span className='text-xs'>{toLocaleDecimal(d.value_usd * rate, 2, 2)} {payWith}</span>
 									</button>
 								</div>
 							)
@@ -612,6 +673,19 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                                     value={title}
                                 />
                             </div>
+                            <Select 
+                                className="w-full mt-3"
+                                value={payWith}
+                                onChange={(value) => setPayWith(value)}
+                            >
+                                {
+                                    Object.keys(supportedTokens).map(x => {
+                                        return (
+                                            <Select.Option value={x} key={`pay-with-${x}`}>Pay with {x}</Select.Option>
+                                        )
+                                    })
+                                }
+                            </Select>
                             <button
                                 className={`
                                     mt-8 border-[1px] dark:border-green-700 border-green-200

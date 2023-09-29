@@ -9,3 +9,45 @@ export const VERIFY_MESSAGE = `This message is to prove that you're the owner of
 //Token addresses
 export const USDC_TOKEN_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 export const USDC_DECIMALS = 1000000;
+export const SAMO_TOKEN_ADDRESS = '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU';
+export const SAMO_DECIMALS = 1_000_000_000;
+export const SOL_TOKEN_ADDRESS = 'So11111111111111111111111111111111111111112';
+export const SOL_DECIMALS = 1_000_000_000;
+export const MSOL_TOKEN_ADDRESS = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So';
+export const MSOL_DECIMALS = 1_000_000_000;
+export const USDT_TOKEN_ADDRESS = 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB';
+export const USDT_DECIMALS = 1_000_000;
+export const BONK_TOKEN_ADDRESS = 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263';
+export const BONK_DECIMALS = 100_000;
+
+export const supportedTokens: {
+    [key: string]: {
+        address: string;
+        decimals: number;
+    }
+} = {
+    SOL: {
+        address: SOL_TOKEN_ADDRESS,
+        decimals: SOL_DECIMALS,
+    },
+    mSOL: {
+        address: MSOL_TOKEN_ADDRESS,
+        decimals: MSOL_DECIMALS,
+    },
+    USDC: {
+        address: USDC_TOKEN_ADDRESS,
+        decimals: USDC_DECIMALS,
+    },
+    USDT: {
+        address: USDT_TOKEN_ADDRESS,
+        decimals: USDT_DECIMALS,
+    },
+    SAMO: {
+        address: SAMO_TOKEN_ADDRESS,
+        decimals: SAMO_DECIMALS,
+    },
+    BONK: {
+        address: BONK_TOKEN_ADDRESS,
+        decimals: BONK_DECIMALS,
+    },
+}
