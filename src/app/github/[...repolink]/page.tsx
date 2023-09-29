@@ -14,9 +14,8 @@ import { SignerWalletAdapterProps, WalletNotConnectedError } from '@solana/walle
 import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useSollinked } from '@sollinked/sdk';
+import { USDC_DECIMALS, USDC_TOKEN_ADDRESS } from '@/common/constants';
 
-const USDC_TOKEN_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-const USDC_DECIMALS = 1000000;
 const Page = ({ params: { repolink }}: { params: { repolink: string[] }}) => {
     const [isLoading, setIsLoading] = useState(true);
     const [paymentAddress, setPaymentAddress] = useState("");

@@ -1,7 +1,7 @@
-import { SignerWalletAdapterProps, WalletNotConnectedError } from '@solana/wallet-adapter-base';
+import { SignerWalletAdapterProps, WalletNotConnectedError, WalletNotReadyError } from '@solana/wallet-adapter-base';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
-import { Connection, GetProgramAccountsFilter, PublicKey, Transaction, TransactionInstruction, clusterApiUrl } from '@solana/web3.js';
+import { Connection, GetProgramAccountsFilter, PublicKey, Transaction, TransactionInstruction, VersionedTransaction, clusterApiUrl } from '@solana/web3.js';
 import moment, { Moment } from 'moment';
 
 export function sleep(ms: number) {
@@ -273,24 +273,13 @@ export const sendTokensTo = async(wallet: WalletContextState, sendTo: string, to
     );
 
     const fromAccount = await getAccount(connection, associatedTokenFrom);
+    let {
+        associatedTokenTo,
+        transaction: createTransaction,
+    } = await getOrCreateAssociatedAccount(mintToken, publicKey, recipientAddress);
 
-    // get the recipient's token account
-    const associatedTokenTo = await getAssociatedTokenAddress(
-      mintToken,
-      recipientAddress
-    );
-
-    // if recipient doesn't have token account
-    // create token account for recipient
-    if (!(await connection.getAccountInfo(associatedTokenTo))) {
-      transactionInstructions.push(
-        createAssociatedTokenAccountInstruction(
-          publicKey,
-          associatedTokenTo,
-          recipientAddress,
-          mintToken
-        )
-      );
+    if(createTransaction) {
+        transactionInstructions.push(createTransaction);
     }
 
     // the actual instructions
@@ -313,4 +302,99 @@ export const sendTokensTo = async(wallet: WalletContextState, sendTo: string, to
     );
 
     return signature;
+}
+
+// return associatedTokenAddress and transaction
+// if associatedTokenAddress exists, transaction is null
+export const getOrCreateAssociatedAccount = async(mintToken: PublicKey, payer: PublicKey, recipient: PublicKey) => {
+    const connection = new Connection(getRPCEndpoint());
+
+    // get the recipient's token account
+    const associatedTokenTo = await getAssociatedTokenAddress(
+        mintToken,
+        recipient
+    );
+
+    let transaction = null;
+
+    // if recipient doesn't have token account
+    // create token account for recipient
+    if (!(await connection.getAccountInfo(associatedTokenTo))) {
+        console.log(recipient.toString());
+        console.log(await connection.getAccountInfo(associatedTokenTo));
+        transaction =
+            createAssociatedTokenAccountInstruction(
+                payer,
+                associatedTokenTo,
+                recipient,
+                mintToken
+            );
+    }
+
+    return {
+        associatedTokenTo,
+        transaction,
+    };
+}
+
+
+// quote response = response from jupiter
+export const swapAndSendTo = async(wallet: WalletContextState, mintToken: PublicKey, recipient: PublicKey, quoteResponse: any) => {
+    if(!wallet) {
+        throw new WalletNotReadyError();
+    }
+    let { publicKey, signTransaction } = wallet;
+    if (!publicKey || !signTransaction) {
+        throw new WalletNotConnectedError();
+    }
+
+    // get associated account
+    let {
+        associatedTokenTo,
+        transaction: createTransaction
+    } = await getOrCreateAssociatedAccount(mintToken, wallet.publicKey!, recipient);
+
+    const transactions = await (
+        await fetch('https://quote-api.jup.ag/v6/swap', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            // quoteResponse from /quote api
+            quoteResponse,
+            // Bob will receive the 5 USDC
+            destinationTokenAccount: associatedTokenTo.toString(),
+            userPublicKey: wallet.publicKey!.toString(),
+          })
+        })
+      ).json();
+      
+      const { swapTransaction } = transactions;
+      let txBuf = Buffer.from(swapTransaction, 'base64');
+      let tx = VersionedTransaction.deserialize(txBuf);
+      const connection = new Connection(getRPCEndpoint(), "confirmed");
+
+      const transactionInstructions: TransactionInstruction[] = [];
+      if(createTransaction) {
+        console.log(createTransaction);
+        transactionInstructions.push(createTransaction);
+        const transaction = new Transaction().add(...transactionInstructions);
+        const signature = await configureAndSendCurrentTransaction(
+          transaction,
+          connection,
+          wallet.publicKey!,
+          signTransaction
+        );
+      }
+
+      const blockHash = await connection.getLatestBlockhash('confirmed');
+      const signature = await wallet.sendTransaction(tx, connection);
+      await connection.confirmTransaction({
+          blockhash: blockHash.blockhash,
+          lastValidBlockHeight: blockHash.lastValidBlockHeight,
+          signature,
+      });
+      console.log(signature);
+      return signature;
 }

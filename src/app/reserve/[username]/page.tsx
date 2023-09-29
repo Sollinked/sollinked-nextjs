@@ -7,7 +7,7 @@ import { copyToClipboard, getWsUrl, sendTokensTo, toLocaleDecimal } from '../../
 import { ConfigProvider, Progress } from 'antd';
 import moment, { Moment } from 'moment';
 import { Socket, io } from 'socket.io-client';
-import { RESERVATION_STATUS_AVAILABLE, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_PAID, RESERVATION_STATUS_PENDING } from '../../../common/constants';
+import { RESERVATION_STATUS_AVAILABLE, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_PAID, RESERVATION_STATUS_PENDING, USDC_DECIMALS, USDC_TOKEN_ADDRESS } from '../../../common/constants';
 import { useSollinked } from '@sollinked/sdk';
 import CustomCalendar from '@/components/CustomCalendar';
 import { useTheme } from '@/hooks/useTheme';
@@ -365,30 +365,27 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             return;
         }
 
-        const USDC_TOKEN_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-        const USDC_DECIMALS = 1000000;
-          try {
+        try {
+            
             setIsPaying(true);
-      
             await sendTokensTo(wallet, publicKey, USDC_TOKEN_ADDRESS, USDC_DECIMALS, valueUsd);
-  
-      
-          } catch (error: any) {
+
+        } catch (error: any) {
             if(error.name === "WalletNotConnectedError") {
-              toast.error('Please connect your wallet!');
-              setIsPaying(false);
-              return;
+                toast.error('Please connect your wallet!');
+                setIsPaying(false);
+                return;
             }
-  
+
             if(error.message.includes("Not enough")) {
-              toast.error('Insufficient Balance');
-              setIsPaying(false);
-              return;
+                toast.error('Insufficient Balance');
+                setIsPaying(false);
+                return;
             }
-  
+
             toast.error('Unable to make payment');
             setIsPaying(false);
-          }
+        }
   
     }, [ publicKey, valueUsd, wallet ]);  
 

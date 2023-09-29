@@ -1,15 +1,36 @@
 'use client';
 import { useSollinked } from "@sollinked/sdk";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PublicUser } from "../../../types";
 import { toast } from "react-toastify";
-import { CalendarFilled, CalendarOutlined, CloseCircleOutlined, LeftOutlined, LoadingOutlined, MailFilled, MailOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from 'next/image';
-import { getEmailDomain, sendTokensTo, toLocaleDecimal } from "@/common/utils";
+import { getEmailDomain, sendTokensTo, swapAndSendTo, toLocaleDecimal } from "@/common/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import logo from '../../../public/logo.png';
 import { useRouter } from 'next/navigation';
+import { USDC_DECIMALS, USDC_TOKEN_ADDRESS } from "@/common/constants";
+import { Select } from "antd";
+import axios from 'axios';
+import moment from 'moment';
+import { PublicKey } from "@solana/web3.js";
+
+const supportedTokens: {
+    [key: string]: {
+        address: string;
+        decimals: number;
+    }
+} = {
+    USDC: {
+        address: USDC_TOKEN_ADDRESS,
+        decimals: USDC_DECIMALS,
+    },
+    SAMO: {
+        address: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+        decimals: 1_000_000_000,
+    }
+}
 
 const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -18,8 +39,13 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [subject, setSubject] = useState("");
     const [message, setMessage] = useState("");
+    const [payWith, setPayWith] = useState("USDC");
+    const [rate, setRate] = useState(1);
+    const [isGettingRate, setIsGettingRate] = useState(false);
+    const [isRateError, setIsRateError] = useState(false);
     const [publicUser, setPublicUser] = useState<PublicUser | undefined>();
     const { user, account, mail } = useSollinked();
+    const lastPriceObtained = useRef(moment());
     const wallet = useWallet();
 	const router = useRouter();
 
@@ -43,6 +69,26 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
         let lowestRate = publicUser.mailingList.tiers.map(x => ((x.amount * 1.05) / x.charge_every)).reduce((a,b) => a > b? b : a);
         return toLocaleDecimal(lowestRate, 2, 5);
     }, [ publicUser ]);
+
+    const getRate = useCallback(async() => {
+        setIsGettingRate(true);
+        setIsRateError(false);
+        let { address, decimals } = supportedTokens[payWith];
+        try {
+            let res = await axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${address}&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${USDC_DECIMALS}&swapMode=ExactOut&slippageBps=50`);
+
+            setRate(Math.round(Number(res.data.inAmount) * 1000 / decimals) / 1000);
+        }
+
+        catch {
+            toast.error('Unable to get rate');
+            setIsGettingRate(false);
+            setIsRateError(true);
+            return;
+        }
+
+        setIsGettingRate(false);
+    }, [payWith]);
 
     useEffect(() => {
         if(!account) {
@@ -75,8 +121,20 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
         setIsEmailValid(!email.includes(getEmailDomain()));
     }, [email]);
 
+    useEffect(() => {
+        if(payWith === 'USDC') {
+            setRate(1);
+            return;
+        }
 
-  
+        getRate();
+        let interval = setInterval(() => {
+            getRate();
+        }, 30000); // refresh every 30s
+
+        return () => clearInterval(interval);
+    }, [ payWith ]);
+
     const onPayClick = useCallback(async(value_usd: number) => {
         if(!mail) {
             return;
@@ -145,10 +203,39 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             return;
         }
 
-        const USDC_TOKEN_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-        const USDC_DECIMALS = 1000000;
+        const { address, decimals } = supportedTokens[payWith];
+        let rate = 1;
+        let responseData = {};
+        if(payWith !== "USDC") {
+            try {
+                let res = await axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${address}&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${Math.round(value_usd * USDC_DECIMALS)}&swapMode=ExactOut&slippageBps=50`);
+    
+                rate = Math.round(Number(res.data.inAmount));
+                responseData = res.data;
+            }
+    
+            catch {
+                toast.error('Unable to get rate');
+                setIsPaying(false);
+                return;
+            }
+        }
+
         try {
-            let txHash = await sendTokensTo(wallet, depositTo, USDC_TOKEN_ADDRESS, USDC_DECIMALS, value_usd);
+            let txHash = "";
+            if(payWith === "USDC") {
+                txHash = await sendTokensTo(wallet, depositTo, USDC_TOKEN_ADDRESS, USDC_DECIMALS, value_usd);
+            }
+
+            else {
+                txHash = await swapAndSendTo(wallet, new PublicKey(USDC_TOKEN_ADDRESS), new PublicKey(depositTo), responseData);
+            }
+
+            if(!txHash) {
+                toast.error("Unable to send tx");
+                setIsPaying(false);
+            }
+
             let res = await mail.onPayment(username, { replyToEmail: email, subject, message, txHash, mailId });
             if(typeof res === "string") {
                 toast.error(res);
@@ -178,7 +265,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             setIsPaying(false);
         }
   
-    }, [ wallet, username, email, subject, message ]);  
+    }, [ wallet, username, email, subject, message, payWith ]);  
 
     if(isLoading) {
         return (
@@ -348,6 +435,24 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                     disabled={isPaying}
                 />
             </div>
+            <div className="
+                flex flex-row
+                w-[90%] lg:w-[75%] xl:w-[50%] mt-3
+            ">
+                <Select 
+                    className="w-full"
+                    value={payWith}
+                    onChange={(value) => setPayWith(value)}
+                >
+                    {
+                        Object.keys(supportedTokens).map(x => {
+                            return (
+                                <Select.Option value={x} key={`pay-with-${x}`}>Pay with {x}</Select.Option>
+                            )
+                        })
+                    }
+                </Select>
+            </div>
             <div className={`
               flex flex-row justify-end space-x-2
               w-[90%] lg:w-[75%] xl:w-[50%] mt-3
@@ -374,7 +479,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                               disabled:cursor-not-allowed
                             `}
                         >
-                            ${toLocaleDecimal(x.value_usd, 2, 2)} ({x.respond_days} {x.respond_days === 1? "Day" : "Days"})
+                            {toLocaleDecimal(x.value_usd * rate, 2, 2)} {payWith} ({x.respond_days} {x.respond_days === 1? "Day" : "Days"})
                         </button>
                     ))
                 }

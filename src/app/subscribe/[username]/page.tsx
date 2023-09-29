@@ -106,9 +106,6 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
             return;
         }
 
-        // const USDC_TOKEN_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-        // const USDC_DECIMALS = 1000000;
-
         try {
             setIsPaying(true);
 
