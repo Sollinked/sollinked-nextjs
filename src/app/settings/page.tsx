@@ -35,7 +35,6 @@ const Page = () => {
     let inputRef = useRef<any>(null);
     const domain = useMemo(() => getEmailDomain(), []);
 	const router = useRouter();
-	const { theme } = useTheme();
 
     /**
      * Input fields
@@ -262,8 +261,25 @@ const Page = () => {
         setIsSaving(true);
         try {
 
+			// trim it so that it wont bug out in the backend
+			let trimmedUserDetails: { [key: string]: any } = {};
+			for(const [key, value] of Object.entries(userDetails)) {
+				let altered = value;
+				if(typeof(altered) === 'string') {
+					altered = altered.trim();
+				}
+				trimmedUserDetails[key] = altered;
+			}
+
+			let username: string = trimmedUserDetails.username;
+			if((username.match(/\s/g)?.length ?? 0) > 0) {
+                toast.error("Invalid receiver address: please remove the space(s)");
+                setIsSaving(false);
+                return;
+			}
+
             let res = await account.update({
-                ...userDetails,
+                ...trimmedUserDetails,
                 profile_picture: pfpFile,
             });
     
