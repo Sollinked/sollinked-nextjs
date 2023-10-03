@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { CloseCircleOutlined, LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from 'next/image';
-import { getEmailDomain, sendTokensTo, swapAndSendTo, toLocaleDecimal } from "@/common/utils";
+import { ellipsizeThis, getEmailDomain, sendTokensTo, swapAndSendTo, toLocaleDecimal } from "@/common/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import logo from '../../../public/logo.png';
 import { useRouter } from 'next/navigation';
@@ -186,13 +186,10 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
         }
 
         const { address } = supportedTokens[payWith];
-        let rate = 1;
         let responseData = {};
         if(payWith !== "USDC") {
             try {
                 let res = await axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${address}&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${Math.round(value_usd * USDC_DECIMALS)}&swapMode=ExactOut&slippageBps=50`);
-    
-                rate = Math.round(Number(res.data.inAmount));
                 responseData = res.data;
             }
     
@@ -218,6 +215,14 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 setIsPaying(false);
             }
 
+            toast.info(<a className="flex flex-col" href={`https://solana.fm/tx/${txHash}`} target="_blank" >
+                <span>Verifying payment</span>
+                <span className="mt-3">Payment Tx Link:</span>
+                <span className="mb-3">{ellipsizeThis(txHash, 6, 6)}</span>
+                <span>This may take up to a minute.</span>
+            </a>, {
+                autoClose: 30000
+            });
             let res = await mail.onPayment(username, { replyToEmail: email, subject, message, txHash, mailId });
             if(typeof res === "string") {
                 toast.error(res);
