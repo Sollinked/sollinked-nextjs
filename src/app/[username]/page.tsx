@@ -243,7 +243,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             }
   
             console.log(error)
-            toast.error('Unable to make payment');
+            toast.error('Error occurred!');
             setIsPaying(false);
         }
   

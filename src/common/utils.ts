@@ -320,8 +320,6 @@ export const getOrCreateAssociatedAccount = async(mintToken: PublicKey, payer: P
     // if recipient doesn't have token account
     // create token account for recipient
     if (!(await connection.getAccountInfo(associatedTokenTo))) {
-        console.log(recipient.toString());
-        console.log(await connection.getAccountInfo(associatedTokenTo));
         transaction =
             createAssociatedTokenAccountInstruction(
                 payer,
@@ -377,7 +375,6 @@ export const swapAndSendTo = async(wallet: WalletContextState, mintToken: Public
 
       const transactionInstructions: TransactionInstruction[] = [];
       if(createTransaction) {
-        console.log(createTransaction);
         transactionInstructions.push(createTransaction);
         const transaction = new Transaction().add(...transactionInstructions);
         const signature = await configureAndSendCurrentTransaction(
@@ -395,6 +392,5 @@ export const swapAndSendTo = async(wallet: WalletContextState, mintToken: Public
           lastValidBlockHeight: blockHash.lastValidBlockHeight,
           signature,
       });
-      console.log(signature);
       return signature;
 }
