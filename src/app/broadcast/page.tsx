@@ -11,6 +11,7 @@ import Link from 'next/link';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 
+const SUBCRIPTION_FEE = (Number(process.env.NEXT_PUBLIC_PAYMENT_SUBSCRIPTION_FEE ?? '0') / 100) + 1; // eg 1.05
 const Page = () => {
     const { user, mailingList } = useSollinked();
     const { theme } = useTheme();
@@ -199,8 +200,8 @@ const Page = () => {
                                 key={`mailing-price-tier-${index}`}
                             >
                                 <strong>{x.name}</strong>
-                                <span className='text-xs'>Bills {toLocaleDecimal(x.amount * 1.05, 2, 5)} USDC every {x.charge_every} Month</span>
-                                <span className='text-xs'>Billed Amount = {x.amount} * 1.05 (protocol fee)</span>
+                                <span className='text-xs'>Bills {toLocaleDecimal(x.amount * SUBCRIPTION_FEE, 2, 5)} USDC every {x.charge_every} Month</span>
+                                <span className='text-xs'>Billed Amount = {x.amount} * {SUBCRIPTION_FEE} (protocol fee)</span>
                                 <span className='text-xs'>Subscriber has to pay {x.prepay_month} month(s) upfront</span>
                                 <span className='text-xs mt-5'>Subscribers: {x.subscriber_count}</span>
                                 <button 

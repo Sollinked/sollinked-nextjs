@@ -13,6 +13,7 @@ import { Connection, VersionedTransaction } from '@solana/web3.js';
 import { getEmailDomain, getRPCEndpoint, toLocaleDecimal } from '@/common/utils';
 import { useRouter } from 'next/navigation';
 
+const SUBCRIPTION_FEE = (Number(process.env.NEXT_PUBLIC_PAYMENT_SUBSCRIPTION_FEE ?? '0') / 100) + 1; // eg 1.05
 const Page = ({params: { username }}: { params: { username: string }}) => {
     const socketRef = useRef<Socket>();
     const { user, mailingList } = useSollinked();
@@ -232,7 +233,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                             onClick={() => { setSelectedIndex(index) }}
                         >
                             <strong className='text-center p-3 border-b-[0.5px] border-slate-500 w-full' style={{ fontSize: 22 }}>{x.name}</strong>
-                            <div className='text-xl mt-5' style={{ fontSize: 40 }}>{toLocaleDecimal(x.amount * 1.05, 2, 5)} USDC</div>
+                            <div className='text-xl mt-5' style={{ fontSize: 40 }}>{toLocaleDecimal(x.amount * SUBCRIPTION_FEE, 2, 5)} USDC</div>
                             <div className='text-xs mt-3' style={{ fontSize: 10 }}>Every {x.charge_every} Month</div>
                             <div className='text-xs mb-2' style={{ fontSize: 10 }}>{x.prepay_month} {x.prepay_month > 1? 'months' : 'month'} upfront</div>
                         </button>

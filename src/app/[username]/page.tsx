@@ -15,6 +15,7 @@ import { Select } from "antd";
 import axios from 'axios';
 import { PublicKey } from "@solana/web3.js";
 
+const SUBCRIPTION_FEE = (Number(process.env.NEXT_PUBLIC_PAYMENT_SUBSCRIPTION_FEE ?? '0') / 100) + 1; // eg 1.05
 const Page = ({params: { username }}: {params: { username: string}}) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isPaying, setIsPaying] = useState(false);
@@ -48,7 +49,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             return;
         }
 
-        let lowestRate = publicUser.mailingList.tiers.map(x => ((x.amount * 1.05) / x.charge_every)).reduce((a,b) => a > b? b : a);
+        let lowestRate = publicUser.mailingList.tiers.map(x => ((x.amount * SUBCRIPTION_FEE) / x.charge_every)).reduce((a,b) => a > b? b : a);
         return toLocaleDecimal(lowestRate, 2, 5);
     }, [ publicUser ]);
 

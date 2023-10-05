@@ -5,6 +5,7 @@ import { Empty } from "antd";
 import Link from 'next/link';
 import moment from 'moment';
 
+const SUBCRIPTION_FEE = (Number(process.env.NEXT_PUBLIC_PAYMENT_SUBSCRIPTION_FEE ?? '0') / 100) + 1; // eg 1.05
 const Page = () => {
     const { user } = useSollinked();
 
@@ -48,7 +49,7 @@ const Page = () => {
                                 key={`subscription-${x.id}`}
                             >
                                 <strong>{x.price_tier!.username} - {x.price_tier!.name}</strong>
-                                <span className='text-xs mt-3'>Bill: {toLocaleDecimal(x.price_tier!.amount * 1.05, 2, 5)} USDC every {x.price_tier!.charge_every} Month</span>
+                                <span className='text-xs mt-3'>Bill: {toLocaleDecimal(x.price_tier!.amount * SUBCRIPTION_FEE, 2, 5)} USDC every {x.price_tier!.charge_every} Month</span>
                                 <span className='text-xs mt-1'>Email: {x.email_address}</span>
                                 <span className='text-xs mt-1'>Expiry Date: {moment(x.expiry_date).format('YYYY-MM-DD HH:mm:ss')}</span>
                             </div>
