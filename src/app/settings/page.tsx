@@ -237,7 +237,7 @@ const Page = () => {
                 sorter: false,
             },
         ]
-    }, [ onDeleteMessageIndex ]);
+    }, [ onDeleteCalendarIndex ]);
 
     // save button
     const onSaveClick = useCallback(async() => {

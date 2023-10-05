@@ -85,7 +85,7 @@ const Header = ({onMenuClick}: HeaderParams) => {
         }
 
         askForSignature();
-    }, [user, init]);
+    }, [user, init, wallet]);
 
     return (
       <div className={`

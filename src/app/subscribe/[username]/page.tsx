@@ -68,7 +68,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
         setIsLoading(false);
         isGettingData.current = false;
-    }, []);
+    }, [ mailingList, username ]);
 
     useEffect(() => {
         if(!username) {
@@ -76,7 +76,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         }
 
         getData();
-    }, [ username, mailingList ]);
+    }, [ username, mailingList, getData ]);
 
     useEffect(() => {
         if(email) {
@@ -201,7 +201,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
     if(!userMailingList || userMailingList.tiers.length === 0) {
         return (<div className='h-[80vh] w--full flex flex-col justify-center items-center'>
-            User hasn't set up their subscription plans. Please try again later.
+            User hasn&apos;t set up their subscription plans. Please try again later.
         </div>)
     }
 

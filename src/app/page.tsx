@@ -72,7 +72,7 @@ const Page = () => {
 
 			setSearchedUsers(res);
 		}, 200);
-	}, [search]);
+	}, [search, account]);
 
 	return (
 		<div className={'min-h-[80vh] px-2 pb-10'}>
@@ -142,7 +142,7 @@ const Page = () => {
 				))
 			}
 			</div>
-			<div className='w-full px-2 mt-10 text-sm text-center'>Can't find the person you're looking for?<br />Try searching for them!</div>
+			<div className='w-full px-2 mt-10 text-sm text-center'>Can&apos;t find the person you&apos;re looking for?<br />Try searching for them!</div>
 		</div>
 	);
 };

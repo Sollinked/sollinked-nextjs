@@ -94,7 +94,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
 
         setIsLoading(false);
         isGettingData.current = false;
-    }, []);
+    }, [calendar, username]);
 
     useEffect(() => {
         if(!username) {
@@ -102,7 +102,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         }
 
         getData();
-    }, [ username, calendar ]);
+    }, [ username, calendar, getData ]);
 
 
     // for booking payment notifications
@@ -396,7 +396,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
         }, 30000); // refresh every 30s
 
         return () => clearInterval(interval);
-    }, [ payWith ]);
+    }, [ payWith, getRate ]);
   
     const onPayClick = useCallback(async() => {
 

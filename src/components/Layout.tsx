@@ -13,6 +13,7 @@ import { Provider as SollinkedProvider } from '@sollinked/sdk';
 import { VERIFY_MESSAGE } from '@/common/constants';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from '@/hooks/useTheme';
+import React from 'react';
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -46,7 +47,7 @@ const Wrapped = ({
     useEffect(() => {
         // close sidebar when the path changes
         closeSidebar();
-    }, [ pathname ]);
+    }, [ pathname, closeSidebar ]);
 
     return (
         <ThemeProvider>

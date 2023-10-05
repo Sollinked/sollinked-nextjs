@@ -1,5 +1,6 @@
 import { ConfigProvider } from 'antd';
 import { useContext, createContext, useState, useCallback, useEffect } from 'react';
+import React from 'react';
 
 type AvailableThemes = "dark" | "light";
 
@@ -35,12 +36,12 @@ export const ThemeProvider = ({theme, children}: ProviderProps) => {
         }
 
         setTheme("dark");
-    }, [currentTheme]);
+    }, [currentTheme, setTheme]);
 
     useEffect(() => {
         let storageTheme = (localStorage.getItem('theme') ?? "dark") as AvailableThemes;
         setCurrentTheme(theme ?? storageTheme);
-    }, []);
+    }, [theme]);
 
     useEffect(() => {
         if(currentTheme !== "dark") {

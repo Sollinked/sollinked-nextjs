@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 type InputParams = {
 	placeholder: string;
 	addonBefore?: string;

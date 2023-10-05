@@ -45,6 +45,7 @@ const Page = () => {
                                     dark:bg-slate-700 bg-white
                                     dark:border-none border-[1px] border-gray-950
                                 `}
+                                key={`subscription-${x.id}`}
                             >
                                 <strong>{x.price_tier!.username} - {x.price_tier!.name}</strong>
                                 <span className='text-xs mt-3'>Bill: {toLocaleDecimal(x.price_tier!.amount * 1.05, 2, 5)} USDC every {x.price_tier!.charge_every} Month</span>

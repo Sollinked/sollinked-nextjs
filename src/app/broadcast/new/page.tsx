@@ -60,7 +60,7 @@ const Page = () => {
 
         setIsBroadcasting(false);
 
-    }, [ content, title, tierIds ]);
+    }, [ content, title, tierIds, mailingList, router ]);
 
     const saveDraft = useCallback(async() => {
         if(!mailingList) {
@@ -100,7 +100,7 @@ const Page = () => {
 
         // setIsSaving(false);
 
-    }, [ content, title, tierIds ]);
+    }, [ content, title, tierIds, mailingList, router ]);
 
     return (
         <div className={`
@@ -159,8 +159,8 @@ const Page = () => {
                     onChange={({target: { value }}) => setTitle(value)}
                 />
                 <strong className="mt-10">Content</strong>
-                <span className="mt-3">* Note: Tables don't have borders in the actual email.</span>
-                <span>* Note: Drafts don't save "Targets".</span>
+                <span className="mt-3">* Note: Tables don&apos;t have borders in the actual email.</span>
+                <span>* Note: Drafts don&apos;t save &quot;Targets&quot;.</span>
                 <CustomEditor
                     setContent={setContent}
                 />

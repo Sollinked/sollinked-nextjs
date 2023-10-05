@@ -1,6 +1,7 @@
 import { LeftCircleFilled, RightCircleFilled } from "@ant-design/icons";
 import moment, { Moment } from "moment";
 import { useCallback, useMemo, useState } from "react";
+import React from 'react';
 
 type CalendarParams = {
     minDate?: Moment;
@@ -64,8 +65,8 @@ const CustomCalendar = ({
 	}, [onDateChange, currentDate]);
 
 	const rows = useMemo(() => {
-		let rows: JSX.Element[] = [];
-		let tds: JSX.Element[] = [];
+		let rows: React.JSX.Element[] = [];
+		let tds: React.JSX.Element[] = [];
         let rowDate = moment(currentDate).startOf('M');
 
         let selectedClass = blueScheme? 'dark:bg-green-500 bg-green-300' : 'dark:bg-indigo-500 bg-indigo-200';
@@ -141,7 +142,7 @@ const CustomCalendar = ({
 			tds = [];
 		}
 		return rows;
-	}, [offset, daysInMonth, currentDate, disabledDatesStr]);
+	}, [offset, daysInMonth, currentDate, disabledDatesStr, blueScheme, maxDate, minDate, onDateClick]);
 
 	return (
 		<div

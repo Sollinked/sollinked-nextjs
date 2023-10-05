@@ -163,7 +163,7 @@ const Page = ({ params: { repolink }}: { params: { repolink: string[] }}) => {
         }
         setIsPaying(false);
 
-    }, [connection, wallet, getTokenAccounts, paymentAddress, fromEmail, fromUser, title, body, owner, repo, github]);
+    }, [wallet, paymentAddress, fromEmail, fromUser, title, body, owner, repo, github]);
 
 
     if(isLoading) {

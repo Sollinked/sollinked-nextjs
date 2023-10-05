@@ -115,7 +115,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
         }, 30000); // refresh every 30s
 
         return () => clearInterval(interval);
-    }, [ payWith ]);
+    }, [ payWith, getRate ]);
 
     const onPayClick = useCallback(async(value_usd: number) => {
         if(!mail) {
@@ -252,7 +252,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             setIsPaying(false);
         }
   
-    }, [ wallet, username, email, subject, message, payWith ]);  
+    }, [ wallet, username, email, subject, message, payWith, mail ]);  
 
     if(isLoading) {
         return (

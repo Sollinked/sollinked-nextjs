@@ -68,7 +68,7 @@ const Page = () => {
         setIsBroadcasting(false);
         router.push('/broadcast');
 
-    }, [ content, title, tierIds ]);
+    }, [ content, title, tierIds, id, mailingList, router ]);
 
     const test = useCallback(async() => {
         if(!mailingList) {
@@ -108,7 +108,7 @@ const Page = () => {
         }
 
         setIsTesting(false);
-    }, [ content, title, tierIds ]);
+    }, [ content, title, tierIds, id, mailingList ]);
 
     useEffect(() => {
 
@@ -153,7 +153,7 @@ const Page = () => {
         };
 
         getData();
-    }, [ user, mailingList ]);
+    }, [ user, mailingList, id ]);
 
 	useEffect(() => {
 		if(!mailingList) {
@@ -185,7 +185,7 @@ const Page = () => {
 
             setLastUpdated(moment().format('YYYY-MM-DD HH:mm:ss'));
 		}, 1000);
-	}, [content, title, tierIds]);
+	}, [content, title, tierIds, executedAt, mailingList, id]);
 
     return (
         <div className={`
@@ -245,7 +245,7 @@ const Page = () => {
                     onChange={({target: { value }}) => setTitle(value)}
                 />
                 <strong className="mt-10">Content</strong>
-                <span className="mt-3">* Note: Tables don't have borders in the actual email.</span>
+                <span className="mt-3">* Note: Tables don&apos;t have borders in the actual email.</span>
                 <CustomEditor
                     setContent={setContent}
                     initialContent={content}

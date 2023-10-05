@@ -24,6 +24,38 @@ const Page = () => {
 	const [mailingPricePrepayMonth, setMailingPricePrepayMonth] = useState("");
 	const [mailingPriceChargeEvery, setMailingPriceChargeEvery] = useState("");
 
+    const onSave = useCallback(async(userDetails: User) => {
+        if(!userDetails) {
+            toast.error('Empty user details');
+            return;
+        }
+
+		if(!mailingList) {
+			return;
+		}
+
+        toast.info('Updating..');
+		setIsSaving(true);
+        try {
+            // update user tiers
+			if(userDetails.mailingList) {
+				let res4 = await mailingList.updateTiers(userDetails.mailingList.id, { prices: userDetails.mailingList.tiers ?? [] });
+				if(res4 && (typeof res4 === 'string' || typeof res4.data === 'string')) {
+					let errMessage = typeof res4 === 'string'? res4 : res4.data.data;
+					toast.error(errMessage ?? "Error saving data");
+					setIsSaving(false);
+					return;
+				}
+			}
+            toast.success("Saved");
+        }
+
+        catch {
+            toast.error('Unable to save data');
+        }
+		setIsSaving(false);
+    }, [ mailingList ]);
+
 	const onNewMailingListPriceTier = useCallback(() => {
 		let cloned = cloneObj(userDetails);
 		if(!mailingPriceAmount && mailingPriceAmount !== '0') {
@@ -74,7 +106,7 @@ const Page = () => {
 		setMailingPriceChargeEvery("");
 		setMailingPricePrepayMonth("");
         onSave(cloned);
-	}, [ userDetails, mailingPriceName, mailingPriceAmount, mailingPriceChargeEvery, mailingPricePrepayMonth ]);
+	}, [ userDetails, mailingPriceName, mailingPriceAmount, mailingPriceChargeEvery, mailingPricePrepayMonth, onSave, user ]);
 
 
 	const onToggleMailingListPriceTierIndex = useCallback((index: number) => {
@@ -86,7 +118,7 @@ const Page = () => {
 		cloned.mailingList.tiers[index].is_active = !cloned.mailingList.tiers[index].is_active;
 		setUserDetails(cloned);
         onSave(cloned);
-	}, [userDetails]);
+	}, [userDetails, onSave]);
 
 	const onRetry = useCallback(async(id: number) => {
         if(!mailingList) {
@@ -111,38 +143,6 @@ const Page = () => {
     useEffect(() => {
         setUserDetails(user);
     }, [user]);
-
-    const onSave = useCallback(async(userDetails: User) => {
-        if(!userDetails) {
-            toast.error('Empty user details');
-            return;
-        }
-
-		if(!mailingList) {
-			return;
-		}
-
-        toast.info('Updating..');
-		setIsSaving(true);
-        try {
-            // update user tiers
-			if(userDetails.mailingList) {
-				let res4 = await mailingList.updateTiers(userDetails.mailingList.id, { prices: userDetails.mailingList.tiers ?? [] });
-				if(res4 && (typeof res4 === 'string' || typeof res4.data === 'string')) {
-					let errMessage = typeof res4 === 'string'? res4 : res4.data.data;
-					toast.error(errMessage ?? "Error saving data");
-					setIsSaving(false);
-					return;
-				}
-			}
-            toast.success("Saved");
-        }
-
-        catch {
-            toast.error('Unable to save data');
-        }
-		setIsSaving(false);
-    }, [ mailingList ]);
 
     return (
         <div 
