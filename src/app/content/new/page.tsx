@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
+import { ContentStatus } from "@sollinked/sdk/dist/src/Content/types";
 
 const CustomEditor = dynamic(
     async () => (await import('../../../components/CkEditor')),
@@ -16,15 +17,17 @@ const CustomEditor = dynamic(
 
 const Page = () => {
     const router = useRouter();
-    const { user, mailingList } = useSollinked();
+    const { user, content: contentAPI } = useSollinked();
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
-    const [tierIds, setTierIds] = useState<number[]>([]);
-    const [isBroadcasting, setIsBroadcasting] = useState(false);
+    const [description, setDescription] = useState("");
+    const [contentPassIds, setContentPassIds] = useState<number[]>([]);
+    const [status, setStatus] = useState<ContentStatus>("draft");
+    const [valueUsd, setValueUsd] = useState("");
     const [isSaving, setIsSaving] = useState(false);
 
-    const publish = useCallback(async() => {
-        if(!mailingList) {
+    const saveDraft = useCallback(async() => {
+        if(!contentAPI) {
             toast.error("Sollinked is not initialized");
             return;
         }
@@ -34,51 +37,15 @@ const Page = () => {
             return;
         }
 
-        setIsBroadcasting(true);
-        try {
-            let res = await mailingList.broadcast({
-                tier_ids: tierIds,
-                content,
-                title,
-            });
-
-            if(!res) {
-                toast.error('Unable to broadcast');
-                setIsBroadcasting(false);
-                return;
-            }
-
-            if(typeof res === "string") {
-                toast.error(res);
-                setIsBroadcasting(false);
-                return;
-            }
-
-            toast.success('Broadcast in progress');
-            router.push('/broadcast');
-        }
-
-        catch(e: any){
-            toast.error('Unable to broadcast: Common error, message too large');
-        }
-
-        setIsBroadcasting(false);
-
-    }, [ user, content, title, tierIds, mailingList, router ]);
-
-    const saveDraft = useCallback(async() => {
-        if(!mailingList) {
-            toast.error("Sollinked is not initialized");
-            return;
-        }
-
-
         setIsSaving(true);
         try {
-            let res = await mailingList.saveDraft({
-                tier_ids: tierIds,
+            let res = await contentAPI.create({
                 content,
                 title,
+                description,
+                content_pass_ids: contentPassIds,
+                status,
+                value_usd: valueUsd !== ""? Number(valueUsd) : 0,
             });
 
             if(!res) {
@@ -93,18 +60,25 @@ const Page = () => {
                 return;
             }
 
+            if(!res.data.data) {
+                toast.error('Unable to save');
+                setIsSaving(false);
+                return;
+            }
+
             toast.success('Saved');
-            router.push(`/broadcast/edit/${res.data.data!}`)
+            router.push(`/content/edit/${res.data.data}`)
         }
 
         catch(e: any){
             console.log(e)
             toast.error('Unable to save: Common error, message too large');
+            setIsSaving(false);
         }
 
         // setIsSaving(false);
 
-    }, [ content, title, tierIds, mailingList, router ]);
+    }, [ user, content, title, description, contentPassIds, status, valueUsd, contentAPI, router ]);
 
     return (
         <div className={`
@@ -135,18 +109,18 @@ const Page = () => {
             <div className={`
                 flex flex-col w-full
             `}>
-                <strong>Targets</strong>
+                <strong>Allowed Passes</strong>
                 <Select
                     className={`
                         w-full mt-3
                     `}
                     mode="multiple"
-                    onChange={(value) => { setTierIds(value) }}
+                    onChange={(value) => { setContentPassIds(value) }}
                 >
                     {
-                        user.mailingList?.tiers.map(x => {
+                        user.contentPasses?.map(x => {
                             return (
-                                <Select.Option value={x.id} key={`price-tier-option-${x.id}`}>{x.name} ({x.subscriber_count} subscribers)</Select.Option>
+                                <Select.Option value={x.id} key={`allowed-passes-${x.id}`}>{x.name}</Select.Option>
                             )
                         })
                     }
@@ -162,11 +136,45 @@ const Page = () => {
                     value={title} 
                     onChange={({target: { value }}) => setTitle(value)}
                 />
+                <strong className="mt-10">Description</strong>
+                <textarea 
+                    className={`
+                        dark:bg-slate-800 bg-white rounded
+                        px-3 py-2
+                        outline-none disabled:cursor-not-allowed
+                    `} 
+                    value={description} 
+                    onChange={({target: { value }}) => setDescription(value)}
+                />
+                <strong className="mt-10">Price</strong>
+                <input 
+                    type="number" 
+                    className={`
+                        dark:bg-slate-800 bg-white rounded
+                        px-3 py-2
+                        outline-none disabled:cursor-not-allowed
+                    `}
+                    value={valueUsd}
+                    placeholder="0 for free content"
+                    onChange={({target: { value }}) => setValueUsd(value)}
+                />
+                <strong className="mt-10">Status</strong>
+                <Select
+                    className={`
+                        w-full mt-3
+                    `}
+                    onChange={(value) => { setStatus(value) }}
+                    value={status}
+                >
+                    <Select.Option value="draft">Draft</Select.Option>
+                    <Select.Option value="published">Published</Select.Option>
+                </Select>
                 <strong className="mt-10">Content</strong>
                 <span className="mt-3">* Note: Tables don&apos;t have borders in the actual email.</span>
                 <span>* Note: Drafts don&apos;t save &quot;Targets&quot;.</span>
                 <CustomEditor
                     setContent={setContent}
+                    initialContent={content}
                 />
                 <div
                     className={`
@@ -176,20 +184,7 @@ const Page = () => {
                 >
                     <button 
                         className={`
-                            md:w-[200px] w-full h-[30px] rounded
-                            bg-green-500 dark:text-white text-black
-                            disabled:cursor-not-allowed 
-                            dark:disabled:bg-slate-500 dark:disabled:border-slate-600 disabled:bg-slate-200 disabled:border-slate-300 
-                            dark:disabled:text-slate-300 disabled:text-slate-500
-                        `}
-                        onClick={publish}
-                        disabled={isBroadcasting || isSaving || !title || !content || tierIds.length === 0}
-                    >
-                        {isBroadcasting? 'Broadcasting..' : 'Broadcast'}
-                    </button>
-                    <button 
-                        className={`
-                            md:ml-2 md:mt-0 ml-0 mt-3
+                            md:mt-0 mt-3
                             md:w-[200px] w-full h-[30px] rounded
                             bg-green-500 dark:text-white text-black
                             disabled:cursor-not-allowed 
@@ -197,9 +192,9 @@ const Page = () => {
                             dark:disabled:text-slate-300 disabled:text-slate-500
                         `}
                         onClick={saveDraft}
-                        disabled={isBroadcasting || isSaving || !title || !content}
+                        disabled={isSaving || !title || !content || !description}
                     >
-                        {isBroadcasting? 'Saving..' : 'Save Draft'}
+                        {isSaving? 'Saving..' : 'Save Draft'}
                     </button>
                 </div>
             </div>

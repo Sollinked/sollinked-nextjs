@@ -108,6 +108,30 @@ export type MailingListPriceTier = {
     username?: string;
 }
 
+export type Content = {
+    id: number;
+    user_id: number;
+    content_pass_ids: number[];
+    content: string;
+    title: string;
+    slug: string;
+    description: string;
+    value_usd: number;
+    is_free: boolean;
+    status: 'draft' | 'published';
+    deleted_at?: string;
+    updated_at: string;
+}
+
+export type ContentPass = {
+    id: number;
+    user_id: number;
+    name: string;
+    description: string;
+    amount: number; // limited amount
+    value_usd: number; // price per pass
+}
+
 export type MailingListBroadcast = {
     id: number;
     user_id: number;
@@ -158,6 +182,8 @@ export type User = {
     subscriptions?: MailingListSubscriber[];
     reservations?: UserReservation[];
     reservationSettings?: UserReservationSetting[];
+    contents?: Content[];
+    contentPasses?: ContentPass[];
     webhooks?: Webhook[];
     githubSettings?: UserGithubSetting[];
     is_verified: boolean;
