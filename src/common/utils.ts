@@ -288,7 +288,7 @@ export const sendTokensTo = async(wallet: WalletContextState, sendTo: string, to
         fromAccount.address, // source
         associatedTokenTo, // dest
         publicKey,
-        amount * tokenDecimals,
+        Math.round(amount * tokenDecimals),
       )
     );
 
@@ -393,4 +393,8 @@ export const swapAndSendTo = async(wallet: WalletContextState, mintToken: Public
           signature,
       });
       return signature;
+}
+
+export const getContentPaymentAddress = () => {
+    return process.env.NEXT_PUBLIC_PAYMENT_CONTENT_TO!;
 }
