@@ -37,12 +37,8 @@ const Wrapped = ({
     }, [ isSidebarActive ]);
 
     const closeSidebar = useCallback(() => {
-        if(!isSidebarActive) {
-            return;
-        }
-
         setIsSidebarActive(false);
-    }, [ isSidebarActive ]);
+    }, []);
 
     useEffect(() => {
         // close sidebar when the path changes
@@ -69,7 +65,8 @@ const Wrapped = ({
                         onMenuClick={onSidebarToggle}
                     />
                     <div className={`
-                        md:px-5 md:pb-5 pt-3 px-1 pb-1
+                        md:px-5 md:pb-5 pt-3 px-1 
+                        md:pb-3 pb-[70px]
                         `}>
                         {children}
                     </div>
