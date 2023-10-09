@@ -202,6 +202,7 @@ const Page = () => {
                     `}
                     mode="multiple"
                     onChange={(value) => { setContentPassIds(value) }}
+                    value={contentPassIds}
                 >
                     {
                         user.contentPasses?.map(x => {

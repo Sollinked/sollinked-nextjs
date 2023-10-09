@@ -89,3 +89,7 @@ html:not(.dark) .wallet-adapter-button-trigger {
 .ck-editor__editable_inline {
   min-height: 30vh;
 }
+
+html.dark .ck-content a {
+  color: rgb(30, 183, 183);
+}

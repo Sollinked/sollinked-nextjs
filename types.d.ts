@@ -202,6 +202,8 @@ export type PublicUser = {
     calendar_advance_days: number;
     tiers?: UserTier[];
     mailingList?: MailingList;
+    contents?: Content[];
+    contentPasses?: ContentPass[];
     is_verified: boolean;
 }
 

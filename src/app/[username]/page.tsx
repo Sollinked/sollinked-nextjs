@@ -371,11 +371,40 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                     `}
                 >
                     <span>
-                        Subscribe from only
+                        Subscribe to their newsletter from only
                     </span>
                     <strong style={{fontSize: 25}}>{lowestPricePerMonth} USDC / mo</strong>
                 </Link>
             }
+
+            <div className="flex flex-row space-x-2 w-[90%] lg:w-[75%] xl:w-[50%] mt-2">
+                <Link
+                    href={`/${publicUser.username}/contentPass`}
+                    className={`
+                        flex flex-col items-center justify-center
+                        h-[50px] w-full
+                        rounded
+                        dark:bg-indigo-500 bg-indigo-200
+                    `}
+                >
+                    <strong>
+                        Content Passes
+                    </strong>
+                </Link>
+                <Link
+                    href={`/${publicUser.username}/content`}
+                    className={`
+                        flex flex-col items-center justify-center
+                        h-[50px] w-full
+                        rounded
+                        dark:bg-indigo-500 bg-indigo-200
+                    `}
+                >
+                    <strong>
+                        Contents
+                    </strong>
+                </Link>
+            </div>
 
             <strong className="mt-10 w-[90%] lg:w-[75%] xl:w-[50%]">Contact {publicUser.display_name ?? publicUser.username} Now</strong>
             <div className={`
