@@ -166,7 +166,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                                 className={`
                                     flex flex-col w-full h-[150px]
                                     p-3 rounded
-                                    dark:bg-slate-700 bg-slate-500
+                                    dark:bg-slate-700 bg-slate-300
                                     relative
                                 `}
                                 href={`/${publicUser.username}/p/${x.slug}`}
@@ -178,10 +178,15 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                                 </div>
                                 <span className="mt-3 text-xs md:text-base">{x.description}</span>
                                 
-                                <div className="absolute bottom-[8px] right-[8px] flex flex-row w-full justify-end">
+                                <div className="absolute bottom-[8px] right-[8px] flex flex-row w-full justify-end space-x-1">
                                     {
                                         x.is_free &&
                                         <strong className="text-xs text-white px-2 py-1 rounded-full bg-green-700">FREE</strong>
+                                    }
+                                    {
+                                        !x.is_free && x.contentPasses && x.contentPasses.map(p => (
+                                            <strong key={`pass-${x.id}-${p.id}`} className="text-xs text-white px-2 py-1 rounded-full bg-green-700">{p.name}</strong>
+                                        ))
                                     }
                                 </div>
                             </Link>

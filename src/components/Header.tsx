@@ -22,13 +22,14 @@ const hideInPaths = [
 
 const hidePathPattern = [
     /\/github\/\d+/g,
+    /\/.*\/contentPass/g,
+    /\/.*\/content/g,
 ];
 
 const Header = ({onMenuClick}: HeaderParams) => {
     const wallet = useWallet();
     const { user, init } = useSollinked();
     const pathname = usePathname();
-
     const shouldHide = useMemo(() => {
         if(hideInPaths.includes(pathname)) {
             return true;
@@ -93,12 +94,13 @@ const Header = ({onMenuClick}: HeaderParams) => {
         justify-between md:justify-end
         flex flex-row px-3 items-center 
         h-[60px]
-        sticky top-0 left-0 right-0 
-        z-10
+        fixed top-2 ${shouldHide? '' : 'left-0 '} md:right-3 right-1
+        z-[11]
       `}>
         {/** menu button */}
         <button
             className={`
+                ${shouldHide? 'hidden' : ''}
                 flex md:hidden
                 flex-row items-center
                 rounded border-slate-500 border-[1px]

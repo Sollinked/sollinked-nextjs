@@ -58,7 +58,7 @@ const Wrapped = ({
                     onCloseClick={onSidebarToggle}
                 />
                 <div className={`
-                    md:w-3/4 w-full max-h-screen overflow-auto
+                    w-full max-h-screen overflow-auto
                     relative
                 `}>
                     <Header 
@@ -67,6 +67,7 @@ const Wrapped = ({
                     <div className={`
                         md:px-5 md:pb-5 pt-3 px-1 
                         md:pb-3 pb-[70px]
+                        pt-[100px]
                         `}>
                         {children}
                     </div>

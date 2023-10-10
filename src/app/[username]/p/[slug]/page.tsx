@@ -243,10 +243,6 @@ const Page = () => {
             return;
         }
 
-        if(!content) {
-            return;
-        }
-
         setIsPaying(true);
 
         const { address } = supportedTokens[payWith];
@@ -319,7 +315,7 @@ const Page = () => {
             setIsPaying(false);
         }
   
-    }, [ wallet, payWith, contentPass, getData, content ]);  
+    }, [ wallet, payWith, contentPass, getData ]);  
 
     if(!content) {
         return null;
@@ -380,7 +376,7 @@ const Page = () => {
                 </Link>
             </div>
             {/** Divider */}
-            <div className="h-[1px] w-full my-5 dark: bg-slate-700 bg-slate-300"></div>
+            <div className="h-[1px] w-full my-5 dark:bg-slate-700 bg-slate-300"></div>
             {
                 isLoading &&
                 <div className="h-[50vh] w-full flex items-center justify-center">
@@ -472,9 +468,9 @@ const Page = () => {
             }
 
 
-            <button className="mt-10" onClick={() => getData(true)}>
+            {/* <button className="mt-10" onClick={() => getData(true)}>
                 refresh
-            </button>
+            </button> */}
         </div>
     )
 }

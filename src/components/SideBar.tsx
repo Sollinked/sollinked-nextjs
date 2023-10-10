@@ -97,7 +97,7 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
         </div>
         <div className={`
           md:relative fixed left-0
-          flex flex-col flex-1 md:w-1/4 w-3/4 h-screen
+          flex flex-col flex-1 md:w-[0px] md:min-w-[250px] w-3/4 h-screen
           md:border-r-[0.5px] md:border-indigo-500
           md:translate-x-0 ${isActive? 'translate-x-[0vw]' : 'translate-x-[-75vw]'} transition-all
           z-50 
