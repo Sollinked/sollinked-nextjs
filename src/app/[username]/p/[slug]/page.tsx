@@ -23,7 +23,7 @@ const parser = new HtmlToReactParser();
 
 const CONTENT_FEE = (Number(process.env.NEXT_PUBLIC_PAYMENT_CONTENT_FEE ?? '0') / 100) + 1; // eg 1.05
 const Page = () => {
-    const { user, content: contentAPI, account } = useSollinked();
+    const { user, content: contentAPI, account, contentPass } = useSollinked();
     const [content, setContent] = useState<Content>();
     const [publicUser, setPublicUser] = useState<PublicUser>();
     const [isLoading, setIsLoading] = useState(true);
@@ -50,18 +50,22 @@ const Page = () => {
         }
 
         lastUserId.current = user.id;
+        setIsLoading(true);
         let res = await contentAPI.get(username as string, id as string);
         if(!res) {
-            toast.error("Unable to get draft");
+            setIsLoading(false);
+            toast.error("Unable to get content");
             return;
         }
 
         if(typeof res === 'string') {
+            setIsLoading(false);
             toast.error(res);
             return;
         }
 
         setContent(res);
+        setIsLoading(false);
     }, [ id, contentAPI, username, user ]);
 
     useEffect(() => {
@@ -95,7 +99,6 @@ const Page = () => {
 
         const getAccountData = async() => {
             let res = await account.get(username as string);
-            setIsLoading(false);
             if(typeof res === "string") {
                 toast.error(res);
                 return;
@@ -230,6 +233,94 @@ const Page = () => {
   
     }, [ wallet, payWith, contentAPI, getData, id, value_usd, content ]);  
 
+    const onBuyPassClick = useCallback(async(id: number, name: string, value_usd: number) => {
+        if(!contentPass) {
+            return;
+        }
+
+        if(!wallet || !wallet.publicKey) {
+            toast.error('Please connect your wallet!');
+            return;
+        }
+
+        if(!content) {
+            return;
+        }
+
+        setIsPaying(true);
+
+        const { address } = supportedTokens[payWith];
+        let payValue = value_usd * CONTENT_FEE;
+        let responseData = {};
+        if(payWith !== "USDC") {
+            try {
+                let res = await axios.get(`https://quote-api.jup.ag/v6/quote?inputMint=${address}&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${Math.round(payValue * USDC_DECIMALS)}&swapMode=ExactOut&slippageBps=50`);
+                responseData = res.data;
+            }
+    
+            catch {
+                toast.error('Unable to get rate');
+                setIsPaying(false);
+                return;
+            }
+        }
+
+        const depositTo = getContentPaymentAddress();
+        try {
+            let txHash = "";
+            if(payWith === "USDC") {
+                console.log(payValue)
+                txHash = await sendTokensTo(wallet, depositTo, USDC_TOKEN_ADDRESS, USDC_DECIMALS, payValue);
+            }
+
+            else {
+                txHash = await swapAndSendTo(wallet, new PublicKey(USDC_TOKEN_ADDRESS), new PublicKey(depositTo), responseData);
+            }
+
+            if(!txHash) {
+                toast.error("Unable to send tx");
+                setIsPaying(false);
+            }
+
+            toast.info(<a className="flex flex-col" href={`https://solana.fm/tx/${txHash}`} target="_blank" >
+                <span>Verifying payment</span>
+                <span className="mt-3">Payment Tx Link:</span>
+                <span className="mb-3">{ellipsizeThis(txHash, 6, 6)}</span>
+                <span>This may take up to a minute.</span>
+            </a>, {
+                autoClose: 5000
+            });
+            let res = await contentPass.pay(id, { txHash });
+            if(typeof res === "string") {
+                toast.error(res);
+                setIsPaying(false);
+                return;
+            }
+
+            toast.success(`Successfully bought ${name}`);
+            await getData(true);
+            setIsPaying(false);
+      
+        } catch (error: any) {
+            if(error.name === "WalletNotConnectedError") {
+              toast.error('Please connect your wallet!');
+              setIsPaying(false);
+              return;
+            }
+  
+            if(error.message.includes("Not enough")) {
+              toast.error('Insufficient Balance');
+              setIsPaying(false);
+              return;
+            }
+  
+            console.log(error)
+            toast.error('Error occurred!');
+            setIsPaying(false);
+        }
+  
+    }, [ wallet, payWith, contentPass, getData, content ]);  
+
     if(!content) {
         return null;
     }
@@ -291,7 +382,13 @@ const Page = () => {
             {/** Divider */}
             <div className="h-[1px] w-full my-5 dark: bg-slate-700 bg-slate-300"></div>
             {
-                title && content && 
+                isLoading &&
+                <div className="h-[50vh] w-full flex items-center justify-center">
+                    <LoadingOutlined style={{ fontSize: 80 }}/>
+                </div>
+            }
+            {
+                !isLoading && title && content && 
                 <>
                 {/** have to import this here cause we need the css */}
                 <div className="hidden">
@@ -312,7 +409,7 @@ const Page = () => {
                 </>
             }
             {
-                title && content.content === "" &&
+                !isLoading && title && content.content === "" &&
                 <div
                     className={`
                         w-full flex flex-col items-center
@@ -323,18 +420,52 @@ const Page = () => {
                         onClick={onPayClick}
                         disabled={isPaying}
                     >
-                        Buy this article for only {toLocaleDecimal(value_usd * CONTENT_FEE, 2, 5)} USDC
+                        Unlock this article for only {toLocaleDecimal(value_usd * CONTENT_FEE, 2, 5)} USDC
                     </button>
-                    <button 
-                        className="text-white w-[350px] dark:bg-indigo-700 bg-indigo-500 rounded h-[60px] mt-5"
-                        disabled={isPaying}
-                    >
-                        Buy Content Pass
-                    </button>
+                    {
+                        content.contentPasses?.map(x => {
+                            if(x.amount > 0 && x.cnft_count >= x.amount && x.amount !== 0) {
+                                return (
+                                    <Link
+                                        className="flex flex-col justify-center items-center
+                                        text-white w-[350px] dark:bg-indigo-700 bg-indigo-500 rounded h-[60px] mt-5 "
+                                        key={`content-pass-${x.id}`}
+                                        href={`https://tensor.trade/trade/caf25e95-e2a7-47ac-ae03-ff4af4173194`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <span>Buy {x.name} Pass {x.cnft_count < x.amount || x.amount === 0? `for ${toLocaleDecimal(x.value_usd, 2 ,5)}` : ''}</span>
+                                        {
+                                            x.amount > 0 &&
+                                            <span className="text-xs">({x.cnft_count < x.amount? `${x.amount - x.cnft_count} Left` : 'Secondary Market'})</span>
+                                        }
+                                    </Link>
+
+                                )
+                            }
+
+                            return (
+                                <button 
+                                    className="flex flex-col justify-center items-center
+                                    text-white w-[350px] dark:bg-indigo-700 bg-indigo-500 rounded h-[60px] mt-5 "
+                                    disabled={isPaying}
+                                    key={`content-pass-${x.id}`}
+                                    onClick={() => onBuyPassClick(x.id, x.name, x.value_usd)}
+                                >
+                                    <span>Buy {x.name} Pass for {toLocaleDecimal(x.value_usd * CONTENT_FEE, 2 ,5)} USDC</span>
+                                    {
+                                        x.amount > 0 &&
+                                        <span className="text-xs">({x.amount - x.cnft_count} Left)</span>
+                                    }
+                                </button>
+
+                            )
+                        })
+                    }
                 </div>
             }
             {
-                isPaying &&
+                !isLoading && isPaying &&
                 <div className="w-full flex justify-center mt-10">
                     <LoadingOutlined style={{fontSize: 60}}/>
                 </div>

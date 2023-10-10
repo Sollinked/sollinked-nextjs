@@ -121,6 +121,9 @@ export type Content = {
     status: 'draft' | 'published';
     deleted_at?: string;
     updated_at: string;
+
+    // generated
+    contentPasses?: ContentPass[];
 }
 
 export type ContentPass = {
@@ -130,6 +133,7 @@ export type ContentPass = {
     description: string;
     amount: number; // limited amount
     value_usd: number; // price per pass
+    cnft_count: number; // how many miinted
 }
 
 export type MailingListBroadcast = {

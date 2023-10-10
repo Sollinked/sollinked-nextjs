@@ -59,7 +59,7 @@ const Page = () => {
                     rounded-md
                 `}>
                     {
-                        !userDetails.contentPasses &&
+                        (!userDetails.contentPasses || userDetails.contentPasses.length === 0) &&
                         <div className={`
                             flex flex-col p-3 rounded xl:w-[40vw] md:w-[500px] w-[90vw] min-h-[30vh] items-center justify-center
                             dark:bg-slate-600 bg-white
