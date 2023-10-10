@@ -30,7 +30,7 @@ const Page = () => {
 
         setIsSaving(true);
         try {
-            let res = await contentPass.create({
+            let res = await contentPass.update(Number(id), {
                 name,
                 description,
                 value_usd: Number(valueUsd),
@@ -49,14 +49,8 @@ const Page = () => {
                 return;
             }
 
-            if(!res.data.data) {
-                toast.error('Unable to save');
-                setIsSaving(false);
-                return;
-            }
-
             toast.success('Saved');
-            router.push(`/content/pass/edit/${res.data.data}`)
+            setIsSaving(false);
         }
 
         catch(e: any){
@@ -67,7 +61,7 @@ const Page = () => {
 
         // setIsSaving(false);
 
-    }, [ user, contentPass, router, amount, valueUsd, name, description ]);
+    }, [ user, id, contentPass, amount, valueUsd, name, description ]);
 
 
     useEffect(() => {
