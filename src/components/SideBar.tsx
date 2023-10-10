@@ -165,11 +165,11 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
             text="Github"
             active={pathname === "/github" || pathname.search(/\/github/g) !== -1}
           />
-          <SideBarItem
+          {/* <SideBarItem
             link="/chat"
             text="Chat"
             active={pathname === "/chat"}
-          />
+          /> */}
           <SideBarItem
             link="/webhooks"
             text="Webhooks"
