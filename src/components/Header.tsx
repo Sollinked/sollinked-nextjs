@@ -9,6 +9,7 @@ import { useEffect, useMemo } from 'react';
 
 type HeaderParams = {
     onMenuClick: () => void;
+    onHeaderVisibilityChange: (isHidden: boolean) => void;
 }
 
 const WalletMultiButtonDynamic = dynamic(
@@ -26,7 +27,7 @@ const hidePathPattern = [
     /\/.*\/content/g,
 ];
 
-const Header = ({onMenuClick}: HeaderParams) => {
+const Header = ({onMenuClick, onHeaderVisibilityChange}: HeaderParams) => {
     const wallet = useWallet();
     const { user, init } = useSollinked();
     const pathname = usePathname();
@@ -42,6 +43,10 @@ const Header = ({onMenuClick}: HeaderParams) => {
         }
         return false;
     }, [ pathname ]);
+
+    useEffect(() => {
+        onHeaderVisibilityChange(shouldHide && user.id > 0);
+    }, [shouldHide, user, onHeaderVisibilityChange]);
 
     useEffect(() => {
         if(!wallet) {

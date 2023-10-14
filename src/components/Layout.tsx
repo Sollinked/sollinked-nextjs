@@ -25,6 +25,7 @@ const Wrapped = ({
     children: React.ReactNode
   }) => {
     const wallet = useWallet();
+    const [isHeaderHidden, setIsHeaderHidden] = useState(false);
     const [isSidebarActive, setIsSidebarActive] = useState(false);
     const pathname = usePathname();
 
@@ -63,11 +64,12 @@ const Wrapped = ({
                 `}>
                     <Header 
                         onMenuClick={onSidebarToggle}
+                        onHeaderVisibilityChange={setIsHeaderHidden}
                     />
                     <div className={`
                         md:px-5 md:pb-5 pt-3 px-1 
                         md:pb-3 pb-[70px]
-                        pt-[100px]
+                        ${isHeaderHidden? '' : 'pt-[100px]'}
                         `}>
                         {children}
                     </div>
