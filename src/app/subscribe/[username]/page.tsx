@@ -173,7 +173,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 return;
             }
 
-            toast.error('Unable to make payment');
+            toast.error(`Error occurred: If your USDC had been deducted, please wait 5 minutes and refresh "Your Subscriptions" tab. Contact us on twitter if you're not subscribed.`);
             setIsPaying(false);
         }
   
