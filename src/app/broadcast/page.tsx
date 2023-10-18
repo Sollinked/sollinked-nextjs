@@ -283,7 +283,7 @@ const Page = () => {
                                     <span className='text-xs'>Subscribers Reached: {x.success_count} / {x.total_count}</span>
                                 }
                                 {
-                                    x.total_count > x.success_count &&
+                                    /* x.total_count > x.success_count &&
                                     <button 
                                         className={`
                                             absolute top-1 right-1 rounded w-[100px]
@@ -297,7 +297,7 @@ const Page = () => {
                                         disabled={x.is_executing}
                                     >
                                         Retry
-                                    </button>
+                                    </button> */
                                 }
                             </Link>
                         ))
