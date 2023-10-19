@@ -162,6 +162,7 @@ const Page = () => {
             return;
         }
 
+        toast.info('Please do not navigate away from the page before the tx is complete');
         setIsPaying(true);
 
         const { address } = supportedTokens[payWith];

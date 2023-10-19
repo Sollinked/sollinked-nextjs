@@ -103,6 +103,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
             }
         }
 
+        toast.info('Please do not navigate away from the page before the tx is complete');
         const depositTo = getContentPaymentAddress();
         try {
             let txHash = "";
@@ -316,6 +317,13 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                     })
                 }
                 </div>
+                {
+                    !isLoading && isPaying &&
+                    <div className="w-full flex justify-center mt-10">
+                        <LoadingOutlined style={{fontSize: 60}}/>
+                    </div>
+                }
+
             </div>
         </div>
     )
