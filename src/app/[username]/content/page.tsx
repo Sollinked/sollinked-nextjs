@@ -173,10 +173,10 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                                 key={`content-${x.id}`}
                             >
                                 <div className="flex flex-row w-full justify-between">
-                                    <strong className="sm:text-base md:text-xl">{x.title}</strong>
-                                    <span className="text-xs md:text-base">{moment(x.updated_at).format('MMM DD')}</span>
+                                    <strong className="sm:text-base 2xl:text-lg text-base">{x.title}</strong>
+                                    <span className="text-xs 2xl:text-base text-sm">{moment(x.updated_at).format('MMM DD')}</span>
                                 </div>
-                                <span className="mt-3 text-xs md:text-base">{x.description}</span>
+                                <span className="mt-3 text-sm 2xl:text-base">{x.description}</span>
                                 
                                 <div className="absolute bottom-[8px] right-[8px] flex flex-row w-full justify-end space-x-1">
                                     {

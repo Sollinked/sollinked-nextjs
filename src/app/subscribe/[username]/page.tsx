@@ -242,7 +242,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 }
             </div>
             {
-                userMailingList?.tiers[selectedIndex].past_broadcasts.length > 0 &&
+                (userMailingList?.tiers[selectedIndex]?.past_broadcasts ?? []).length > 0 &&
                 <div className={`
                     flex flex-col
                     w-full
