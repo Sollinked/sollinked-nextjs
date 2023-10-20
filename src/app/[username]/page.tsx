@@ -33,7 +33,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
 	const router = useRouter();
 
     const tiers = useMemo(() => {
-        return publicUser?.tiers?.reverse() ?? [];
+        return publicUser?.tiers ?? [];
     }, [ publicUser ]);
 
     const lowestPricePerMonth = useMemo(() => {
@@ -471,7 +471,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 </Select>
             </div>
             <div className={`
-              flex flex-row justify-end space-x-2
+              flex flex-col justify-end space-x-2
               w-[90%] lg:w-[75%] xl:w-[50%] mt-3
             `}>
                 {
@@ -481,24 +481,32 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                 </div>
                 }
                 {
-                    (tiers.length === 0) &&
-                    <strong className="dark:text-red-300 text-red-500 md:text-base text-sm">User has yet to set up Payment Tiers.</strong>
-                }
-                {
-                    tiers.map((x, index) => (
-                        <button 
-                            key={`book-button-${index}`}
-                            onClick={() => { onPayClick(x.value_usd) }}
-                            disabled={isPaying || !email || !isEmailValid}
-                            className={`
-                              dark:bg-indigo-800 bg-indigo-200 rounded px-3 py-2 text-xs
-                              dark:border-none shadow border-[1px] border-slate-300
-                              disabled:cursor-not-allowed
-                            `}
-                        >
-                            {toLocaleDecimal(x.value_usd * rate, 2, 2)} {payWith} ({x.respond_days} {x.respond_days === 1? "Day" : "Days"})
-                        </button>
-                    ))
+                    (tiers.length === 0)?
+                    <strong className="dark:text-red-300 text-red-500 md:text-base text-sm">User has yet to set up Payment Tiers.</strong>:
+                    <>
+                    <div className={`
+                        grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 md:gap-2 gap-1 w-full
+                    `}>
+                    {
+                        tiers.map((x, index) => (
+                            <button 
+                                key={`book-button-${index}`}
+                                onClick={() => { onPayClick(x.value_usd) }}
+                                disabled={isPaying || !email || !isEmailValid}
+                                className={`
+                                dark:bg-indigo-800 bg-indigo-200 rounded w-full px-3 py-2 text-xs
+                                dark:border-none shadow border-[1px] border-slate-300
+                                disabled:cursor-not-allowed
+                                `}
+                            >
+                                {toLocaleDecimal(x.value_usd * rate, 2, 2)} {payWith} ({x.respond_days} {x.respond_days === 1? "Day" : "Days"})
+                            </button>
+                        ))
+                    }
+                    
+                    </div>
+                    <span className="mt-3 text-xs">*Pay x USDC to get a reply within (days)</span>
+                    </>
                 }
             </div>
             {
