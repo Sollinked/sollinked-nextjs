@@ -90,6 +90,14 @@ export type MailingList = {
     tiers: MailingListPriceTier[];
 }
 
+export type PastBroadcast = {
+    id: number;
+    user_id: number;
+    username: string;
+    title: string;
+    created_at: string;
+}
+
 export type MailingListPriceTier = {
     id: number;
     mailing_list_id: number;
@@ -106,6 +114,7 @@ export type MailingListPriceTier = {
 
     // generated
     username?: string;
+    past_broadcasts: PastBroadcast[];
 }
 
 export type Content = {
