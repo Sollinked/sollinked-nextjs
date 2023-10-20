@@ -11,6 +11,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { Connection, VersionedTransaction } from '@solana/web3.js';
 import { getEmailDomain, getRPCEndpoint, toLocaleDecimal } from '@/common/utils';
+import moment from 'moment';
 import { useRouter } from 'next/navigation';
 
 const SUBCRIPTION_FEE = (Number(process.env.NEXT_PUBLIC_PAYMENT_SUBSCRIPTION_FEE ?? '0') / 100) + 1; // eg 1.05
@@ -240,6 +241,32 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                     ))
                 }
             </div>
+            {
+                userMailingList?.tiers[selectedIndex].past_broadcasts.length > 0 &&
+                <div className={`
+                    flex flex-col
+                    w-full
+                    md:max-w-[350px]
+                `}>
+                    <strong className='mt-10'>{userMailingList?.tiers[selectedIndex].name}&apos;s Past Contents</strong>
+                    <div className='mt-2'></div>
+                    {
+                        userMailingList?.tiers[selectedIndex].past_broadcasts.map((x, index) => (
+                            <div
+                                className={`
+                                    flex flex-col p-3 rounded w-full mb-3 relative
+                                    dark:bg-slate-700 bg-white
+                                    dark:border-none border-[1px] border-gray-950
+                                `}
+                                key={`past-broadcast-${x.id}`}
+                            >
+                                <strong>{x.title}</strong>
+                                <span className="text-xs mt-1">Published: {moment(x.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
+                            </div>
+                        ))
+                    }
+                </div>
+            }
             <div className={`
                 flex flex-col
                 w-full
