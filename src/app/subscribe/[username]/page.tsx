@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { MailingList } from '../../../../types';
 import { toast } from 'react-toastify';
@@ -30,6 +30,13 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     const wallet = useWallet();
     const isGettingData = useRef(false);
     const router = useRouter();
+
+    const pastBroadcasts = useMemo(() => {
+        if(!Array.isArray(userMailingList?.tiers[selectedIndex]?.past_broadcasts)) {
+            return [];
+        }
+        return userMailingList?.tiers[selectedIndex]?.past_broadcasts ?? [];
+    }, [userMailingList, selectedIndex]);
 
     const getData = useCallback(async() => {
         if(!mailingList) {
@@ -242,7 +249,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                 }
             </div>
             {
-                (userMailingList?.tiers[selectedIndex]?.past_broadcasts ?? []).length > 0 &&
+                pastBroadcasts.length > 0 &&
                 <div className={`
                     flex flex-col
                     w-full
@@ -251,7 +258,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
                     <strong className='mt-10'>{userMailingList?.tiers[selectedIndex].name}&apos;s Past Contents</strong>
                     <div className='mt-2'></div>
                     {
-                        userMailingList?.tiers[selectedIndex].past_broadcasts.map((x, index) => (
+                        pastBroadcasts.map((x, index) => (
                             <div
                                 className={`
                                     flex flex-col p-3 rounded w-full mb-3 relative
