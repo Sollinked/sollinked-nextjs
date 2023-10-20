@@ -98,6 +98,7 @@ const Page = () => {
 			prepay_month: parseInt(mailingPricePrepayMonth),
             subscriber_count: 0,
 			is_active: true,
+            past_broadcasts: [],
 		});
 
 		setUserDetails(cloned);
