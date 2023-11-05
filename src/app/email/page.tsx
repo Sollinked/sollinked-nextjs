@@ -191,7 +191,7 @@ const Page = () => {
                     }
                     
                     return (
-                        <a href={`mailto:${row.from_email}?cc=${row.bcc_to_email ?? ""}`} target='_blank'>
+                        <a href={`mailto:${row.from_email},${row.bcc_to_email ?? ""}`} target='_blank'>
 							<button 
 								className={`
 									border-[1px] border-white hover:border-indigo-300
