@@ -146,7 +146,7 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
           />
           <SideBarItem
             link="/content"
-            text="Content"
+            text="Blog"
             active={pathname.search(/\/content/g) !== -1}
           />
           <SideBarItem

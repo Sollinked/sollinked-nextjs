@@ -208,6 +208,7 @@ export type User = {
     webhooks?: Webhook[];
     githubSettings?: UserGithubSetting[];
     is_verified: boolean;
+    tags?: UserTag[];
 }
 
 export type PublicUser = {
@@ -226,6 +227,12 @@ export type PublicUser = {
     contents?: Content[];
     contentPasses?: ContentPass[];
     is_verified: boolean;
+    tags?: UserTag[];
+}
+
+export type UserTag = {
+    user_id: number;
+    name: string;
 }
 
 export type ContextUser = {

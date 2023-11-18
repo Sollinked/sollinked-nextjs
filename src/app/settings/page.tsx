@@ -3,7 +3,7 @@
 import React, { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MailingListPriceTier, User, UserReservationSetting, UserTier } from '../../../types';
 import { useSollinked } from '@sollinked/sdk';
-import { cloneObj, getDappDomain, getEmailDomain, toLocaleDecimal } from '@/common/utils';
+import { cloneObj, getDappDomain, getEmailDomain, getMd5, getRPCEndpoint, toLocaleDecimal } from '@/common/utils';
 import { UserDetailsKeys } from './types';
 import Image from 'next/image';
 import Icon from '@mdi/react';
@@ -13,12 +13,16 @@ import { Table, Modal } from 'antd';
 import { Input } from '@/components/Input';
 import { LeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { useTheme } from '@/hooks/useTheme';
 import logo from '../../../public/logo.png';
+import { ElusivViewer, SEED_MESSAGE, Elusiv } from '@elusiv/sdk';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
+import BigNumber from 'bignumber.js';
 
 const Page = () => {
-    const { user, account, calendar, mail, mailingList } = useSollinked();
+    const { user, account, calendar, mail } = useSollinked();
     const [isSaving, setIsSaving] = useState(false);
+    const [isUpdatingTags, setIsUpdatingTags] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
@@ -34,6 +38,10 @@ const Page = () => {
 
     let inputRef = useRef<any>(null);
     const domain = useMemo(() => getEmailDomain(), []);
+    const connection = useMemo(() => {
+      return new Connection(getRPCEndpoint());
+    }, []);
+    const wallet = useWallet();
 	const router = useRouter();
 
     /**
@@ -258,6 +266,11 @@ const Page = () => {
             return;
         }
 
+		if(!user.address) {
+            toast.error('Please connect your wallet');
+            return;
+		}
+
         setIsSaving(true);
         try {
 
@@ -326,7 +339,153 @@ const Page = () => {
             return;
         }
         return;
-    }, [ calendar, mail, account, userDetails, pfpFile]);
+    }, [ calendar, mail, account, userDetails, pfpFile, user ]);
+
+
+	// user tags
+	const onRefreshUserTag = useCallback(async() => {
+        if(!userDetails) {
+            toast.error('Empty user details');
+            return;
+        }
+
+        if(!account) {
+            return;
+        }
+
+		if(!user.address) {
+            toast.error('Please connect your wallet');
+            return;
+		}
+
+		if(!wallet) {
+            toast.error('Please connect your wallet');
+            return;
+		}
+
+        if(!wallet.signMessage) {
+            console.error('Verification error: no sign message function');
+            return;
+        }
+
+		setIsUpdatingTags(true);
+
+		const getRank = (number: BigNumber) => {
+			if(number.isGreaterThan(1e15)) {
+				return "> 1,000T";
+			}
+
+			if(number.isGreaterThan(1e12)) {
+				return "> 1T";
+			}
+
+			if(number.isGreaterThan(1e9)) {
+				return "> 1B";
+			}
+
+			if(number.isGreaterThan(1e6)) {
+				return "> 1M";
+			}
+
+			if(number.isGreaterThan(1e3)) {
+				return "> 1k";
+			}
+
+			if(number.isGreaterThan(1e2)) {
+				return "> 100";
+			}
+
+
+			if(number.isGreaterThan(1e1)) {
+				return "> 10";
+			}
+
+
+			if(number.isGreaterThan(1)) {
+				return "> 1";
+			}
+
+			return "<= 1";
+		}
+
+		try {           
+			// symbol : decimals
+			let supportedTokens = {
+				"LAMPORTS": 1e9, 
+				"USDC": 1e6, 
+				"USDT": 1e6, 
+				"mSOL": 1e9, 
+				"BONK": 1e9, 
+				"SAMO": 1e9, 
+				"stSOL": 1e9, 
+				"ORCA": 1e6, 
+				"RAY": 1e6,
+			};
+			
+			let tags = [];
+
+			toast.info("Getting Elusiv Balances");
+            const msg = Buffer.from(SEED_MESSAGE, 'utf-8');
+            const seed = await wallet.signMessage(msg);
+
+			// Create the elusiv instance
+			const elusiv = await Elusiv.getElusivInstance(
+				seed,
+				new PublicKey(user.address),
+				connection,
+				"mainnet-beta",
+			);
+		
+			// Get the root viewing key for the user
+			const rvk = elusiv.getRootViewingKey();
+		
+			// Create ElusivViewer instance
+			const viewer = await ElusivViewer.getElusivViewerInstance(
+				rvk,
+				connection,
+				"mainnet-beta",
+			);
+		
+			for(let [symbol, decimals] of Object.entries(supportedTokens)) {
+				// Fetch our current private balance (with ElusivViewer)
+				const viewerBalance = await viewer.getLatestPrivateBalance(symbol);
+				const tokenBalance = new BigNumber(viewerBalance).div(new BigNumber(decimals));
+				console.log(`Current private ${symbol} balance (with ElusivViewer): ${viewerBalance} : ${tokenBalance.toString()}`);
+				if(tokenBalance.isEqualTo(0)) {
+					continue;
+				}
+				const rank = getRank(tokenBalance);
+				symbol = symbol === "LAMPORTS"? "SOL" : symbol;
+				console.log(`Current Rank: ${rank} ${symbol}`);
+				tags.push(`${rank} ${symbol}`);
+			}
+
+			let hash = getMd5(JSON.stringify(tags));
+			
+			// update user tiers
+			let res = await account.updateTags({ tags, hash });
+			if(res && (typeof res === 'string' || typeof res.data === 'string')) {
+				let errMessage = typeof res === 'string'? res : res.data.data;
+				toast.error(errMessage ?? "Error saving data");
+				setIsUpdatingTags(false);
+				return;
+			}
+
+			setTimeout(() => {
+				toast.success("Updated Tags");
+				// getData();
+				setIsUpdatingTags(false);
+			}, 300);
+		}
+
+        catch(e: any) {
+            setTimeout(() => {
+                toast.error("Error saving data");
+                setIsUpdatingTags(false);
+            }, 300);
+            return;
+        }
+	}, [ account, userDetails, user, connection, wallet ]);
 
 	const onNewMailTier = useCallback(() => {
 		let cloned = cloneObj(userDetails);
@@ -481,31 +640,64 @@ const Page = () => {
 						onChange={(e) => onUserDetailsChanged(e.target.value, "display_name")}
 					/>
 					<Input
-						addonBefore='Receiver'
-						addonAfter={`@${domain}`}
+						addonBefore='Username'
 						type="text"
-						placeholder='Receiver'
+						placeholder='username'
 						value={userDetails.username ?? ""} 
 						onChange={(e) => onUserDetailsChanged(e.target.value, "username")}
 					/>
 					<Input
-						addonBefore='Send To'
+						addonBefore='Your Real Email'
 						type="text"
 						placeholder='your_real_email@domain.com'
 						value={userDetails.email_address ?? ""} 
 						onChange={(e) => onUserDetailsChanged(e.target.value, "email_address")}
 					/>
-					<Input
-						addonBefore='Link'
-						type="text"
-						placeholder=""
-						value={`${getDappDomain()}/reserve/${user.username}`}
-						readOnly
-					/>
                 </div>
             </div>
+
+			<div className={`
+				xl:w-[40vw] md:w-[500px] w-[90vw] m-auto
+				space-y-1 mt-5
+			`}>
+				<Input
+					addonBefore='Public Address'
+					type="text"
+					placeholder=''
+					value={`${userDetails.username}@${domain}`} 
+					readOnly
+				/>
+				<Input
+					addonBefore='Calendar'
+					type="text"
+					placeholder=""
+					value={`${getDappDomain()}/reserve/${userDetails.username}`}
+					readOnly
+				/>
+				<Input
+					addonBefore='Subscription'
+					type="text"
+					placeholder=""
+					value={`${getDappDomain()}/subscribe/${userDetails.username}`}
+					readOnly
+				/>
+				<Input
+					addonBefore='Blog'
+					type="text"
+					placeholder=""
+					value={`${getDappDomain()}/${userDetails.username}/content`}
+					readOnly
+				/>
+				<Input
+					addonBefore='Blog Pass'
+					type="text"
+					placeholder=""
+					value={`${getDappDomain()}/${userDetails.username}/contentPass`}
+					readOnly
+				/>
+			</div>
 			
-			<h2 className='m-auto mt-10 text-center'>Social Accounts</h2>
+			{/* <h2 className='m-auto mt-10 text-center'>Social Accounts</h2>
 			<div className={`
 				xl:w-[40vw] md:w-[500px] w-[90vw] m-auto
 				space-y-1 mt-3
@@ -552,6 +744,49 @@ const Page = () => {
 					value={userDetails.youtube ?? ""} 
 					onChange={(e) => onUserDetailsChanged(e.target.value, "youtube")}
 				/>
+			</div> */}
+
+			<div className={`
+				m-auto mt-10 
+				text-center
+				flex flex-row justify-center align-center
+			`}>
+				<span>Chat Tags</span>
+				<button
+					className={`
+						ml-3 my-auto border-[1px]
+						h-7 w-7 text-[20px]
+						rounded
+						flex items-center justify-center
+						dark:text-white text-white bg-green-500
+						border-none
+					`}
+					onClick={onRefreshUserTag}
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
+						className={`w-4 h-4 ${isUpdatingTags? 'animate-spin' : ''}`}
+					>
+						<path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+					</svg>
+				</button>
+			</div>
+			
+			<div className={`
+				text-center mt-1
+				flex flex-col justify-center align-center
+			`}>
+				<div className="xl:w-[40vw] md:w-[500px] w-[90vw] m-auto text-xs">
+					<span>* Chat tags are generated based on your private balances on Elusiv.</span>
+				</div>
+				<div className="xl:w-[40vw] md:w-[500px] w-[90vw] m-auto text-xs space-y-2 mt-3">
+				{
+					user.tags?.map((tag, index) => (
+						<div className="px-3 py-2 dark:bg-yellow-600 bg-yellow-400 rounded" key={`tag-${index}`}>
+							{tag.name}
+						</div>
+					))
+				}
+				</div>
 			</div>
 
 			<div className={`

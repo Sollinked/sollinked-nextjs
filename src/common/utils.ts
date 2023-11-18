@@ -1,8 +1,10 @@
 import { SignerWalletAdapterProps, WalletNotConnectedError, WalletNotReadyError } from '@solana/wallet-adapter-base';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
-import { Connection, GetProgramAccountsFilter, PublicKey, Transaction, TransactionInstruction, VersionedTransaction, clusterApiUrl } from '@solana/web3.js';
+import { Connection, GetProgramAccountsFilter, Keypair, PublicKey, Transaction, TransactionInstruction, VersionedTransaction, clusterApiUrl } from '@solana/web3.js';
 import moment, { Moment } from 'moment';
+import { md5 } from 'js-md5';
+import BigNumber from 'bignumber.js';
 
 export function sleep(ms: number) {
     return new Promise((resolve, reject) => {
@@ -149,6 +151,22 @@ export const isWeekend = (moment: Moment) => {
     let day = moment.get('day');
     return day === 5 || day === 6; // friday or saturday
 }
+
+// converts to k, M, B, T, e15, e18
+/* export const convertBigNumberToMillions = (from: BigNumber) => {
+    let absolute = from.absoluteValue();
+    
+    if(absolute.isGreaterThanOrEqualTo(1e15)) {
+        return from.toExponential();
+    }
+    
+    if(absolute.isGreaterThanOrEqualTo(1e12)) {
+        from = from.div(1e12);
+        return from.toFixed(2) + "T";
+    }
+
+    return from.toFixed(2);
+} */
 
 // converts the day of week and hour to utc time
 export const convertToLocalDayAndHour = (day: number, hour: number) => {
@@ -397,4 +415,13 @@ export const swapAndSendTo = async(wallet: WalletContextState, mintToken: Public
 
 export const getContentPaymentAddress = () => {
     return process.env.NEXT_PUBLIC_PAYMENT_CONTENT_TO!;
+}
+
+// api key
+export const getApiKey = () => {
+    return process.env.NEXT_PUBLIC_API_KEY!;
+}
+
+export const getMd5 = (fromString: string) => {
+    return md5.hmac(getApiKey(), fromString);
 }

@@ -388,7 +388,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                     `}
                 >
                     <strong>
-                        Content Passes
+                        Blog Passes
                     </strong>
                 </Link>
                 <Link
@@ -401,7 +401,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                     `}
                 >
                     <strong>
-                        Contents
+                        Blogs
                     </strong>
                 </Link>
             </div>

@@ -105,11 +105,6 @@ const Layout = ({
              * in the npm package `@solana/wallet-adapter-wallets`.
              */
             // new UnsafeBurnerWalletAdapter(),
-            new PhantomWalletAdapter(),
-            new SolflareWalletAdapter(),
-            new LedgerWalletAdapter(),
-            new KeystoneWalletAdapter(),
-            new TrustWalletAdapter(),
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [network]
