@@ -11,7 +11,7 @@ const CustomEditor = ({
     return (
         <div className="no-tailwindcss-base text-black">
             <CKEditor
-                editor={ Editor }
+                editor={ Editor as any }
                 data={initialContent ?? ""}
                 config={{
                     toolbar: {
