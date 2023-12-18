@@ -127,6 +127,7 @@ const Page = () => {
 							className={`
 								md:h-[125px] md:w-[125px] h-[75px] w-[75px]
 								rounded-full dark:border-none border-2 border-black bg-slate-700
+								object-cover
 							`}
 						/>
 						<span className='mt-5 flex flex-row items-center justify-center'>

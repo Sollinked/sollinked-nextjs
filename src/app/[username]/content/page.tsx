@@ -164,8 +164,8 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                         publicUser.contents?.map(x => (
                             <Link
                                 className={`
-                                    flex flex-col w-full h-[150px]
-                                    p-3 rounded
+                                    flex flex-col w-full
+                                    p-3 pb-[30px] rounded
                                     dark:bg-slate-700 bg-slate-300
                                     relative
                                 `}
@@ -176,7 +176,7 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
                                     <strong className="sm:text-base 2xl:text-lg text-base">{x.title}</strong>
                                     <span className="text-xs 2xl:text-base text-sm">{moment(x.updated_at).format('MMM DD')}</span>
                                 </div>
-                                <span className="mt-3 text-sm 2xl:text-base">{x.description}</span>
+                                <span className="mt-3 text-sm 2xl:text-base overflow-y-auto">{x.description}</span>
                                 
                                 <div className="absolute bottom-[8px] right-[8px] flex flex-row w-full justify-end space-x-1">
                                     {
