@@ -143,7 +143,7 @@ const Page = () => {
 				))
 			}
 			</div>
-			<div className='w-full px-2 mt-10 text-sm text-center'>Can&apos;t find the person you&apos;re looking for?<br />Try searching for them!</div>
+			<div className='w-full px-2 mt-10 text-sm text-center'>Can&apos;t find the person you&apos;re looking for in this list?<br />Try searching for them in the search bar!</div>
 		</div>
 	);
 };

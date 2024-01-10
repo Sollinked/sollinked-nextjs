@@ -5,7 +5,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useSollinked } from '@sollinked/sdk';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { toast } from 'react-toastify';
 
 type HeaderParams = {
     onMenuClick: () => void;
@@ -31,6 +32,7 @@ const Header = ({onMenuClick, onHeaderVisibilityChange}: HeaderParams) => {
     const wallet = useWallet();
     const { user, init } = useSollinked();
     const pathname = usePathname();
+    const isIniting = useRef<boolean>(false);
     const shouldHide = useMemo(() => {
         if(hideInPaths.includes(pathname)) {
             return true;
@@ -74,24 +76,52 @@ const Header = ({onMenuClick, onHeaderVisibilityChange}: HeaderParams) => {
             }
 
             if(!wallet.signMessage) {
-                console.error('Verification error: no sign message function');
+                //console.error('Verification error: no sign message function');
                 return;
             }
+            
+            if(isIniting.current) {
+                // dont set off multiple
+                return;
+            }
+
+            isIniting.current = true;
 
             // ask for signature
             const toSign = VERIFY_MESSAGE;
             let signature = "";
-
+            let retries = 0;
             // For historical reasons, you must submit the message to sign in hex-encoded UTF-8.
             // This uses a Node.js-style buffer shim in the browser.
-            const msg = Buffer.from(toSign);
-            let signed = await wallet.signMessage(msg);
-            signature = Buffer.from(signed).toString("base64");
-            init(signature);
+            while(retries < 3) {
+                try {
+                    const msg = Buffer.from(toSign);
+                    let signed = await wallet.signMessage(msg);
+                    signature = Buffer.from(signed).toString("base64");
+                    init(signature);
+                    break;
+                }
+
+                catch(e: any) {
+                    if(e.message.includes("Plugin Closed")) {
+                        retries++;
+                        continue;
+                    }
+                    toast.error(e.message);
+                    break;
+                }
+
+            }
+
+            if(retries === 3) {
+                toast.error("Unable to init user profile");
+            }
+
+            isIniting.current = false;
         }
 
         askForSignature();
-    }, [user, init, wallet]);
+    }, [user, init, wallet, isIniting]);
 
     return (
       <div className={`
