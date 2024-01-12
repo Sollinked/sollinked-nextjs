@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { CloseCircleOutlined, LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from 'next/image';
-import { ellipsizeThis, getEmailDomain, sendTokensTo, swapAndSendTo, toLocaleDecimal } from "@/common/utils";
+import { ellipsizeThis, getEmailDomain, isValidMail, sendTokensTo, swapAndSendTo, toLocaleDecimal } from "@/common/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import logo from '../../../public/logo.png';
 import { useRouter } from 'next/navigation';
@@ -125,6 +125,11 @@ const Page = ({params: { username }}: {params: { username: string}}) => {
 
         if(!email) {
             toast.error('Please fill in your email.');
+            return;
+        }
+
+        if(!isValidMail(email)) {
+            toast.error('Invalid email address.');
             return;
         }
 
