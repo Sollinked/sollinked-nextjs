@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     description: "Earning from contents have never been easier.",
     images: [
         {
-          url: '/logo.png',
-          width: 512,
-          height: 512,
+          url: 'https://app.sollinked.com/opengraph-image.png',
+          width: 1015,
+          height: 351,
           alt: 'Sollinked Logo',
-          type: 'image/jpeg',
+          type: 'image/png',
         },
     ],
     siteName: "Sollinked | Earn on Solana",
@@ -37,11 +37,11 @@ export const metadata: Metadata = {
     description: "Earning from contents have never been easier.",
     images: [
       {
-        url: '/logo.png',
-        width: 512,
-        height: 512,
+        url: 'https://app.sollinked.com/twitter-image.png',
+        width: 1015,
+        height: 351,
         alt: 'Sollinked Logo',
-        type: 'image/jpeg',
+        type: 'image/png',
       },
     ],
   }
