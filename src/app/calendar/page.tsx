@@ -135,6 +135,7 @@ const Page = () => {
 				shadow
 			`}>
 				<CustomCalendar
+					minDate={moment().add(-1, 'd')}
 					onDateChange={onSelect}
 				/>
                 <div className={`
@@ -156,20 +157,23 @@ const Page = () => {
 					>
 					{
 						data.map((d, index) => {
+							let disabled = moment(d.date).isBefore(moment());
 							let bg = "dark:bg-slate-500 bg-slate-200";
-							switch(d.status) {
-								case RESERVATION_STATUS_PENDING:
-									bg = "dark:bg-yellow-500 bg-yellow-200";
-									break;
-								case RESERVATION_STATUS_BLOCKED:
-									bg = "dark:bg-red-500 bg-red-200";
-									break;
-								case RESERVATION_STATUS_PAID:
-									bg = "dark:bg-green-500 bg-green-200";
-									break;
-								case RESERVATION_STATUS_CLAIMED:
-									bg = "dark:bg-green-500 bg-green-200";
-									break;
+							if(!disabled) {
+								switch(d.status) {
+									case RESERVATION_STATUS_PENDING:
+										bg = "dark:bg-yellow-500 bg-yellow-200";
+										break;
+									case RESERVATION_STATUS_BLOCKED:
+										bg = "dark:bg-red-500 bg-red-200";
+										break;
+									case RESERVATION_STATUS_PAID:
+										bg = "dark:bg-green-500 bg-green-200";
+										break;
+									case RESERVATION_STATUS_CLAIMED:
+										bg = "dark:bg-green-500 bg-green-200";
+										break;
+								}
 							}
 							return (
 								<div
@@ -183,6 +187,7 @@ const Page = () => {
 										className={`
 											w-full h-full
 											focus:shadow-none
+											disabled:cursor-not-allowed
 										`}
 										onClick={() => {
 											setIsModalOpen(true);
@@ -191,6 +196,7 @@ const Page = () => {
 											setReservationPrice(d.reservation_price?.toString() ?? "");
 											setSelectedHour(moment(d.date).hour());
 										}}
+										disabled={disabled}
 									>
 										{moment(d.date).format('HH:00')}
 									</button>
