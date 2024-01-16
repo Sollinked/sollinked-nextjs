@@ -162,7 +162,7 @@ const Page = ({params: { username }}: { params: { username: string }}) => {
     }, []);
 
     const maxDate = useMemo(() => {
-        return moment().add(calendarAdvanceDays, 'd').startOf('d');
+        return moment().add(calendarAdvanceDays - 1, 'd').startOf('d');
     }, [calendarAdvanceDays]);
 
     const timeslots = useMemo(() => {
