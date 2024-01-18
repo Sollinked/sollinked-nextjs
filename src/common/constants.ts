@@ -19,6 +19,12 @@ export const USDT_TOKEN_ADDRESS = 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
 export const USDT_DECIMALS = 1_000_000;
 export const BONK_TOKEN_ADDRESS = 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263';
 export const BONK_DECIMALS = 100_000;
+export const WIF_TOKEN_ADDRESS = 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm';
+export const WIF_DECIMALS = 1_000_000;
+export const POPCAT_TOKEN_ADDRESS = '7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr';
+export const POPCAT_DECIMALS = 1_000_000_000;
+export const SILLY_TOKEN_ADDRESS = '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs';
+export const SILLY_DECIMALS = 1_000_000_000;
 
 export const supportedTokens: {
     [key: string]: {
@@ -49,5 +55,17 @@ export const supportedTokens: {
     BONK: {
         address: BONK_TOKEN_ADDRESS,
         decimals: BONK_DECIMALS,
+    },
+    WIF: {
+        address: WIF_TOKEN_ADDRESS,
+        decimals: WIF_DECIMALS,
+    },
+    POPCAT: {
+        address: POPCAT_TOKEN_ADDRESS,
+        decimals: POPCAT_DECIMALS,
+    },
+    SILLY: {
+        address: SILLY_TOKEN_ADDRESS,
+        decimals: SILLY_DECIMALS,
     },
 }
