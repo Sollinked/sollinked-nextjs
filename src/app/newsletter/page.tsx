@@ -156,7 +156,7 @@ const Page = () => {
                 text-center
                 flex flex-row items-center justify-center
             `}>
-                <span>Mailing List Settings</span>
+                <span>Newsletter Settings</span>
                 <button
                     className={`
                         ml-3 my-auto border-[1px]
@@ -226,7 +226,7 @@ const Page = () => {
                 text-center
                 flex flex-row items-center justify-center
             `}>
-                <span>Broadcasts</span>
+                <span>Newsletters</span>
                 <Link
                     className={`
                         ml-3 my-auto border-[1px]
@@ -236,7 +236,7 @@ const Page = () => {
                         dark:text-white text-black bg-green-500
                         border-none
                     `}
-                    href={"/broadcast/new"}
+                    href={"/newsletter/new"}
                 >
                     <span>+</span>
                 </Link>
@@ -268,7 +268,7 @@ const Page = () => {
                                     dark:border-none border-[1px] border-gray-950
                                 `}
                                 key={`mailing-broadcast-${index}`}
-                                href={`/broadcast/edit/${x.id}`}
+                                href={`/newsletter/edit/${x.id}`}
                             >
                                 <div className="flex flex-row">
                                     <strong>{x.title} { x.is_executing && <LoadingOutlined className='ml-2'/> }</strong>
@@ -307,7 +307,7 @@ const Page = () => {
             </div>
 
             <Modal
-                title="New Mailing List Tier" 
+                title="New Newsletter Tier" 
                 open={isMailingListPriceModalOpen} 
                 onOk={onNewMailingListPriceTier} 
                 onCancel={handleMailingListPriceCancel}

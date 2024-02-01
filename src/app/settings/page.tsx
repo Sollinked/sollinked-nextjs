@@ -671,28 +671,21 @@ const Page = () => {
 					addonBefore='Calendar'
 					type="text"
 					placeholder=""
-					value={`${getDappDomain()}/reserve/${userDetails.username}`}
+					value={`${getDappDomain()}/${userDetails.username}/reserve`}
 					readOnly
 				/>
 				<Input
 					addonBefore='Subscription'
 					type="text"
 					placeholder=""
-					value={`${getDappDomain()}/subscribe/${userDetails.username}`}
+					value={`${getDappDomain()}/${userDetails.username}/subscribe`}
 					readOnly
 				/>
 				<Input
 					addonBefore='Blog'
 					type="text"
 					placeholder=""
-					value={`${getDappDomain()}/${userDetails.username}/content`}
-					readOnly
-				/>
-				<Input
-					addonBefore='Blog Pass'
-					type="text"
-					placeholder=""
-					value={`${getDappDomain()}/${userDetails.username}/contentPass`}
+					value={`${getDappDomain()}/${userDetails.username}/blog`}
 					readOnly
 				/>
 			</div>
