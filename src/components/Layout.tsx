@@ -12,7 +12,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Provider as SollinkedProvider } from '@sollinked/sdk';
 import { VERIFY_MESSAGE } from '@/common/constants';
 import { usePathname } from 'next/navigation';
-import { ThemeProvider } from '@/hooks/useTheme';
+import { ThemeProvider, useTheme } from '@/hooks/useTheme';
+import { UnifiedWalletProvider } from '@jup-ag/wallet-adapter';
 import React from 'react';
 
 // Default styles that can be overridden by your app
@@ -89,40 +90,51 @@ const Layout = ({
   
     // You can also provide a custom RPC endpoint.
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  
-    const wallets = useMemo(
-        () => [
-            /**
-             * Wallets that implement either of these standards will be available automatically.
-             *
-             *   - Solana Mobile Stack Mobile Wallet Adapter Protocol
-             *     (https://github.com/solana-mobile/mobile-wallet-adapter)
-             *   - Solana Wallet Standard
-             *     (https://github.com/solana-labs/wallet-standard)
-             *
-             * If you wish to support a wallet that supports neither of those standards,
-             * instantiate its legacy wallet adapter here. Common legacy adapters can be found
-             * in the npm package `@solana/wallet-adapter-wallets`.
-             */
-            // new UnsafeBurnerWalletAdapter(),
-        ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [network]
-    );
+
+    const {theme} = useTheme();
   
     return (
         <CookiesProvider>
           <ConnectionProvider endpoint={endpoint}>
-              <WalletProvider wallets={wallets} autoConnect>
-                  <WalletModalProvider>
-                    <Wrapped>
-                        {children}
-                    </Wrapped>
-                  </WalletModalProvider>
-              </WalletProvider>
+              <UnifiedWalletProvider
+                wallets={[]}
+                config={{
+                    autoConnect: false,
+                    env: 'mainnet-beta',
+                    metadata: {
+                        name: 'UnifiedWallet',
+                        description: 'UnifiedWallet',
+                        url: 'https://jup.ag',
+                        iconUrls: ['https://jup.ag/favicon.ico'],
+                    },
+                    // notificationCallback: WalletNotification,
+                    walletlistExplanation: {
+                        href: 'https://station.jup.ag/docs/additional-topics/wallet-list',
+                    },
+                    theme: theme
+                }}
+              >
+                <Wrapped>
+                    {children}
+                </Wrapped>
+              </UnifiedWalletProvider>
           </ConnectionProvider>
         </CookiesProvider>
     )
 }
 
-export default Layout;
+export const ThemeLayout = ({
+    children,
+  }: {
+    children: React.ReactNode
+  }) => {
+    return (
+        <ThemeProvider>
+            <Layout>
+                {children}
+            </Layout>
+        </ThemeProvider>
+    )
+}
+
+export default ThemeLayout;

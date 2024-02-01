@@ -130,6 +130,7 @@ export type Content = {
     status: 'draft' | 'published';
     deleted_at?: string;
     updated_at: string;
+    paymentlink_id?: string;
 
     // generated
     contentPasses?: ContentPass[];

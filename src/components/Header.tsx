@@ -1,9 +1,9 @@
 'use client';
 import { VERIFY_MESSAGE } from '@/common/constants';
 import { BarsOutlined, SearchOutlined } from '@ant-design/icons';
+import { UnifiedWalletButton } from '@jup-ag/wallet-adapter';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useSollinked } from '@sollinked/sdk';
-import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'react-toastify';
@@ -12,11 +12,6 @@ type HeaderParams = {
     onMenuClick: () => void;
     onHeaderVisibilityChange: (isHidden: boolean) => void;
 }
-
-const WalletMultiButtonDynamic = dynamic(
-    async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
-    { ssr: false }
-);
 
 const hideInPaths = [
     '/settings',
@@ -151,7 +146,7 @@ const Header = ({onMenuClick, onHeaderVisibilityChange}: HeaderParams) => {
             />
         </button>
         <div className='dark:bg-slate-700 rounded border-slate-500 border-[1px] shadow'>
-            <WalletMultiButtonDynamic />
+            <UnifiedWalletButton />
         </div>
       </div>
     )

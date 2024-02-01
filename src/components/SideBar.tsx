@@ -150,20 +150,10 @@ const SideBar = ({ isActive, onCloseClick }: SidebarParams) => {
             active={pathname.search(/\/content/g) !== -1}
           />
           <SideBarItem
-            link="/subscription"
-            text="Your Subscriptions"
-            active={pathname.search(/\/subscription/g) !== -1}
-          />
-          <SideBarItem
             link="/calendar"
             text="Calendar"
             active={pathname === "/calendar"}
             notification={hasUnclaimedReservation}
-          />
-          <SideBarItem
-            link="/github"
-            text="Github"
-            active={pathname === "/github" || pathname.search(/\/github/g) !== -1}
           />
           {/* <SideBarItem
             link="/chat"
