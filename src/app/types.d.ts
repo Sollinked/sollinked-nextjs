@@ -7,5 +7,6 @@ export type HomepageUser = {
     profile_picture?: string;
     value_usd: number;
     is_verified: boolean;
+    holiday_mode: boolean;
     tags?: UserTag[];
 }

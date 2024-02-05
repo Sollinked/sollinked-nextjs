@@ -62,7 +62,7 @@ const Page = () => {
         }
     }, []);
 
-    const onUserDetailsChanged = useCallback((value: string | number, param: UserDetailsKeys) => {
+    const onUserDetailsChanged = useCallback((value: string | number | boolean, param: UserDetailsKeys) => {
         let cloned = cloneObj(userDetails) as any; // must do this cause of typing error
         cloned[param] = value;
         setUserDetails(cloned);
@@ -290,6 +290,8 @@ const Page = () => {
                 setIsSaving(false);
                 return;
 			}
+
+			console.log({trimmedUserDetails});
 
             let res = await account.update({
                 ...trimmedUserDetails,
@@ -653,6 +655,18 @@ const Page = () => {
 						value={userDetails.email_address ?? ""} 
 						onChange={(e) => onUserDetailsChanged(e.target.value, "email_address")}
 					/>
+					<button
+						className={`
+							rounded 
+							w-full py-2
+							md:text-sm text-xs drop-shadow-lg
+							dark:text-white text-black
+							${userDetails.holiday_mode? 'dark:bg-red-600 bg-red-300' : 'dark:bg-green-600 bg-green-300'}
+						`}
+						onClick={() => onUserDetailsChanged(!userDetails.holiday_mode, "holiday_mode")}
+					>
+						{ userDetails.holiday_mode? 'Deactivate Holiday Mode' : 'Activate Holiday Mode' }
+					</button>
                 </div>
             </div>
 
