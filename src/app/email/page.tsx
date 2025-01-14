@@ -328,7 +328,7 @@ const Page = () => {
                 rounded-md
             `}>
                 <Tabs
-                    className='w-full flex flex-col items-center justify-center bg-transparent'
+                    className='w-full flex flex-col items-center justify-center bg-transparent md:max-w-[60vw] max-w-[200vw]'
                     defaultActiveKey='1'
                     items={tabItems}
                 />

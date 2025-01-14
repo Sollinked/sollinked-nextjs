@@ -4,3 +4,5 @@ package-lock.json
 .next/
 .swc/
 .env*
+
+ckeditor5/node_modules

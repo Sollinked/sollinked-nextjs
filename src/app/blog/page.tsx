@@ -43,7 +43,7 @@ const Page = () => {
                         dark:text-white text-black bg-green-500
                         border-none
                     `}
-                    href="/content/pass/new"
+                    href="/blog/pass/new"
                 >
                     <span>+</span>
                 </Link>
@@ -76,7 +76,7 @@ const Page = () => {
                                     dark:border-none border-[1px] border-gray-950
                                 `}
                                 key={`content-pass-${index}`}
-                                href={`/content/pass/edit/${x.id}`}
+                                href={`/blog/pass/edit/${x.id}`}
                             >
                                 <strong>{x.name}</strong>
                                 <RightOutlined/>
@@ -101,7 +101,7 @@ const Page = () => {
                         dark:text-white text-black bg-green-500
                         border-none
                     `}
-                    href={"/content/new"}
+                    href={"/blog/new"}
                 >
                     <span>+</span>
                 </Link>
@@ -133,7 +133,7 @@ const Page = () => {
                                     dark:border-none border-[1px] border-gray-950
                                 `}
                                 key={`content-${index}`}
-                                href={`/content/edit/${x.id}`}
+                                href={`/blog/edit/${x.id}`}
                             >
                                 {x.title}
                                 <RightOutlined/>

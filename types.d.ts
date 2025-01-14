@@ -1,3 +1,4 @@
+import { ProcessedMailAuction } from "@sollinked/sdk/dist/src/Auction/types";
 import { Webhook } from "./Pages/Integration/types";
 
 export type ApiResult<T> = {
@@ -211,6 +212,7 @@ export type User = {
     is_verified: boolean;
     holiday_mode: boolean;
     tags?: UserTag[];
+    auctions?: ProcessedMailAuction[];
 }
 
 export type PublicUser = {
@@ -231,6 +233,16 @@ export type PublicUser = {
     is_verified: boolean;
     holiday_mode: boolean;
     tags?: UserTag[];
+    auctions?: MailAuction[];
+}
+
+export type MailAuction = {
+    id: number;
+    user_id: number;
+    start_date: string;
+    end_date: string;
+    created_at: string;
+    deleted_at?: string;
 }
 
 export type UserTag = {

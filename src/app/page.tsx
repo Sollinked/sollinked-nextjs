@@ -77,7 +77,15 @@ const Page = () => {
 	return (
 		<div className={'min-h-[80vh] px-2 pb-10'}>
 			<h1 className='md:text-left text-center mb-5' style={{ fontSize: 30 }}>Announcements</h1>
-			<ul>
+			<ul className='space-y-3'>
+				<li>
+					<div style={{textDecoration: 'underline'}}>Jan 13, 2025</div>
+					<ul className='ml-10' style={{
+						listStyle: 'decimal'
+					}}>
+						<li>Added Email Auction Feature</li>
+					</ul>
+				</li>
 				<li>
 					<div style={{textDecoration: 'underline'}}>Feb 1, 2024</div>
 					<ul className='ml-10' style={{
