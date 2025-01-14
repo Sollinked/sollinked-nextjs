@@ -16,12 +16,13 @@ const Page = () => {
     const { user, auction } = useSollinked();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [originalEndDate, setOriginalEndDate] = useState(new Date());
     const [minBid, setMinBid] = useState("");
     const { id } = useParams();
 
     const hasEnded = useMemo(() => {
-        return moment(endDate).isBefore(moment());
-    }, [ endDate ]);
+        return moment(originalEndDate).isBefore(moment());
+    }, [ originalEndDate ]);
 
     const handleDateChange = useCallback((date: Date | null) => {
         setStartDate(date ?? new Date())
@@ -83,6 +84,7 @@ const Page = () => {
 
         setStartDate(moment(selectedAuction[0].start_date).toDate());
         setEndDate(moment(selectedAuction[0].end_date).toDate());
+        setOriginalEndDate(moment(selectedAuction[0].end_date).toDate());
         setMinBid(selectedAuction[0].min_bid.toString());
     }, [id, user.auctions, router]);
 
