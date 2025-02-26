@@ -399,7 +399,7 @@ export const swapAndSendTo = async(wallet: WalletContextState, mintToken: Public
       
       const { swapTransaction } = transactions;
       let txBuf = Buffer.from(swapTransaction, 'base64');
-      let tx = VersionedTransaction.deserialize(txBuf);
+      let tx = VersionedTransaction.deserialize(txBuf as any);
       const connection = new Connection(getRPCEndpoint(), "confirmed");
 
       const transactionInstructions: TransactionInstruction[] = [];

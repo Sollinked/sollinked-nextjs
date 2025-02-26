@@ -75,7 +75,6 @@ const Page = () => {
 
         let idNum = Number(id);
         let pass = user.contentPasses?.filter(x => x.id === idNum);
-        console.log(user.contentPasses);
         if(!pass || pass.length === 0) {
             return;
         }

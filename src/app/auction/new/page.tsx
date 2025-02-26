@@ -17,6 +17,7 @@ const Page = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [minBid, setMinBid] = useState("");
+    const [winnerCount, setWinnerCount] = useState("");
 
     const handleDateChange = useCallback((date: Date | null) => {
         setStartDate(date ?? new Date())
@@ -36,6 +37,7 @@ const Page = () => {
                 start_date: moment(startDate).unix(), 
                 end_date: moment(endDate).unix(), 
                 min_bid: minBid? Number(minBid) : 0,
+                winner_count: winnerCount? Number(winnerCount) : 1,
             });
 
             toast.success("Auction created");
@@ -45,7 +47,7 @@ const Page = () => {
         catch {
             toast.error("Unable to save");
         }
-    }, [startDate, endDate, minBid, auction, router]);
+    }, [startDate, endDate, minBid, auction, router, winnerCount]);
 
     return (
         <div className={`
@@ -80,20 +82,22 @@ const Page = () => {
                     <div className="relative flex flex-col items-start">
                         <strong>Start Date</strong>
                         <DatePicker 
+                            minDate={new Date()}
                             selected={startDate} 
                             onChange={handleDateChange}
                             showTimeInput
-                            dateFormat={"YYYY-MM-DD HH:mm:ss"}
+                            dateFormat={"YYYY-MM-dd HH:mm:ss"}
                             className="outline-none text-black px-2 py-1 rounded mt-1"
                         />
                     </div>
                     <div className="relative flex flex-col items-start mt-5">
                         <strong>End Date</strong>
                         <DatePicker 
+                            minDate={new Date()}
                             selected={endDate} 
                             onChange={handleEndDateChange}
                             showTimeInput
-                            dateFormat={"YYYY-MM-DD HH:mm:ss"}
+                            dateFormat={"YYYY-MM-dd HH:mm:ss"}
                             className="outline-none text-black px-2 py-1 rounded mt-1"
                         />
                     </div>
@@ -102,7 +106,17 @@ const Page = () => {
                         <input 
                             className="outline-none text-black px-2 py-1 rounded mt-1" 
                             placeholder="0"
+                            value={minBid}
                             onChange={({target: {value}}) => { setMinBid(value) }}
+                        ></input>
+                    </div>
+                    <div className="relative flex flex-col items-start mt-5">
+                        <strong>Winner Count</strong>
+                        <input 
+                            className="outline-none text-black px-2 py-1 rounded mt-1" 
+                            placeholder="1"
+                            value={winnerCount}
+                            onChange={({target: {value}}) => { setWinnerCount(value) }}
                         ></input>
                     </div>
                     <button className="mt-5 rounded px-3 py-2 bg-green-700" onClick={onSave}>Save</button>

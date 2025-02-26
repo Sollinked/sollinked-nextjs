@@ -291,8 +291,6 @@ const Page = () => {
                 return;
 			}
 
-			console.log({trimmedUserDetails});
-
             let res = await account.update({
                 ...trimmedUserDetails,
                 profile_picture: pfpFile,
@@ -428,7 +426,7 @@ const Page = () => {
 
 			toast.info("Getting Elusiv Balances");
             const msg = Buffer.from(SEED_MESSAGE, 'utf-8');
-            const seed = await wallet.signMessage(msg);
+            const seed = await wallet.signMessage(msg as any);
 
 			// Create the elusiv instance
 			const elusiv = await Elusiv.getElusivInstance(
@@ -802,39 +800,103 @@ const Page = () => {
 				flex flex-row justify-center align-center
 			`}>
 				<span>Mail Settings</span>
+				{
+					!userDetails.is_auto_auction &&
+					<button
+						className={`
+							ml-3 my-auto border-[1px]
+							h-7 w-7 text-[20px]
+							rounded
+							flex items-center justify-center
+							dark:text-white text-white bg-green-500
+							border-none
+						`}
+						onClick={() => { setIsModalOpen(true) }}
+					>
+						<span>+</span>
+					</button>
+				}
+			</div>
+			<div className="flex justify-center mt-3">
 				<button
 					className={`
-						ml-3 my-auto border-[1px]
-						h-7 w-7 text-[20px]
-						rounded
-						flex items-center justify-center
-						dark:text-white text-white bg-green-500
-						border-none
+						rounded 
+						w-full py-2
+						md:text-sm text-xs drop-shadow-lg
+						dark:text-white text-black
+						xl:w-[40vw] md:w-[500px] w-[90vw]
+						${!userDetails.is_auto_auction? 'dark:bg-yellow-600 bg-yellow-300' : 'dark:bg-green-600 bg-green-300'}
 					`}
-					onClick={() => { setIsModalOpen(true) }}
+					onClick={() => onUserDetailsChanged(!userDetails.is_auto_auction, "is_auto_auction")}
 				>
-					<span>+</span>
+					{ !userDetails.is_auto_auction? 'Activate Bid Mode' : 'Activate Pay Per Email Mode' }
 				</button>
 			</div>
-			<div className={`
-				flex flex-col items-center justify-start
-				w-full
-				mt-3 mb-3
-			`}>
+			{
+				!userDetails.is_auto_auction?
 				<div className={`
 					flex flex-col items-center justify-start
-					shadow
-					rounded-md
+					w-full
+					mt-3 mb-3
 				`}>
-					<Table
-						className='xl:w-[40vw] md:w-[500px] w-[90vw]'
-						columns={mailTierColumns}
-						dataSource={userDetails.tiers}
-						pagination={false}
-						rowKey={(r) => `mail-tier-${r.id}`}
-					/>
+					<div className={`
+						flex flex-col items-center justify-start
+						shadow
+						rounded-md
+					`}>
+						<Table
+							className='xl:w-[40vw] md:w-[500px] w-[90vw]'
+							columns={mailTierColumns}
+							dataSource={userDetails.tiers}
+							pagination={false}
+							rowKey={(r) => `mail-tier-${r.id}`}
+						/>
+					</div>
+				</div> :
+				<div className={`
+					flex flex-col items-center justify-start
+					w-full
+					mt-3 mb-3
+				`}>
+					<div className={`
+						flex flex-col items-center justify-start
+						w-full
+						mt-3 mb-3
+						xl:w-[40vw] md:w-[500px] w-[90vw]
+					`}>
+						<span className='text-xs self-start'>All emails will need to go through the bidding process.</span>
+						<span className='text-xs self-start'>The auction will conclude every {userDetails.auto_auction_duration} days starting at {userDetails.auto_auction_start_bid} USDC.</span>
+						<span className='text-xs self-start mb-1'>The top {userDetails.auto_auction_winner_count} bidders will get their emails delivered.</span>
+						<div className="mb-1 w-full">
+							<Input
+								addonBefore='Duration (Days)'
+								type="number"
+								placeholder='7'
+								value={userDetails.auto_auction_duration.toString() ?? ""} 
+								onChange={(e) => onUserDetailsChanged(e.target.value, "auto_auction_duration")}
+							/>
+						</div>
+						<div className="mb-1 w-full">
+							<Input
+								addonBefore='Base Bid (USDC)'
+								type="number"
+								placeholder='100'
+								value={userDetails.auto_auction_start_bid.toString() ?? ""} 
+								onChange={(e) => onUserDetailsChanged(e.target.value, "auto_auction_start_bid")}
+							/>
+						</div>
+						<div className="mb-1 w-full">
+							<Input
+								addonBefore='Winner Count'
+								type="number"
+								placeholder='5'
+								value={userDetails.auto_auction_winner_count.toString() ?? ""} 
+								onChange={(e) => onUserDetailsChanged(e.target.value, "auto_auction_winner_count")}
+							/>
+						</div>
+					</div>
 				</div>
-			</div>
+			}
 
 			<div className={`
 				m-auto mt-10 

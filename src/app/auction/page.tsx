@@ -80,7 +80,7 @@ const Page = () => {
                                         key={`content-pass-${index}`}
                                     >
                                         <div className="flex flex-col">
-                                            <strong>Auction {index + 1}</strong>
+                                            <strong>Auction {userDetails.auctions!.length - index}</strong>
                                             <span className='text-xs'>{moment(x.end_date).isBefore(moment())? 'Ended' : 'Ends'} {moment(x.end_date).fromNow()}</span>
                                         </div>
                                         <div className="flex flex-row items-center">
@@ -104,7 +104,7 @@ const Page = () => {
                                     
                                 >
                                     <div className="flex flex-col">
-                                        <strong>Auction {index + 1}</strong>
+                                        <strong>Auction {userDetails.auctions!.length - index}</strong>
                                         <span className='text-xs'>{moment(x.end_date).isBefore(moment())? 'Ended' : 'Ends'} {moment(x.end_date).fromNow()}</span>
                                     </div>
                                     <div className="flex flex-row items-center">

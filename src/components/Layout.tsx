@@ -99,7 +99,7 @@ const Layout = ({
               <UnifiedWalletProvider
                 wallets={[]}
                 config={{
-                    autoConnect: false,
+                    autoConnect: true,
                     env: 'mainnet-beta',
                     metadata: {
                         name: 'UnifiedWallet',

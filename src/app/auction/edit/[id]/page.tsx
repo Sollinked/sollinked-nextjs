@@ -18,6 +18,7 @@ const Page = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [originalEndDate, setOriginalEndDate] = useState(new Date());
     const [minBid, setMinBid] = useState("");
+    const [winnerCount, setWinnerCount] = useState("");
     const { id } = useParams();
 
     const hasEnded = useMemo(() => {
@@ -42,6 +43,7 @@ const Page = () => {
                 start_date: moment(startDate).unix(), 
                 end_date: moment(endDate).unix(), 
                 min_bid: minBid? Number(minBid) : 0,
+                winner_count: winnerCount? Number(winnerCount) : 1,
             });
 
             toast.success("Auction updated");
@@ -51,7 +53,7 @@ const Page = () => {
         catch {
             toast.error("Unable to save");
         }
-    }, [startDate, endDate, minBid, auction, router, id]);
+    }, [startDate, endDate, minBid, auction, router, winnerCount, id]);
     
     const onDelete = useCallback(async() => {
         if(!auction) {
@@ -86,6 +88,7 @@ const Page = () => {
         setEndDate(moment(selectedAuction[0].end_date).toDate());
         setOriginalEndDate(moment(selectedAuction[0].end_date).toDate());
         setMinBid(selectedAuction[0].min_bid.toString());
+        setWinnerCount(selectedAuction[0].winner_count.toString());
     }, [id, user.auctions, router]);
 
     return (
@@ -125,7 +128,7 @@ const Page = () => {
                             selected={startDate} 
                             onChange={handleDateChange}
                             showTimeInput
-                            dateFormat={"YYYY-MM-DD HH:mm:ss"}
+                            dateFormat={"YYYY-MM-dd HH:mm:ss"}
                             className="outline-none text-black px-2 py-1 rounded mt-1"
                         />
                     </div>
@@ -136,7 +139,7 @@ const Page = () => {
                             selected={endDate} 
                             onChange={handleEndDateChange}
                             showTimeInput
-                            dateFormat={"YYYY-MM-DD HH:mm:ss"}
+                            dateFormat={"YYYY-MM-dd HH:mm:ss"}
                             className="outline-none text-black px-2 py-1 rounded mt-1"
                         />
                     </div>
@@ -146,7 +149,18 @@ const Page = () => {
                             disabled={hasEnded}
                             className="outline-none text-black px-2 py-1 rounded mt-1" 
                             placeholder="0"
+                            value={minBid}
                             onChange={({target: {value}}) => { setMinBid(value) }}
+                        ></input>
+                    </div>
+                    <div className="relative flex flex-col items-start mt-5">
+                        <strong>Winner Count</strong>
+                        <input 
+                            disabled={hasEnded}
+                            className="outline-none text-black px-2 py-1 rounded mt-1" 
+                            placeholder="1"
+                            value={winnerCount}
+                            onChange={({target: {value}}) => { setWinnerCount(value) }}
                         ></input>
                     </div>
                     {
